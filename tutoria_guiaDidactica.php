@@ -78,7 +78,7 @@ function formato_fecha_corto($fecha) {
 }
 
 $values = [
-    'CURSO' => $datos['Denominacion'],
+    'CURSO' => mb_strtoupper($datos['Denominacion']),
     'ALUMNO' => $datos['nombre'] . ' ' . $datos['apellidos'],
     'NIF' => $datos['nif'],
     'CONTENIDO' => $contenido_plain,
@@ -296,7 +296,7 @@ if (empty($generatedFile) || !file_exists($generatedFile)) {
 }
 // Ajustar cabeceras según el tipo de archivo generado
 $ext = pathinfo($generatedFile, PATHINFO_EXTENSION);
-$downloadName = 'GUIA_DIDACTICA_' . preg_replace('/[^A-Za-z0-9_-]/', '_', $datos['Denominacion']) . '_' . $studentCursoID . '.' . $ext;
+$downloadName = 'GUIA_DIDACTICA_' . $datos['nombre'] . ' ' . $datos['apellidos'] . '.' . $ext;
 if (strtolower($ext) === 'docx') {
     $mime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 } elseif (strtolower($ext) === 'doc') {
