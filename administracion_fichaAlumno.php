@@ -136,7 +136,7 @@ if(isset($_GET['StudentCursoID'])){
 
       <div class="row mt-1">
 
-        <label class="col-2 col-form-label" style="">NOMBRE Y APELLIDOS:</label>
+        <label class="col-2 col-form-label">NOMBRE Y APELLIDOS:</label>
           <div class="col-6">
             <input class="form-control form-control-sm text-uppercase" value="<?php echo $alumno['nombre'] . " " . $alumno['apellidos'] ?>" type="text"></input>
           </div>        
@@ -417,6 +417,7 @@ if(isset($_GET['StudentCursoID'])){
             <label class="col-2 col-form-label">DENOMINACIÓN:</label>
             <div class="col-6 border border-2 border-bottom-0 rounded-top">
               <input id="noMostrar" class="form-control form-control-sm" type="text"
+              <input id="noMostrar" class="form-control form-control-sm text-uppercase" type="text"
               value="<?php if($alumnoCurso) echo $alumnoCurso['Denominacion'] ?>"></input>
             </div>             
 

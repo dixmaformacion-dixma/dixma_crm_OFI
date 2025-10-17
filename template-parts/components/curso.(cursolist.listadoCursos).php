@@ -103,7 +103,7 @@ if (!isset($statusDiplomaColor)) {
         }
 </style>
 
-<div class="col-md-12 col-12 container border border-2 text-uppercase">
+<div class="col-md-12 col-12 container border border-2 text-uppercase overflow-visible">
         <div class='row p-0' style="<?php echo $statusColor[$curso['status_curso']] ?>">
                 <div style="width:5%">
                         <input type="checkbox" class="selectable" value="<?php echo $curso['StudentCursoID'] ?>">
@@ -272,25 +272,3 @@ if (!isset($statusDiplomaColor)) {
         require("template-parts/components/cursoEditar.(curso.listadoCursos).php");
         ?>
 </div>
-<script>
-        // Toggle custom PDF menus (no Bootstrap)
-        document.addEventListener('click', function(e) {
-                var btn = e.target.closest('.print-pdf-btn');
-                if (btn) {
-                        var container = btn.closest('.print-pdf-dropdown');
-                        var menu = container.querySelector('.print-pdf-menu');
-                        // close others
-                        document.querySelectorAll('.print-pdf-menu.show').forEach(function(m) {
-                                if (m !== menu) m.classList.remove('show');
-                        });
-                        menu.classList.toggle('show');
-                        return;
-                }
-                // close if click outside any dropdown
-                if (!e.target.closest('.print-pdf-dropdown')) {
-                        document.querySelectorAll('.print-pdf-menu.show').forEach(function(m) {
-                                m.classList.remove('show');
-                        });
-                }
-        });
-</script>
