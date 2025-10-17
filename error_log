@@ -1,0 +1,170 @@
+<div id="editarVenta">
+    <div class="row border-bottom border-3 border-secondary">
+        <div class="col-md-3 col-12">
+            <label><b>Curso 1:</b></label>
+            <select class="form-select" name="formacionCurso1">
+                <option value="Programada" <?php if($venta['curso1'] == "Programada") {echo " selected ";} ?>>Formacion programada</option>
+                <option value="Privada" <?php if($venta['curso1'] == "Privada") {echo " selected ";} ?>>Formacion privada</option>
+            </select>
+        </div>
+
+        <div class="col-md-5 col-12">
+            <label class="form-check-label"><b>Nombre:</b></label>
+            <input id="nombreCurso1" class="form-control" type="text" name="nombreCurso1" value="<?php echo $venta['nombrecurso1'];?>"></input>
+        </div>
+
+        <div class="col-md-1 col-12">
+            <label class="form-check-label"><b>Horas:</b></label>
+            <input id="horasCurso1" class="form-control" type="text" name="horasCurso1" value="<?php echo $venta['horascurso1'];?>"></input>
+        </div>
+
+        <div class="col-md-3 col-12">
+            <label class="form-check-label"><b>Modalidad:</b></label>
+            <select class="form-select mb-2" name="modalidadCurso1">
+                <option value="teleformacion" <?php if($venta['modalidadcurso1'] == "teleformacion") {echo " selected ";} ?>>Teleformacion</option>
+                <option value="presencial" <?php if($venta['modalidadcurso1'] == "presencial") {echo " selected ";} ?>>Presencial</option>
+                <option value="mixta" <?php if($venta['modalidadcurso1'] == "teleformacion") {echo " selected ";} ?>>Mixta</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row border-bottom border-3 border-secondary">
+        <div class="col-md-3 col-12">
+            <label><b>Curso 2:</b></label>
+            <select class="form-select" name="formacionCurso2">
+                <option value="Programada" <?php if($venta['curso2'] == "Programada") {echo " selected ";} ?>>Formacion programada</option>
+                <option value="Privada" <?php if($venta['curso2'] == "Privada") {echo " selected ";} ?>>Formacion privada</option>
+            </select>
+        </div>
+
+        <div class="col-md-5 col-12">
+            <label class="form-check-label"><b>Nombre:</b></label>
+            <input id="nombreCurso2" class="form-control" type="text" name="nombreCurso2" value="<?php echo $venta['nombrecurso2'];?>"></input>
+        </div>
+
+        <div class="col-md-1 col-12">
+            <label class="form-check-label"><b>Horas:</b></label>
+            <input id="horasCurso2" class="form-control" type="text" name="horasCurso2" value="<?php echo $venta['horascurso2'];?>"></input>
+        </div>
+
+        <div class="col-md-3 col-12">
+            <label class="form-check-label"><b>Modalidad:</b></label>
+            <select class="form-select mb-2" name="modalidadCurso2">
+                <option value="teleformacion" <?php if($venta['modalidadcurso2'] == "teleformacion") {echo " selected ";} ?>>Teleformacion</option>
+                <option value="presencial" <?php if($venta['modalidadcurso2'] == "presencial") {echo " selected ";} ?>>Presencial</option>
+                <option value="mixta" <?php if($venta['modalidadcurso2'] == "mixta") {echo " selected ";} ?>>Mixta</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row border-bottom border-3 border-secondary">
+        <div class="col-md-3 col-12">
+            <label><b>Curso 3:</b></label>
+            <select class="form-select" name="formacionCurso3">
+                <option value="Programada" <?php if($venta['curso3'] == "Programada") {echo " selected ";} ?>>Formacion programada</option>
+                <option value="Privada" <?php if($venta['curso3'] == "Privada") {echo " selected ";} ?>>Formacion privada</option>
+            </select>
+        </div>
+
+        <div class="col-md-5 col-12">
+            <label class="form-check-label"><b>Nombre:</b></label>
+            <input id="nombreCurso3" class="form-control" type="text" name="nombreCurso3" value="<?php echo $venta['nombrecurso3'];?>"></input>
+        </div>
+
+        <div class="col-md-1 col-12">
+            <label class="form-check-label"><b>Horas:</b></label>
+            <input id="horasCurso3" class="form-control" type="text" name="horasCurso3" value="<?php echo $venta['horascurso3'];?>"></input>
+        </div>
+
+        <div class="col-md-3 col-12">
+            <label class="form-check-label"><b>Modalidad:</b></label>
+            <select class="form-select mb-2" name="modalidadCurso3">
+                <option value="teleformacion" <?php if($venta['modalidadcurso3'] == "teleformacion") {echo " selected ";} ?>>Teleformacion</option>
+                <option value="presencial" <?php if($venta['modalidadcurso3'] == "presencial") {echo " selected ";} ?>>Presencial</option>
+                <option value="mixta" <?php if($venta['modalidadcurso3'] == "mixta") {echo " selected ";} ?>>Mixta</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 col-12">
+            <label class="form-check-label"><b>Email (para factura bonificacion):</b></label>
+            <input id="emailFacturacion" class="form-control" type="text" name="emailFacturacion" value="<?php echo  $emailFactura = !empty($venta) ? $venta['emailfactura'] : "" ?>"></input>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-12">
+            <label class="form-check-label"><b>Asesoria:</b></label>
+            <input id="asesoria" class="form-control" type="text" name="asesoria" value="<?php echo  $asesoria = !empty($venta) ? $venta['nombreasesoria'] : "" ?>"></input>
+        </div>
+
+        <div class="col-md-4 col-12">
+            <label class="form-check-label"><b>Telefono asesoria:</b></label>
+            <input id="telefAsesoria" class="form-control" type="text" name="telefAsesoria" value="<?php echo  $telefono = !empty($venta) ? $venta['telfasesoria'] : "" ?>"></input>
+        </div>
+
+        <div class="col-md-4 col-12">
+            <label class="form-check-label"><b>Email asesoria:</b></label>
+            <input id="emailAsesoria" class="form-control" type="text" name="emailAsesoria" value="<?php echo  $email = !empty($venta) ? $venta['mailasesoria'] : "" ?>"></input>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-12">
+            <label class="form-check-label"><b>Importe:</b></label>
+            <input id="importe" class="form-control" type="text" name="importe" value="<?php echo  $email = !empty($venta) ? $venta['importe'] : "" ?>"></input>
+        </div>
+
+        <div class="col-md-4 col-12">
+            <label class="form-check-label"><b>Fecha de cobro:</b></label>
+            <input id="fechaCobro" class="form-control" type="text" name="fechaCobro" value="<?php echo  $fechaCobro = !empty($venta) ? $venta['fechacobro'] : "" ?>"></input>
+        </div>
+
+        <div class="col-md-4 col-12">
+            <label class="form-check-label"><b>Forma de pago:</b></label>
+            <select class="form-select" name="formaPago">
+                <option value="Transferencia" <?php if($venta['formapago'] == "Transferencia") {echo " selected ";} ?>>Transferencia</option>
+                <option value="Domiciliacion" <?php if($venta['formapago'] == "Domiciliacion") {echo " selected ";} ?>>Domiciliacion</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-12">
+            <label class="form-check-label"><b>Numero de cuenta:</b></label>
+            <input id="numeroCuenta" class="form-control"type="text" name="numeroCuenta" value="<?php echo  $numeroCuenta = !empty($venta) ? $venta['numerocuenta'] : "" ?>"></input>   
+        </div>
+
+        <div class="col-md-4 col-12">
+            <label class="form-check-label"><b>Comercial:</b></label>
+            <select class="form-select" id="comerciales" name="comercial">
+
+                <?php 
+
+                    $comerciales = cargarComerciales();
+
+                    for($i=0; $i < count($comerciales); $i++){
+
+                        if($comerciales[$i]['activo'] == 1){
+
+                        echo "<option value='" . $comerciales[$i]['codigousuario'] . "'>" . $comerciales[$i]['nombre'] . "</option>";
+
+                        }
+
+                    }
+
+                ?>
+
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-12">
+            <label><b>Observaciones:</b></label>
+            <textarea class="form-control" name="observacionesVenta"></textarea>
+        </div>
+    </div>
+
+</div>
