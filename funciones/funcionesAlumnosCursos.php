@@ -58,34 +58,131 @@ function cargarAlumnoCursosPendientes(){
         return false;
     }
 }
-function buscarAlumnoCursos($filterName, $filterOperator, $filterValue){
+function buscarAlumnoCursos($filters, $operators, $values, $limit = 20, $offset = 0)
+{
     $conexionPDO = realizarConexion();
-    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE 1';
+    $base_sql = '
+    SELECT SQL_CALC_FOUND_ROWS
+    alumnos.nombre as nombre,
+    alumnos.apellidos as apellidos,
+    alumnos.telefono as telefono,
+    alumnos.email as email,
+    empresas.nombre as nombreEmpresa,
+    empresas.email as emailEmpresa,
+    empresas.telef1 as telef1,
+    empresas.telef2 as telef2,
+    empresas.personacontacto as personacontacto,
+    alumnocursos.*
+    FROM `alumnocursos` 
+    LEFT JOIN alumnos on alumnocursos.idAlumno = alumnos.idAlumno 
+    LEFT JOIN empresas on alumnocursos.idEmpresa = empresas.idempresa 
+    ';
 
-    for($i = 0; $i < count($filterName); $i++){
-        if(!in_array($filterName[$i],['Anno','idEmpresa'])){
-            $sql .= ' AND `'.$filterName[$i].'` '.$filterOperator[$i].' "'.$filterValue[$i].'"';
-        }
-        if($filterName[$i]=='Anno'){
-            $sql .= ' AND (YEAR(`Fecha_Inicio`) = '.$filterValue[$i].')';
-        }
-        if($filterName[$i]=='idEmpresa'){
-            $sql .= ' AND alumnocursos.idEmpresa = '.$filterValue[$i];
+    $where_clauses = [];
+    $params = [];
+
+    if (!empty($filters)) {
+        foreach ($filters as $key => $filter) {
+            $operator = $operators[$key] ?? 'equal';
+            $value = $values[$key] ?? null;
+
+            if ($value === null || $value === '') continue;
+
+            // Mapeo de operadores para SQL
+            $sql_operator = '=';
+            switch ($operator) {
+                case 'equal':
+                    $sql_operator = '=';
+                    break;
+                case 'not_equal':
+                    $sql_operator = '!=';
+                    break;
+                case 'contains':
+                    $sql_operator = 'LIKE';
+                    $value = '%' . $value . '%';
+                    break;
+                case 'greater_than':
+                    $sql_operator = '>';
+                    break;
+                case 'less_than':
+                    $sql_operator = '<';
+                    break;
+            }
+
+            // Manejo especial para el año
+            if ($filter === 'Anno') {
+                $where_clauses[] = "(YEAR(alumnocursos.Fecha_Inicio) = ? OR YEAR(alumnocursos.Fecha_Fin) = ?)";
+                $params[] = $value;
+                $params[] = $value;
+            } else {
+                $column = '';
+                // Mapeo de nombres de filtro a columnas de la base de datos
+                switch ($filter) {
+                    case 'StudentCursoID':
+                        $column = 'alumnocursos.StudentCursoID';
+                        break;
+                    case 'Denominacion':
+                        $column = 'alumnocursos.Denominacion';
+                        break;
+                    case 'N_Accion':
+                        $column = 'alumnocursos.N_Accion';
+                        break;
+                    case 'N_Grupo':
+                        $column = 'alumnocursos.N_Grupo';
+                        break;
+                    case 'Modalidad':
+                        $column = 'alumnocursos.Modalidad';
+                        break;
+                    case 'tutor':
+                        $column = 'alumnocursos.tutor';
+                        break;
+                    case 'Tipo_Venta':
+                        $column = 'alumnocursos.Tipo_Venta';
+                        break;
+                    case 'status_curso':
+                        $column = 'alumnocursos.status_curso';
+                        break;
+                    case 'nombre_alumno':
+                        $where_clauses[] = "(alumnos.nombre LIKE ? OR alumnos.apellidos LIKE ?)";
+                        $params[] = '%' . $value . '%';
+                        $params[] = '%' . $value . '%';
+                        continue 2; // Salta al siguiente filtro
+                    case 'nombre_empresa':
+                        $column = 'empresas.nombre';
+                        break;
+                }
+
+                if ($column) {
+                    $where_clauses[] = "$column $sql_operator ?";
+                    $params[] = $value;
+                }
+            }
         }
     }
 
-    $sql .= ' ORDER BY `Fecha_Fin` ASC';
-    //echo "$sql";
+    $sql = $base_sql;
+    if (!empty($where_clauses)) {
+        $sql .= ' WHERE ' . implode(' AND ', $where_clauses);
+    }
+
+    $sql .= " ORDER BY alumnocursos.Fecha_Inicio DESC, alumnocursos.StudentCursoID DESC";
+    $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
 
     $stmt = $conexionPDO->prepare($sql);
-    $stmt->execute();
-
-    if($alumnocurso = $stmt->fetchAll()){
-        unset($conexionPDO);
-        return $alumnocurso;
-    } else {
-        return false;
+    foreach ($params as $key => $val) {
+        $stmt->bindValue($key + 1, $val);
     }
+
+    $stmt->execute();
+    $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Obtener el número total de filas que coincidirían sin el LIMIT
+    $total_cursos = $conexionPDO->query("SELECT FOUND_ROWS()")->fetchColumn();
+
+    return [
+        'cursos' => $cursos,
+        'total' => (int)$total_cursos
+    ];
 }
 function cargarAlumnoCurso($StudentCursoID){
 
