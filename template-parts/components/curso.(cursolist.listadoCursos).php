@@ -31,80 +31,21 @@ if (!isset($statusDiplomaColor)) {
                 justify-content: center;
         }
 
-        .actions a {
+        .actions > a, .actions > .dropdown > a {
                 padding: 2px;
                 border: 1px solid black;
                 border-radius: 25%;
                 width: 30px;
                 height: 30px;
                 display: flex;
-                justify-content: center;
+                justify-content: space_between;
                 padding-left: 2px;
                 background-color: white;
         }
 
-        .print-pdf-dropdown {
-                display: inline-block;
-                position: relative;
-        }
-
-        .print-pdf-btn {
-                padding: 2px;
-                border: 1px solid black;
-                border-radius: 25%;
-                width: 30px;
-                height: 30px;
-                display: flex;
-                justify-content: center;
-                padding-left: 2px;
-                background-color: white;
-        }
-
-        .print-pdf-menu {
-                display: none;
-                position: absolute;
-                top: 70%;
-                right: 0;
-                min-width: 180px;
-                box-sizing: border-box;
-                border: 2px solid #ccc;
-                padding: 6px 6px;
-                background: #fff;
-                z-index: 10000;
-                overflow: visible;
-        }
-
-        .print-pdf-menu.show {
-                display: block;
-        }
-
-        .print-pdf-menu a.print-pdf-item {
-                display: flex;
-                align-items: center;
-                width: 100%;
-                box-sizing: border-box;
-                padding: 10px 12px;
-                margin: 6px 0;
-                min-height: 40px;
-                font-weight: 600;
-                color: #000000ff;
-                text-decoration: none;
-                white-space: normal; /* allow wrapping */
-                background: #f9fbfd;
-                border: 1px solid #eef6fb;
-                border-radius: 6px;
-                line-height: 1.2;
-        }
-
-        .print-pdf-menu a.print-pdf-item:hover,
-        .print-pdf-menu a.print-pdf-item:focus {
-                background: #e6f7ff;
-                color: #0056b3;
-                text-decoration: none;
-        }
 </style>
 
-<div class="col-md-12 col-12 container border border-2 text-uppercase overflow-visible">
+<div class="col-md-12 col-12 container border border-2 text-uppercase">
         <div class='row p-0' style="<?php echo $statusColor[$curso['status_curso']] ?>">
                 <div style="width:5%">
                         <input type="checkbox" class="selectable" value="<?php echo $curso['StudentCursoID'] ?>">
@@ -143,25 +84,25 @@ if (!isset($statusDiplomaColor)) {
                         <?php echo $curso['Diploma_Status']; ?>
                 </div>
                 <div class="col actions">
-                        <a
+                        <a class="colapse-toggle"
                                 data-bs-toggle="collapse"
                                 href="#infoCurso<?php echo $curso['StudentCursoID']; ?>">
                                 <img src="images/iconos2/aspect-ratio.svg">
                         </a>
-                        <a
+                        <a class="colapse-toggle"
                                 data-bs-toggle="collapse"
                                 href="#infoEdit<?php echo $curso['StudentCursoID']; ?>">
                                 <img src="images/iconos2/pencil-square.svg">
                         </a>
-                        <div class="print-pdf-dropdown" data-studentid="<?php echo $curso['StudentCursoID']; ?>">
-                                <div class="print-pdf-btn" role="button" aria-haspopup="true" aria-expanded="false">
+                        <div class="dropdown d-flex">
+                                <a href="#" class="dropdown-toggle no-arrow" data-bs-toggle="dropdown" aria-expanded="false">
                                         <img src="images/iconos/filetype-pdf.svg" alt="PDF">
-                                </div>
-                                <div class="print-pdf-menu" role="menu">
-                                        <a class="print-pdf-item" href="tutoria_diplomaPDF.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>" target="_blank">Diploma</a>
-                                        <a class="print-pdf-item" href="tutoria_recepcionPDF.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>" target="_blank">Recepción</a>
-                                        <a class="print-pdf-item" href="tutoria_guiaDidactica.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>" target="_blank">Guía</a>
-                                </div>
+                                </a>
+                                <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="tutoria_diplomaPDF.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>" target="_blank">Diploma</a></li>
+                                        <li><a class="dropdown-item" href="tutoria_recepcionPDF.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>" target="_blank">Recepción</a></li>
+                                        <li><a class="dropdown-item" href="tutoria_guiaDidactica.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>" target="_blank">Guía</a></li>
+                                </ul>
                         </div>
 
                 </div>
@@ -273,3 +214,25 @@ if (!isset($statusDiplomaColor)) {
         require("template-parts/components/cursoEditar.(curso.listadoCursos).php");
         ?>
 </div>
+<script>
+        // Toggle custom PDF menus (no Bootstrap)
+        document.addEventListener('click', function(e) {
+                var btn = e.target.closest('.print-pdf-btn');
+                if (btn) {
+                        var container = btn.closest('.print-pdf-dropdown');
+                        var menu = container.querySelector('.print-pdf-menu');
+                        // close others
+                        document.querySelectorAll('.print-pdf-menu.show').forEach(function(m) {
+                                if (m !== menu) m.classList.remove('show');
+                        });
+                        menu.classList.toggle('show');
+                        return;
+                }
+                // close if click outside any dropdown
+                if (!e.target.closest('.print-pdf-dropdown')) {
+                        document.querySelectorAll('.print-pdf-menu.show').forEach(function(m) {
+                                m.classList.remove('show');
+                        });
+                }
+        });
+</script>
