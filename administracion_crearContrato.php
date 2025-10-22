@@ -60,7 +60,7 @@
 
         <div class="container-fluid">
 
-            <a class="navbar-brand" href="inicio.php"><img src="images/logo.gif" id="logo" class="img-fluid" style="width: 200px; heigth: 50px"></a>
+            <a class="navbar-brand" href="inicio.php"><img src="images/logo.gif" id="logo" class="img-fluid" style="width: 200px; height: 50px"></a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -203,7 +203,8 @@
 
 
                         echo "<div class='row mx-auto'>";
-                            echo "<button type='button' class='btn col-md-12 col-12 mx-auto mb-2' style='background-color: #8fd247;' onclick='crearPDF(" . $empresas[$i]['idempresa'] . ")'>Crear PDF <img src='images/iconos/file-earmark-pdf.svg' class='ml-5'> </button>";
+                            echo "<button type='button' class='btn col-md-6 col-12 mx-auto mb-2' style='background-color: #8fd247;' onclick='crearPDF(" . $empresas[$i]['idempresa'] . ")'>Crear PDF <img src='images/iconos/file-earmark-pdf.svg' class='ml-5'> </button>";
+                            echo "<button type='button' class='btn col-md-6 col-12 mx-auto mb-2' style='background-color: #8fd247;' onclick='crearRLT(" . $empresas[$i]['idempresa'] . ")'>Crear RLT <img src='images/iconos/file-earmark-pdf.svg' class='ml-5'> </button>";
                         echo "</div>";
 
                         echo "</div>";
