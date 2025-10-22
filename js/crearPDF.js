@@ -5,6 +5,12 @@ function crearPDF(idempresa) {
 
 }
 
+function crearRLT(idempresa) {
+
+    window.location.href = "crearRLT.php?idEmpresa=" + idempresa;
+
+}
+
 function volverAtras() {
 
     window.location.href = "administracion.php";
