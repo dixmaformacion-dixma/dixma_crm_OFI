@@ -163,22 +163,22 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['insertar'])){
                 <div class="col-4">
                     <label class="fw-bold">CATEGORIA PROFESIONAL:</label>
                     <select name="categoriaProfesional" class="form-select">
+                        <option value=""></option>
                         <option value="directivo">Directivo</option>
                         <option value="mandoIntermedio">Mando intermedio</option>
                         <option value="tecnico">Técnico</option>
-                        <option value="trabajadorCualificado" selected>Trabajador cualificado</option>
+                        <option value="trabajadorCualificado">Trabajador cualificado</option>
                         <option value="trabajadorConBajaCualificacion">Trabajador con baja cualificación</option>
-                        <option value=""></option>
                     </select>
                 </div>
 
                 <div class="col-4">
                     <label class="fw-bold">COLECTIVO:</label>
                     <select id="colectivo" name="colectivo" class="form-select">
+                        <option value=""></option>
                         <option value="regimenGeneral">Régimen general</option>
                         <option value="fijoDiscontinuo">Fijo discontinuo</option>
                         <option value="otros">Otros</option>
-                        <option value=""></option>
                     </select>
                 </div>
 
@@ -193,6 +193,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['insertar'])){
                 <div class="col-12">
                     <label class="fw-bold">GRUPO DE COTIZACIÓN A LA TGSS::</label>
                     <select name="grupoCotizacion" class="form-select">
+                        <option value=""></option>
                         <option value="ingenierosLicenciados">(1) Ingenieros y licenciados</option>
                         <option value="ingenierosTecnicos">(2) Ingenieros técnicos, Peritos y Ayudantes titulados</option>
                         <option value="jefesAdministrativos">(3) Jefes administrativos y de taller</option>
@@ -204,7 +205,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['insertar'])){
                         <option value="oficialesDeTercera">(9) Oficiales de tercera y especialistas</option>
                         <option value="mayores18">(10) Trabajadores mayores de 18 años no cualificados</option>
                         <option value="menores18">(11) Trabajadores menores de 18 años</option>
-                        <option value=""></option>
                     </select>
                 </div>
 
@@ -215,6 +215,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['insertar'])){
                 <div class="col-8">
                     <label class="fw-bold">NIVEL DE ESTUDIOS:</label>
                     <select id="nivelEstudios" name="nivelEstudios" class="form-select">
+                        <option value=""></option>
                         <option value="menosPrimaria">Menos que primaria</option>
                         <option value="primaria">Educación primaria</option>
                         <option value="educacionSecundaria1">1ª etapa de Educacion Secundaria (1º y 2º ciclo de la ESO, Graduado Escolar, Certificado Profesional de nivel 1 y 2)</option>
@@ -225,7 +226,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['insertar'])){
                         <option value="universitarios2">E. Universitarios 2º ciclo (Licenciatura-Máster)</option>
                         <option value="universitarios3">E. Universitarios 3º ciclo (Doctorado)</option>
                         <option value="otras">Otras titulaciones: Especificar</option>
-                        <option value=""></option>
                     </select>
                 </div>
 

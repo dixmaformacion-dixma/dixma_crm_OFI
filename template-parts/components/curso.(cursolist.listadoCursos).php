@@ -63,10 +63,11 @@ if (!isset($statusDiplomaColor)) {
         .print-pdf-menu {
                 display: none;
                 position: absolute;
-                top: calc(100% + 6px);
+                top: 70%;
                 right: 0;
                 min-width: 180px;
                 box-sizing: border-box;
+                border: 2px solid #ccc;
                 padding: 6px 6px;
                 background: #fff;
                 z-index: 10000;

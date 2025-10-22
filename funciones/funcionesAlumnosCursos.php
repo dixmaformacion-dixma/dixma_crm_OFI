@@ -3,8 +3,10 @@
 
 function fetchAttachedCourses($idAlumno){
     $conexionPDO = realizarConexion();
-    $sql = 'SELECT * FROM alumnocursos where idAlumno =' . $idAlumno . ' ORDER BY StudentCursoID DESC';
-    $stmt = $conexionPDO->query($sql);
+    $sql = 'SELECT * FROM alumnocursos WHERE idAlumno = ? AND status_curso != "baja" ORDER BY StudentCursoID DESC';
+    $stmt = $conexionPDO->prepare($sql);
+    $stmt->bindValue(1, $idAlumno, PDO::PARAM_INT);
+    $stmt->execute();
 
     if($cursos = $stmt->fetchAll()){
 
