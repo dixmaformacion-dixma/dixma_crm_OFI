@@ -202,9 +202,9 @@
                         echo "</div>";
 
 
-                        echo "<div class='row mx-auto'>";
-                            echo "<button type='button' class='btn col-md-6 col-12 mx-auto mb-2' style='background-color: #8fd247;' onclick='crearPDF(" . $empresas[$i]['idempresa'] . ")'>Crear PDF <img src='images/iconos/file-earmark-pdf.svg' class='ml-5'> </button>";
-                            echo "<button type='button' class='btn col-md-6 col-12 mx-auto mb-2' style='background-color: #8fd247;' onclick='crearRLT(" . $empresas[$i]['idempresa'] . ")'>Crear RLT <img src='images/iconos/file-earmark-pdf.svg' class='ml-5'> </button>";
+                        echo "<div class='row justify-content-center mx-auto'>";
+                            echo "<div class='col-md-5 col-12 mb-2'><button type='button' class='btn w-100' style='background-color: #8fd247;' onclick='crearPDF(" . $empresas[$i]['idempresa'] . ")'>Crear Contrato <img src='images/iconos/file-earmark-pdf.svg' class='ms-2'> </button></div>";
+                            echo "<div class='col-md-5 col-12 mb-2'><button type='button' class='btn w-100' style='background-color: #8fd247;' onclick='crearRLT(" . $empresas[$i]['idempresa'] . ")'>Crear RLT <img src='images/iconos/file-earmark-pdf.svg' class='ms-2'> </button></div>";
                         echo "</div>";
 
                         echo "</div>";

@@ -1,2 +1,3 @@
 .vscode
 funciones/conexionBD.php
+librerias/PHPWord/vendor/
