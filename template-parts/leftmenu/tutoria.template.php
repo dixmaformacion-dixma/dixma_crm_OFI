@@ -35,6 +35,11 @@ $file = basename($_SERVER['PHP_SELF']);
             <img class="ms-3" src="images/iconos/list.svg">
             <b> Listado cursos </b>
         </a>
+        <a class="nav-link <?php if($file == 'tutoria_listadoCursosActivos.php'){echo 'active text-bg-secondary';}; ?>"
+        href="tutoria_listadoCursosActivos.php">
+            <img class="ms-3" src="images/iconos/play-circle.svg">
+            <b> Activos </b>
+        </a>
         <a class="nav-link <?php if($file == 'tutoria_buscarCursos.php'){echo 'active text-bg-secondary';}; ?>"
         href="tutoria_buscarCursos.php">
             <img class="ms-3" src="images/iconos/search.svg">

@@ -75,6 +75,24 @@
                                 $cursos = $result['cursos'];
                                 $total_cursos = $result['total'];
                             }
+
+                            $showAsistenciaButton = false;
+                            $n_accion = null;
+                            $n_grupo = null;
+
+                            if (isset($_GET['filterName']) && is_array($_GET['filterName']) && isset($_GET['filterValue'])) {
+                                $filterNames = $_GET['filterName'];
+                                $filterValues = $_GET['filterValue'];
+
+                                $accion_key = array_search('N_Accion', $filterNames);
+                                $grupo_key = array_search('N_Grupo', $filterNames);
+
+                                if ($accion_key !== false && $grupo_key !== false) {
+                                    $showAsistenciaButton = true;
+                                    $n_accion = $filterValues[$accion_key];
+                                    $n_grupo = $filterValues[$grupo_key];
+                                }
+                            }
                             
                             $total_pages = $total_cursos > 0 ? ceil($total_cursos / $limit) : 0;
                             ?>
@@ -102,6 +120,13 @@
                                     echo '</div>';
                                     if ($total_pages > 0) echo '<div class="text-center mt-2">Página ' . $page . ' de ' . $total_pages . '</div>';
                                 }
+                            }
+                            
+                            if ($showAsistenciaButton) {
+                                $url = "tutoria_controlAsistencia.php?N_Accion=" . urlencode($n_accion) . "&N_Grupo=" . urlencode($n_grupo);
+                                echo '<div class="text-center mt-4">';
+                                echo '<a href="' . $url . '" class="btn btn-success">Control de Asistencia</a>';
+                                echo '</div>';
                             }
                             ?>
                         </div>

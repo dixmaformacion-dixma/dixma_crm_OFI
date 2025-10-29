@@ -42,6 +42,29 @@ function cargarAlumnoCursos($year, $Tipo_Venta){
         return false;
     }
 }
+function cargarAlumnoCursosActivos($year, $Tipo_Venta){
+    $temp = "%";
+    if($Tipo_Venta != "Todos"){
+        $temp = $Tipo_Venta;
+    }
+
+    $conexionPDO = realizarConexion();
+    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?) AND (`status_curso` = "en curso") ORDER BY `Fecha_Fin`';
+
+    $stmt = $conexionPDO->prepare($sql);
+        
+    $stmt->bindValue(1, $year, PDO::PARAM_STR);
+    $stmt->bindValue(2, $temp, PDO::PARAM_STR);
+
+    $stmt->execute();
+
+    if($alumnocurso = $stmt->fetchAll()){
+        unset($conexionPDO);
+        return $alumnocurso;
+    } else {
+        return false;
+    }
+}
 function cargarAlumnoCursosPendientes(){
 
     $conexionPDO = realizarConexion();
