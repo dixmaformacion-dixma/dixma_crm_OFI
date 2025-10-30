@@ -31,7 +31,8 @@ if (!isset($statusDiplomaColor)) {
                 justify-content: center;
         }
 
-        .actions > a, .actions > .dropdown > a {
+        .actions>a,
+        .actions>.dropdown>a {
                 padding: 2px;
                 border: 1px solid black;
                 border-radius: 25%;
@@ -42,7 +43,6 @@ if (!isset($statusDiplomaColor)) {
                 padding-left: 2px;
                 background-color: white;
         }
-
 </style>
 
 <div class="col-md-12 col-12 container border border-2 text-uppercase">
@@ -136,6 +136,10 @@ if (!isset($statusDiplomaColor)) {
                                 <label class='col-md-4 col-12'>
                                         <b>email alumno:</b>
                                         <span class="text-lowercase"><?php echo $curso['email']; ?></span>
+                                </label>
+                                <label class='col-md-4 col-12'>
+                                        <b>DNI/NIE:</b>
+                                        <?php echo $curso['nif']; ?>
                                 </label>
                         </div>
                 </div>

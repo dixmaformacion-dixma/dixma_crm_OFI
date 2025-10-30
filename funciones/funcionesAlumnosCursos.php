@@ -90,6 +90,7 @@ function buscarAlumnoCursos($filters, $operators, $values, $limit = 20, $offset 
     alumnos.apellidos as apellidos,
     alumnos.telefono as telefono,
     alumnos.email as email,
+    alumnos.nif as nif,
     empresas.nombre as nombreEmpresa,
     empresas.email as emailEmpresa,
     empresas.telef1 as telef1,
