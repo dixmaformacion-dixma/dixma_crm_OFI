@@ -93,11 +93,18 @@
                                 </div>
                                 
                                 <input class="form-control btn btn-primary" style="background-color:#1e989e" type="submit" value="Search"></input>
-                                <?php echo "RESULTADOS PARA LA FECHA: " . $date. " (Tipo venta: ".$Tipo_Venta.")" ?>
                             </div>
                         </form>
                         <?php
-                            if($llamadas = cargarCursoLlamadas($date, $Tipo_Venta, $missedCalls)){
+                            $llamadas = cargarCursoLlamadas($date, $Tipo_Venta, $missedCalls);
+                            $numero_llamadas = $llamadas ? count($llamadas) : 0;
+                        ?>
+                        <div class="text-center my-3">
+                            <h5>Total de llamadas para hoy: <span class="badge bg-info text-dark fs-6"><?php echo $numero_llamadas; ?></span></h5>
+                            <p class="text-muted">Resultados para la fecha: <?php echo $date; ?> (Tipo venta: <?php echo $Tipo_Venta; ?>)</p>
+                        </div>
+                        <?php
+                            if($llamadas){
                                 foreach($llamadas as $llamada){
                                     include "template-parts/components/llamada.llamada.php";
                                 }

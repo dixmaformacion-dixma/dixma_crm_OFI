@@ -55,5 +55,10 @@ $file = basename($_SERVER['PHP_SELF']);
             <img class="ms-3" src="images/iconos/list-ul.svg">
             <b> Contenido curso </b>
         </a>
+        <a class="nav-link <?php if($file == 'tutoria_buscarAlumno.php'){echo 'active text-bg-secondary';}; ?>"
+        href="tutoria_buscarAlumno.php">
+            <img class="ms-3" src="images/iconos/file-earmark-person.svg">
+            <b> Buscar alumno </b>
+        </a>
     </nav>
 </div>

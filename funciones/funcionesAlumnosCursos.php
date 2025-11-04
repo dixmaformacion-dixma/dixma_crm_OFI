@@ -444,7 +444,7 @@ function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on"){
         $stmt->bindValue(4, $date, PDO::PARAM_STR);
         $stmt->bindValue(5, $date, PDO::PARAM_STR);
         $stmt->bindValue(6, $date, PDO::PARAM_STR);
-        $stmt->bindValue(6, $date, PDO::PARAM_STR);
+        $stmt->bindValue(7, $date, PDO::PARAM_STR);
     }
 
     $stmt->execute();

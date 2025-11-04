@@ -24,7 +24,15 @@
             <div class="col-md-4"><img src="images/iconos/display.svg" class="me-2 text-muted"><b>Modalidad:</b> <?php echo htmlspecialchars($curso['Modalidad']); ?></div>
             <div class="col-md-4"><img src="images/iconos/tag.svg" class="me-2 text-muted"><b>Tipo Venta:</b> <?php echo htmlspecialchars($curso['Tipo_Venta']); ?></div>
             <div class="col-md-4"><img src="images/iconos/person-video3.svg" class="me-2 text-muted"><b>Tutor:</b> <?php echo htmlspecialchars($curso['tutor']); ?></div>
-            <div class="col-md-4"><img src="images/iconos/award.svg" class="me-2 text-muted"><b>Diploma:</b> <?php echo htmlspecialchars($curso['Diploma_Status']); ?></div>
+            <div class="col-md-4">
+                <img src="images/iconos/award.svg" class="me-2 text-muted">
+                <b>Diploma:</b> 
+                <?php 
+                    $status = htmlspecialchars($curso['Diploma_Status']);
+                    $color_class = ($status == 'Copia recibida') ? 'bg-success' : 'bg-warning text-dark';
+                    echo "<span class='badge $color_class'>$status</span>";
+                ?>
+            </div>
 
             <div class="col-md-4"><img src="images/iconos/file-earmark-text.svg" class="me-2 text-muted"><b>DOC A.F:</b> <?php echo htmlspecialchars($curso['DOC_AF']); ?></div>
 
