@@ -40,7 +40,7 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
     $sql = "SELECT apellidos, nombre, NIF FROM alumnos WHERE idAlumno IN (
                 SELECT idAlumno FROM alumnocursos WHERE StudentCursoID IN ($student_ids_str)
             ) ORDER BY apellidos, nombre";
-    
+
     $stmt = $conexionPDO->prepare($sql);
     $stmt->execute();
     $students_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -64,11 +64,27 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
             .no-print {
                 display: none !important;
             }
+
             body {
                 background-color: #fff !important;
+                width: 210mm;
+                font-size: 12px;
+                color: #003366;
             }
+
             .printable-area {
                 border: none !important;
+            }
+
+            .editable-input {
+                border: none;
+                border-bottom: 1px solid #003366;
+                text-align: center;
+                background-color: transparent;
+                color: #003366;
+            }
+            .table{
+                color: #003366;
             }
         }
     </style>
@@ -85,34 +101,51 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
         </div>
 
         <div class="printable-area p-4 border rounded bg-white">
-            <h2 class="text-center mb-4">Control de Asistencia</h2>
-
             <?php if (!$course_data || empty($students_list)) : ?>
                 <div class="alert alert-warning text-center">
                     No se encontraron datos del curso o no se seleccionaron alumnos.
                 </div>
             <?php else : ?>
-                <div class="card mb-4">
-                    <div class="card-header bg-light">
-                        <strong>Detalles del Curso</strong>
+
+                <div class="col-5">
+                    <img src="images/logoWord.jpg" height="60" width="200">
+                </div>
+                <h2 class="text-center mb-4">Control de Asistencia</h2>
+                <div class="mb-4 p-3" style="border: 1px solid #003366; color: #003366;">
+                    <div>
+                        <strong>DENOMINACIÓN DE LA ACCIÓN FORMATIVA:</strong> <?= htmlspecialchars($course_data['Denominacion']) ?>
                     </div>
-                    <div class="card-body">
-                        <p><strong>Nombre del Curso:</strong> <?= htmlspecialchars($course_data['Denominacion']) ?></p>
-                        <p><strong>Nº de Acción:</strong> <?= htmlspecialchars($course_data['N_Accion']) ?></p>
-                        <p><strong>Nº de Grupo:</strong> <?= htmlspecialchars($course_data['N_Grupo']) ?></p>
-                        <p><strong>Fecha de Inicio:</strong> <?= formattedDate($course_data['Fecha_Inicio']) ?></p>
-                        <p><strong>Fecha de Fin:</strong> <?= formattedDate($course_data['Fecha_Fin']) ?></p>
-                        <p><strong>Formador:</strong> <?= htmlspecialchars($course_data['tutor']) ?></p>
+                    <div class="mt-2">
+                        <span class="me-4"><strong>Nº AF:</strong> <?= htmlspecialchars($course_data['N_Accion']) ?></span>
+                        <span class="me-4 ms-4"><strong>FECHA DE INICIO:</strong> <?= formattedDate($course_data['Fecha_Inicio']) ?></span>
+                        <span><strong>FECHA FIN:</strong> <?= formattedDate($course_data['Fecha_Fin']) ?></span>
+                    </div>
+                    <div class="mt-2">
+                        <strong>FORMADOR/RESPONSABLE DE FORMACIÓN:</strong> <?= htmlspecialchars(mb_strtoupper($course_data['tutor'])) ?>
+                    </div>
+                    <div class="mt-2">
+                        <strong>SESIÓN Nº:</strong> <input type="text" class="editable-input" style="width: 45px;">
+                        <strong class="ms-2">FECHA:</strong> <input type="text" class="editable-input" style="width: 70px;">
+                        <strong class="ms-2">MAÑANA/TARDE:</strong> <input type="text" class="editable-input" style="width: 70px;">
+                        <strong class="ms-2">HORARIO:</strong> DE <input type="text" class="editable-input" style="width: 35px;"> A <input type="text" class="editable-input" style="width: 35px;">
+                    </div>
+                    <div class="mt-5">
+                        <strong>Firmado:</strong>
+                        <br>
+                        <strong>(Formador/Resp. Formación)</strong>
                     </div>
                 </div>
-
-                <h4 class="mt-4">Alumnos Seleccionados</h4>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
                         <thead class="thead-light">
                             <tr>
-                                <th>Apellido</th>
-                                <th>Nombre</th>
+                                <th colspan="3" class="text-center">DATOS DE LOS ASISTENTES</th>
+                                <th rowspan="2" class="text-center align-middle">FIRMAS</th>
+                                <th rowspan="2" class="text-center align-middle">OBSERVACIONES</th>
+                            </tr>
+                            <tr>
+                                <th>APELLIDOS</th>
+                                <th>NOMBRE</th>
                                 <th>NIF</th>
                             </tr>
                         </thead>
@@ -122,6 +155,8 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
                                     <td><?= htmlspecialchars($student['apellidos']) ?></td>
                                     <td><?= htmlspecialchars($student['nombre']) ?></td>
                                     <td><?= htmlspecialchars($student['NIF']) ?></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -132,4 +167,5 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
     </div>
 
 </body>
+
 </html>
