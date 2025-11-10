@@ -134,7 +134,7 @@ if(empty($_GET['idAlumno'])){
 
                 <div class="col-4">
                     <label class="fw-bold">NIF:</label>
-                    <input name="nif" class="form-control" type="text" value="<?php echo $alumno['nif'] ?>" readonly></input>
+                    <input name="nif" class="form-control" type="text" value="<?php echo $alumno['nif'] ?>"></input>
                 </div>
 
                 <!-- <div class="col-5">
@@ -180,7 +180,8 @@ if(empty($_GET['idAlumno'])){
                     <select id="colectivo" name="colectivo" class="form-select">
                         <option value="regimenGeneral" <?php if($alumno['colectivo'] == "regimenGeneral"){echo " selected ";} ?>>Régimen general</option>
                         <option value="fijoDiscontinuo" <?php if($alumno['colectivo'] == "fijoDiscontinuo"){echo " selected ";} ?>>Fijo discontinuo</option>
-                        <option value="otros" <?php if($alumno['colectivo'] != "regimenGeneral" and $alumno['colectivo'] != "fijoDiscontinuo" and $alumno['colectivo'] != ""){echo " selected ";} ?>>Otros</option>
+                        <option value="autonomo" <?php if($alumno['colectivo'] == "autonomo"){echo " selected ";} ?>>Autónomo</option>
+                        <option value="otros" <?php if($alumno['colectivo'] != "regimenGeneral" and $alumno['colectivo'] != "fijoDiscontinuo" and $alumno['colectivo'] != "" and $alumno['colectivo'] != "autonomo"){echo " selected ";} ?>>Otros</option>
                         <option value="" <?php if($alumno['colectivo'] == ""){echo " selected ";} ?>></option>
                     </select>
                 </div>

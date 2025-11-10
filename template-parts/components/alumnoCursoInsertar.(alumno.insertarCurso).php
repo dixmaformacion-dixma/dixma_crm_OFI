@@ -24,9 +24,9 @@ if(!isset($tipoCursosArray)){
     <form method="post" action="tutoria_insertarCurso.php">
         <input type="hidden" name="idAlumno" value="<?php echo $alumno['idAlumno']; ?>">
         <div class="row">
-                <label>
-                <input type="checkbox" name="selectFromCourseList" onchange='changeCourseSelectionMode("Alumno<?php echo $alumno['idAlumno']; ?>")' checked>
-                <b>Type:</b>
+                <label class="d-flex align-items-center">
+                <input type="checkbox" name="selectFromCourseList" onchange='changeCourseSelectionMode("Alumno<?php echo $alumno['idAlumno']; ?>")'>
+                <b class="ms-2">Type:</b>
                         <?php
                         if($tipoCursosArray){
                                 ?>
@@ -61,7 +61,7 @@ if(!isset($tipoCursosArray)){
                 <input name="idEmpresa" type="hidden" value="<?php echo $alumno['idEmpresa']; ?>"></input>
             <label class='col-md-8 col-12'>
                     <b>Denominacion:</b>
-                    <input name="Denominacion" readonly class="form-control form-control-sm text-uppercase" type="text"></input>
+                    <input name="Denominacion" class="form-control form-control-sm text-uppercase" type="text"></input>
             </label>
         </div>
         <div class="row">
@@ -75,7 +75,7 @@ if(!isset($tipoCursosArray)){
             </label>
             <label class='col-md-4 col-12'>
                     <b>N Horas:</b>
-                    <input name="N_Horas" class="form-control form-control-sm text-uppercase" type="number"></input>
+                    <input name="N_Horas" class="form-control form-control-sm text-uppercase" type="text"></input>
             </label>
             <label class='col-md-4 col-12'>
                     <b>DOC A.F:</b>

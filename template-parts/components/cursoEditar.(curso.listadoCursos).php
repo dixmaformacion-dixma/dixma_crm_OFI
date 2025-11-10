@@ -101,7 +101,7 @@ if(!isset($tipoCursosArray)){
             </label>
             <label class='col-md-4 col-12'>
                     <b>N Horas:</b>
-                    <input name="N_Horas" class="form-control form-control-sm" type="number" value="<?php echo $curso['N_Horas']; ?>"></input>
+                    <input name="N_Horas" class="form-control form-control-sm" type="text" value="<?php echo str_replace('.', ',', $curso['N_Horas']); ?>"></input>
             </label>
             <label class='col-md-4 col-12'>
                     <b>DOC A.F:</b>

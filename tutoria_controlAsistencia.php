@@ -67,13 +67,13 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
 
             body {
                 background-color: #fff !important;
-                width: 210mm;
+                width: 100%; /* Dejamos que el navegador controle el ancho */
                 font-size: 12px;
                 color: #003366;
             }
 
             .printable-area {
-                border: none !important;
+                border: none !important; /* Aseguramos que el área imprimible no tenga bordes */
             }
 
             .editable-input {
@@ -85,6 +85,18 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
             }
             .table{
                 color: #003366;
+            }
+
+            @page {
+                margin-top: 1.5cm;
+            }
+
+            thead {
+                display: table-header-group; /* Repite el encabezado de la tabla en cada página */
+            }
+
+            tr {
+                page-break-inside: avoid; /* Evita que las filas se corten entre páginas */
             }
         }
     </style>

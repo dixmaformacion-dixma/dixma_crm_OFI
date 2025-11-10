@@ -27,7 +27,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' and $_POST['function'] == "editar_Alumn
             'Denominacion' => $_POST['Denominacion'],
             'N_Accion' => $_POST['N_Accion'],
             'N_Grupo' => $_POST['N_Grupo'],
-            'N_Horas' => $_POST['N_Horas'],
+            'N_Horas' => str_replace(',', '.', $_POST['N_Horas']),
             'Modalidad' => $_POST['Modalidad'],
             'DOC_AF' => $_POST['DOC_AF'],
             'Fecha_Inicio' => $_POST['Fecha_Inicio'],

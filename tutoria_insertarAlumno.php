@@ -51,6 +51,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['insertar'])){
 
     if(insertarNuevoAlumno($datosAlumno)){
         echo "<div class='alert alert-success'> Success </div>";
+        header("Location: tutoria_buscarEmpresa.php?");
     }else{
         echo "<div class='alert alert-danger mb-0'> ERROR: <pre>";
         print_r($datosAlumno);
@@ -178,6 +179,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['insertar'])){
                         <option value=""></option>
                         <option value="regimenGeneral">Régimen general</option>
                         <option value="fijoDiscontinuo">Fijo discontinuo</option>
+                        <option value="autonomo">Autónomo</option>
                         <option value="otros">Otros</option>
                     </select>
                 </div>

@@ -16,7 +16,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             'Denominacion' => $_POST['Denominacion'],
             'N_Accion' => $_POST['N_Accion'],
             'N_Grupo' => $_POST['N_Grupo'],
-            'N_Horas' => NULL,
+            'N_Horas' => isset($_POST['N_Horas']) ? str_replace(',', '.', $_POST['N_Horas']) : NULL,
             'Modalidad' => $_POST['Modalidad'],
             'DOC_AF' => $_POST['DOC_AF'],
             'Fecha_Inicio' => NULL,
@@ -35,9 +35,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         
         if(isset($_POST['Fecha_Inicio']) and $_POST['Fecha_Inicio'] != ""){
             $datosAlumnoCurso['Fecha_Inicio'] = $_POST['Fecha_Inicio'];
-        }
-        if(isset($_POST['N_Horas']) and $_POST['N_Horas'] != ""){
-            $datosAlumnoCurso['N_Horas'] = $_POST['N_Horas'];
         }
         if(isset($_POST['Fecha_Fin']) and $_POST['Fecha_Fin'] != ""){
             $datosAlumnoCurso['Fecha_Fin'] = $_POST['Fecha_Fin'];

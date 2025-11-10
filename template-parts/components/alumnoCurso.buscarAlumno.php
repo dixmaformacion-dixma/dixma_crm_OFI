@@ -1,5 +1,11 @@
+<?php
+    $header_style = "background-color: #52a3e9ff;";
+    if (isset($curso['status_curso']) && $curso['status_curso'] === 'baja') {
+        $header_style = "background-color: #c30d0d; color: white;";
+    }
+?>
 <div class="card shadow-sm mb-3">
-    <div class="card-header fw-bold" style="background-color: #f8d7da;">
+    <div class="card-header fw-bold" style="<?php echo $header_style; ?>">
         <img src="images/iconos/book.svg" class="me-2">
         <?php echo htmlspecialchars($curso['Denominacion']); ?>
     </div>
@@ -19,7 +25,7 @@
             <div class="col-12"><hr class="my-2"></div>
             <div class="col-md-4"><img src="images/iconos/hash.svg" class="me-2 text-muted"><b>Nº Acción:</b> <?php echo htmlspecialchars($curso['N_Accion']); ?></div>
             <div class="col-md-4"><img src="images/iconos/people.svg" class="me-2 text-muted"><b>Nº Grupo:</b> <?php echo htmlspecialchars($curso['N_Grupo']); ?></div>
-            <div class="col-md-4"><img src="images/iconos/clock.svg" class="me-2 text-muted"><b>Nº Horas:</b> <?php echo htmlspecialchars($curso['N_Horas']); ?></div>
+            <div class="col-md-4"><img src="images/iconos/clock.svg" class="me-2 text-muted"><b>Nº Horas:</b> <?php echo htmlspecialchars(str_replace('.', ',', $curso['N_Horas'])); ?></div>
             
             <div class="col-md-4"><img src="images/iconos/display.svg" class="me-2 text-muted"><b>Modalidad:</b> <?php echo htmlspecialchars($curso['Modalidad']); ?></div>
             <div class="col-md-4"><img src="images/iconos/tag.svg" class="me-2 text-muted"><b>Tipo Venta:</b> <?php echo htmlspecialchars($curso['Tipo_Venta']); ?></div>

@@ -53,7 +53,7 @@ if(!isset($statusColor) or !isset($statusDateColor)){
                         <?php echo $curso['Denominacion']; ?>
                 </div>
                 <div class='col-md-2 border-right'>
-                        <?php echo $curso['N_Horas']; ?>
+                        <?php echo str_replace('.', ',', $curso['N_Horas']); ?>
                 </div>
                 <div class='col-md-2 border-right'>
                         <?php
@@ -125,7 +125,7 @@ if(!isset($statusColor) or !isset($statusDateColor)){
                         </label>
                         <label class='col-md-4 col-12'>
                                 <b>№ Horas:</b>
-                                <?php echo $curso['N_Horas']; ?>
+                                <?php echo str_replace('.', ',', $curso['N_Horas']); ?>
                         </label>
                         <label class='col-md-3 col-12'>
                                 <b>Modalidad:</b>

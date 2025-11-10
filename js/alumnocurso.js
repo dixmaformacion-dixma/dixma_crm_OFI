@@ -134,7 +134,7 @@ async function changeFieldType(filterID){
         Anno: ['number'],
         N_Accion: ['number'],
         N_Grupo: ['number'],
-        N_Horas: ['number'],
+        N_Horas: ['text'],
         Modalidad: ['choice', ['Teleformación', 'Presencial', 'Mixto']],
         DOC_AF: ['text'],
         Fecha_Inicio: ['dateRange'],
@@ -146,7 +146,7 @@ async function changeFieldType(filterID){
         CC: ['choice', ['1', '0']],
         RLT: ['choice', ['1', '0']],
         Recibi_Material: ['choice', ['1', '0']],
-        status_curso: ['choice', ["en curso", "finalizado", "descargado", "cerrado"]],
+        status_curso: ['choice', ["en curso", "finalizado", "descargado", "cerrado", "baja"]],
     }
     const defaultValues = {
         Anno: (new Date()).getFullYear(),

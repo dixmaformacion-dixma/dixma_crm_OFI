@@ -65,7 +65,7 @@
 
     #volver{display:none;} /* esto oculta los input cuando imprimes */
     #noMostrar{border:none;}
-    #flechaMes{border:none; -moz-appearance: none; -webkit-appearance: none;}
+    #flechaMes{border:none; appearance: none; -moz-appearance: none; -webkit-appearance: none;}
 
     @page{
       margin: 0px;
@@ -128,7 +128,7 @@
 
         <div class="row mt-2">
 
-          <label class="col-2 col-form-label" style="">RAZÓN SOCIAL:</label>
+          <label class="col-2 col-form-label">RAZÓN SOCIAL:</label>
             <div class="col-6">
               <input class="form-control form-control-sm" value="<?php echo $empresa['nombre'] ?>" type="text"></input>
             </div>        
@@ -424,7 +424,7 @@
                 <option>Agosto</option>
                 <option>Septiembre</option>
                 <option>Octubre</option>
-                <option>Novienbre</option>
+                <option>Noviembre</option>
                 <option>Diciembre</option>
               </select> 
               de<input id="noMostrar" class="text-center" style="width: 50px"> </input> </label>

@@ -76,8 +76,8 @@ if(isset($_GET['StudentCursoID'])){
     Para Firefox:
       -moz-appearance: none; */
   #volver{display:none;} /* esto oculta los input cuando imprimes */
-  #flechaMes{border:none; -moz-appearance: none; -webkit-appearance: none;}
-  #prueba{-moz-appearance: none; -webkit-appearance: none;}
+  #flechaMes{border:none; appearance: none; -moz-appearance: none; -webkit-appearance: none;}
+  #prueba{border:none; appearance: none; -moz-appearance: none; -webkit-appearance: none;}
   #noMostrar{border:none;}
 
   @page{
@@ -541,7 +541,7 @@ if(isset($_GET['StudentCursoID'])){
               <option>Agosto</option>
               <option>Septiembre</option>
               <option>Octubre</option>
-              <option>Novienbre</option>
+              <option>Noviembre</option>
               <option>Diciembre</option>
             </select> 
             de<input id="noMostrar" class="text-center" style="width: 50px"> </input> </label>

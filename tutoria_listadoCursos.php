@@ -92,9 +92,33 @@
                             </div>
                         </form>
                         <?php 
-                        $page_from = "tutoria_listadoCursos.php";
-                        if($cursos = cargarAlumnoCursos($year, $Tipo_Venta_Display)){
-                            require("template-parts/components/cursolist.listadoCursos.php");
+                            $page_from = 'tutoria_listadoCursos.php' . "?" . $_SERVER['QUERY_STRING'];
+                            $limit = 20; // Número de resultados por página
+                            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                            if ($page < 1) $page = 1;
+                            $offset = ($page - 1) * $limit;
+
+                            $result = cargarAlumnoCursos($year, $Tipo_Venta_Display, $limit, $offset);
+                            
+                            if ($result) {
+                                $cursos = $result['cursos'];
+                                $total_cursos = $result['total'];
+                                $total_pages = ceil($total_cursos / $limit);
+
+                                require("template-parts/components/cursolist.listadoCursos.php");
+
+                                // --- Controles de Paginación ---
+                                echo '<div class="d-flex justify-content-center mt-4">';
+                                if ($page > 1) {
+                                    $prev_page_query = http_build_query(array_merge($_GET, ['page' => $page - 1]));
+                                    echo '<a href="?' . $prev_page_query . '" class="btn btn-primary me-2" style="background-color:#1e989e;">&laquo; Anterior</a>';
+                                }
+                                if ($page < $total_pages) {
+                                    $next_page_query = http_build_query(array_merge($_GET, ['page' => $page + 1]));
+                                    echo '<a href="?' . $next_page_query . '" class="btn btn-primary" style="background-color:#1e989e;">Siguiente &raquo;</a>';
+                                }
+                                echo '</div>';
+                                if ($total_pages > 0) echo '<div class="text-center mt-2">Página ' . $page . ' de ' . $total_pages . '</div>';
                         }
                         ?>
                         <div class="text-center">

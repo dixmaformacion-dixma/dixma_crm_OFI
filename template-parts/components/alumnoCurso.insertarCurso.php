@@ -13,7 +13,7 @@
         </label>
         <label class='col-md-4 col-12'>
                 <b>N_Horas:</b>
-                <?php echo $curso['N_Horas']; ?>
+                <?php echo str_replace('.', ',', $curso['N_Horas']); ?>
         </label>
         <label class='col-md-4 col-12'>
                 <b>Modalidad:</b>

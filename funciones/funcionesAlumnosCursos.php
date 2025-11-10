@@ -3,7 +3,7 @@
 
 function fetchAttachedCourses($idAlumno){
     $conexionPDO = realizarConexion();
-    $sql = 'SELECT * FROM alumnocursos WHERE idAlumno = ? AND status_curso != "baja" ORDER BY StudentCursoID DESC';
+    $sql = 'SELECT * FROM alumnocursos WHERE idAlumno = ? ORDER BY StudentCursoID DESC';
     $stmt = $conexionPDO->prepare($sql);
     $stmt->bindValue(1, $idAlumno, PDO::PARAM_INT);
     $stmt->execute();
@@ -19,25 +19,36 @@ function fetchAttachedCourses($idAlumno){
 
     }
 }
-function cargarAlumnoCursos($year, $Tipo_Venta){
+function cargarAlumnoCursos($year, $Tipo_Venta, $limit = 20, $offset = 0){
     $temp = "%";
     if($Tipo_Venta != "Todos"){
         $temp = $Tipo_Venta;
     }
 
     $conexionPDO = realizarConexion();
-    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?) ORDER BY `Fecha_Fin`';
+    // SQL para obtener el total de cursos
+    $sql_total = 'SELECT COUNT(*) FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?)';
+    $stmt_total = $conexionPDO->prepare($sql_total);
+    $stmt_total->bindValue(1, $year, PDO::PARAM_STR);
+    $stmt_total->bindValue(2, $temp, PDO::PARAM_STR);
+    $stmt_total->execute();
+    $total_cursos = $stmt_total->fetchColumn();
+
+    // SQL para obtener los cursos paginados
+    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = :year) and (`Tipo_Venta` LIKE :tipo_venta) ORDER BY `Fecha_Fin` DESC LIMIT :limit OFFSET :offset';
 
     $stmt = $conexionPDO->prepare($sql);
         
-    $stmt->bindValue(1, $year, PDO::PARAM_STR);
-    $stmt->bindValue(2, $temp, PDO::PARAM_STR);
+    $stmt->bindValue(':year', $year, PDO::PARAM_STR);
+    $stmt->bindValue(':tipo_venta', $temp, PDO::PARAM_STR);
+    $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
 
     $stmt->execute();
 
     if($alumnocurso = $stmt->fetchAll()){
         unset($conexionPDO);
-        return $alumnocurso;
+        return ['cursos' => $alumnocurso, 'total' => $total_cursos];
     } else {
         return false;
     }
