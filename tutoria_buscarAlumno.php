@@ -22,7 +22,7 @@
         if(empty($_GET['valor'])){
             echo "<div class='alert alert-danger' role='alert'> El campo de busqueda no puede estar vacio </div>";
         } else {
-            if($alumno = buscarAlumno($_GET['valor'])){
+            if($alumnos = buscarAlumnos($_GET['valor'])){
 
             } else {
 
@@ -90,7 +90,7 @@
 
                 <?php
 
-                    if(!empty($alumno)){
+                    if(!empty($alumnos)){
                         echo "<script>";
                         echo "$('#formBusqueda').remove();";
                         echo "</script>";
@@ -98,8 +98,9 @@
                         echo "<div class='col-md-10 col-12'>";
 
                         echo "<h2 class='text-center mt-2 pt-2 pb-2 border border-5' style='background-color: #b0d588; letter-spacing: 7px;'>FICHA DE ALUMNO</h2>";
-
-                        require("template-parts/components/alumno.buscarAlumno.php");
+                        foreach($alumnos as $alumno){
+                            require("template-parts/components/alumno.buscarAlumno.php");
+                        }
 
                     }
 
