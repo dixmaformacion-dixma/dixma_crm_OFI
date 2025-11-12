@@ -1,27 +1,27 @@
 
 <?php
 
-function fetchAttachedCourses($idAlumno){
+function fetchAttachedCourses($idAlumno)
+{
     $conexionPDO = realizarConexion();
     $sql = 'SELECT * FROM alumnocursos WHERE idAlumno = ? ORDER BY StudentCursoID DESC';
     $stmt = $conexionPDO->prepare($sql);
     $stmt->bindValue(1, $idAlumno, PDO::PARAM_INT);
     $stmt->execute();
 
-    if($cursos = $stmt->fetchAll()){
+    if ($cursos = $stmt->fetchAll()) {
 
         unset($conexionPDO);
         return $cursos;
-
     } else {
 
         return false;
-
     }
 }
-function cargarAlumnoCursos($year, $Tipo_Venta, $limit = 20, $offset = 0){
+function cargarAlumnoCursos($year, $Tipo_Venta, $limit = 20, $offset = 0)
+{
     $temp = "%";
-    if($Tipo_Venta != "Todos"){
+    if ($Tipo_Venta != "Todos") {
         $temp = $Tipo_Venta;
     }
 
@@ -38,7 +38,7 @@ function cargarAlumnoCursos($year, $Tipo_Venta, $limit = 20, $offset = 0){
     $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = :year) and (`Tipo_Venta` LIKE :tipo_venta) ORDER BY `Fecha_Fin` DESC LIMIT :limit OFFSET :offset';
 
     $stmt = $conexionPDO->prepare($sql);
-        
+
     $stmt->bindValue(':year', $year, PDO::PARAM_STR);
     $stmt->bindValue(':tipo_venta', $temp, PDO::PARAM_STR);
     $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
@@ -46,16 +46,17 @@ function cargarAlumnoCursos($year, $Tipo_Venta, $limit = 20, $offset = 0){
 
     $stmt->execute();
 
-    if($alumnocurso = $stmt->fetchAll()){
+    if ($alumnocurso = $stmt->fetchAll()) {
         unset($conexionPDO);
         return ['cursos' => $alumnocurso, 'total' => $total_cursos];
     } else {
         return false;
     }
 }
-function cargarAlumnoCursosActivos($year, $Tipo_Venta){
+function cargarAlumnoCursosActivos($year, $Tipo_Venta)
+{
     $temp = "%";
-    if($Tipo_Venta != "Todos"){
+    if ($Tipo_Venta != "Todos") {
         $temp = $Tipo_Venta;
     }
 
@@ -63,20 +64,21 @@ function cargarAlumnoCursosActivos($year, $Tipo_Venta){
     $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?) AND (`status_curso` = "en curso") ORDER BY `Fecha_Fin`';
 
     $stmt = $conexionPDO->prepare($sql);
-        
+
     $stmt->bindValue(1, $year, PDO::PARAM_STR);
     $stmt->bindValue(2, $temp, PDO::PARAM_STR);
 
     $stmt->execute();
 
-    if($alumnocurso = $stmt->fetchAll()){
+    if ($alumnocurso = $stmt->fetchAll()) {
         unset($conexionPDO);
         return $alumnocurso;
     } else {
         return false;
     }
 }
-function cargarAlumnoCursosPendientes(){
+function cargarAlumnoCursosPendientes()
+{
 
     $conexionPDO = realizarConexion();
     $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE `Fecha_Inicio` = 0 or `Fecha_Fin` = 0 or `Fecha_Fin` = NULL or `Fecha_Inicio` = NULL or `Fecha_Fin` = "" or `Fecha_Inicio` = "" or `Fecha_Fin` IS NULL or `Fecha_Inicio` IS NULL OR `Fecha_Inicio` = "1970-01-01" OR `Fecha_Fin` = "1970-01-01" OR `Fecha_Inicio` = "0001-01-01" OR `Fecha_Fin` = "0001-01-01" ORDER BY `Fecha_Fin`';
@@ -85,7 +87,7 @@ function cargarAlumnoCursosPendientes(){
 
     $stmt->execute();
 
-    if($alumnocurso = $stmt->fetchAll()){
+    if ($alumnocurso = $stmt->fetchAll()) {
         unset($conexionPDO);
         return $alumnocurso;
     } else {
@@ -219,30 +221,29 @@ function buscarAlumnoCursos($filters, $operators, $values, $limit = 20, $offset 
         'total' => (int)$total_cursos
     ];
 }
-function cargarAlumnoCurso($StudentCursoID){
+function cargarAlumnoCurso($StudentCursoID)
+{
 
     $conexionPDO = realizarConexion();
     $sql = "SELECT * FROM alumnocursos WHERE StudentCursoID = $StudentCursoID";
     $stmt = $conexionPDO->query($sql);
 
-    if($alumnocurso = $stmt->fetch()){
+    if ($alumnocurso = $stmt->fetch()) {
 
         unset($conexionPDO);
         return $alumnocurso;
-
     } else {
 
         return false;
-
     }
-
 }
-function alumnoCursoAdjuntar($datos){
+function alumnoCursoAdjuntar($datos)
+{
     $conexionPDO = realizarConexion();
     $sql = "INSERT INTO `alumnocursos`(`StudentCursoID`, `Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, `Fecha_Inicio`, `Fecha_Fin`, `tutor`, `idAlumno`, `idCurso`, `seguimento0`, `seguimento1`, `seguimento2`, `seguimento3`, `seguimento4`, `seguimento5`, `idEmpresa`, `Tipo_Venta`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conexionPDO->prepare($sql);
 
-    if($stmt){
+    if ($stmt) {
 
         $stmt->bindValue(1, 0, PDO::PARAM_INT);
         $stmt->bindValue(2, $datos['Denominacion'], PDO::PARAM_STR);
@@ -268,18 +269,18 @@ function alumnoCursoAdjuntar($datos){
         return $stmt->execute();
     } else {
         return false;
-
     }
 
     unset($conexionPDO);
 }
-function alumnoCursoEditar($datos){
+function alumnoCursoEditar($datos)
+{
     $conexionPDO = realizarConexion();
     $sql = "UPDATE `alumnocursos` SET `Denominacion` = ?, `N_Accion` = ?, `N_Grupo` = ?, `N_Horas` = ?, `Modalidad` = ?, `DOC_AF` = ?, `Fecha_Inicio` = ?, `Fecha_Fin` = ?, `tutor` = ?, `idCurso` = ?, `idEmpresa` = ?, `Tipo_Venta` = ?, `Diploma_Status` = ?, `Diploma_Status_Ultimo_Cambio` = ?,
     `Fecha_De_Envio_De_la_Factura` = NULLIF(?,''), `Fecha_De_Recibido_De_La_Factura` = NULLIF(?,''), `Factura` = ?, `AP` = ?, `Recibi_Material` = ?, `CC` = ?, `RLT` = ?, `status_curso` = ?, `contenido_id` = ?, `diploma_sin_firma` = ?,`firma_docente`=? WHERE `StudentCursoID` = ?";
     $stmt = $conexionPDO->prepare($sql);
 
-    if($stmt){
+    if ($stmt) {
         $stmt->bindValue(1, $datos['Denominacion'], PDO::PARAM_STR);
         $stmt->bindValue(2, $datos['N_Accion'], PDO::PARAM_INT);
         $stmt->bindValue(3, $datos['N_Grupo'], PDO::PARAM_INT);
@@ -308,7 +309,7 @@ function alumnoCursoEditar($datos){
         $stmt->bindValue(26, $datos['StudentCursoID'], PDO::PARAM_INT);
 
         $executeStatus = $stmt->execute();
-        if(!$executeStatus){
+        if (!$executeStatus) {
             echo "<pre>";
             print_r($datos);
             echo "</pre> DBERROR:";
@@ -318,17 +319,17 @@ function alumnoCursoEditar($datos){
         return $executeStatus;
     } else {
         return false;
-
     }
 
     unset($conexionPDO);
 }
-function editarFetchaSeguimentos($datos){
+function editarFetchaSeguimentos($datos)
+{
     $conexionPDO = realizarConexion();
     $sql = "UPDATE `alumnocursos` SET `seguimento0`=?, `seguimento1`=?,`seguimento2`=?,`seguimento3`=?,`seguimento4`=?,`seguimento5`=?,`seguimento0check`=?,`seguimento1check`=?,`seguimento2check`=?,`seguimento3check`=?,`seguimento4check`=?,`seguimento5check`=? WHERE `StudentCursoID` = ?";
     $stmt = $conexionPDO->prepare($sql);
 
-    if($stmt){
+    if ($stmt) {
         $stmt->bindValue(1, $datos['seguimento0'], PDO::PARAM_STR);
         $stmt->bindValue(2, $datos['seguimento1'], PDO::PARAM_STR);
         $stmt->bindValue(3, $datos['seguimento2'], PDO::PARAM_STR);
@@ -349,28 +350,28 @@ function editarFetchaSeguimentos($datos){
     }
     unset($conexionPDO);
 }
-function cargarCursoCommentario($StudentCursoID){
+function cargarCursoCommentario($StudentCursoID)
+{
     $conexionPDO = realizarConexion();
     $sql = 'SELECT * FROM commentarios where StudentCursoID =' . $StudentCursoID;
     $stmt = $conexionPDO->query($sql);
 
-    if($cursos = $stmt->fetchAll()){
+    if ($cursos = $stmt->fetchAll()) {
 
         unset($conexionPDO);
         return $cursos;
-
     } else {
 
         return false;
-
     }
 }
-function insertarCursoCommentario($datosCommentario){
+function insertarCursoCommentario($datosCommentario)
+{
     $conexionPDO = realizarConexion();
     $sql = "INSERT INTO `commentarios`(`idCommentario`, `commentario`, `StudentCursoID`, `date`, `author`) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conexionPDO->prepare($sql);
 
-    if($stmt){
+    if ($stmt) {
 
         $stmt->bindValue(1, 0, PDO::PARAM_INT);
         $stmt->bindValue(2, $datosCommentario['commentario'], PDO::PARAM_STR);
@@ -385,15 +386,16 @@ function insertarCursoCommentario($datosCommentario){
 
     unset($conexionPDO);
 }
-function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on"){
+function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on")
+{
     $temp = "%";
-    if($Tipo_Venta != "Todos"){
+    if ($Tipo_Venta != "Todos") {
         $temp = $Tipo_Venta;
     }
-    
+
     $conexionPDO = realizarConexion();
 
-    if($missedCalls == "on"){
+    if ($missedCalls == "on") {
         $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE
         (
             (`Tipo_Venta` LIKE ?) 
@@ -421,7 +423,7 @@ function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on"){
             )
         )';
         $stmt = $conexionPDO->prepare($sql);
-    
+
         $stmt->bindValue(1, $temp, PDO::PARAM_STR);
         $stmt->bindValue(2, $date, PDO::PARAM_STR);
         $stmt->bindValue(3, $date, PDO::PARAM_STR);
@@ -436,7 +438,7 @@ function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on"){
         $stmt->bindValue(12, $date, PDO::PARAM_STR);
         $stmt->bindValue(13, $date, PDO::PARAM_STR);
         $stmt->bindValue(14, $date, PDO::PARAM_STR);
-    }else{
+    } else {
         $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE
         (`Tipo_Venta` LIKE ?) AND 
         (`seguimento0` = ? OR 
@@ -448,7 +450,7 @@ function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on"){
         )';
 
         $stmt = $conexionPDO->prepare($sql);
-            
+
         $stmt->bindValue(1, $temp, PDO::PARAM_STR);
         $stmt->bindValue(2, $date, PDO::PARAM_STR);
         $stmt->bindValue(3, $date, PDO::PARAM_STR);
@@ -460,7 +462,7 @@ function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on"){
 
     $stmt->execute();
 
-    if($alumnocurso = $stmt->fetchAll()){
+    if ($alumnocurso = $stmt->fetchAll()) {
         unset($conexionPDO);
         return $alumnocurso;
     } else {
@@ -476,36 +478,46 @@ function checkAndHighlightDate(
     $highlightSpanCss = "color: blue",
     $missedSpanCss = "background-color:red; color: white; border:1px solid black",
     $completedSpanCss = "color: green",
-    $regularSpanCss = "")
-    {
-    if($date == null){
+    $regularSpanCss = ""
+) {
+    if ($date == null) {
         $date = date("Y-m-d");
     }
 
     $formattedDate = formattedDate($sampleDate);
 
-    if($sampleDate < $date){
-        if($checked == 0){
-            return '<span style="'.$missedSpanCss.'">'.$formattedDate.'</span>';   
-        }else{
-            return '<span style="'.$completedSpanCss.'">'.$formattedDate.'</span>';
+    if ($sampleDate < $date) {
+        if ($checked == 0) {
+            return '<span style="' . $missedSpanCss . '">' . $formattedDate . '</span>';
+        } else {
+            return '<span style="' . $completedSpanCss . '">' . $formattedDate . '</span>';
         }
-    }else{
-        if($sampleDate == $date){
-            return '<span style="'.$highlightSpanCss.'">'.$formattedDate.'</span>';
+    } else {
+        if ($sampleDate == $date) {
+            return '<span style="' . $highlightSpanCss . '">' . $formattedDate . '</span>';
         }
-        return '<span style="'.$regularSpanCss.'">'.$formattedDate.'</span>';
+        return '<span style="' . $regularSpanCss . '">' . $formattedDate . '</span>';
     }
 }
-function dateMatchHTML( $sampleDate, $date = null, $acceptHTML = "*", $rejectHTML = "") {
-    if($date == null){
+function dateMatchHTML($sampleDate, $date = null, $acceptHTML = "*", $rejectHTML = "")
+{
+    if ($date == null) {
         $date = date("Y-m-d");
     }
 
-    if($sampleDate == $date){
+    if ($sampleDate == $date) {
         return $acceptHTML;
-    }else{
+    } else {
         return $rejectHTML;
     }
+}
+
+function eliminarAlumnoCurso($StudentCursoID)
+{
+    $conexionPDO = realizarConexion();
+    $sql = "DELETE FROM `alumnocursos` WHERE `StudentCursoID` = ?";
+    $stmt = $conexionPDO->prepare($sql);
+    $stmt->bindValue(1, $StudentCursoID, PDO::PARAM_INT);
+    return $stmt->execute();
 }
 ?>

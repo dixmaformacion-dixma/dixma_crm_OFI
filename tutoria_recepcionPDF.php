@@ -46,7 +46,7 @@ if (!$datos) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Certficado PDF</title>
+    <title>Recepción de Material</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     </link>
     <script src="js/bootstrap.bundle.min.js"></script>
@@ -196,7 +196,7 @@ if (!$datos) {
     <style id="media_print" media='print'>
         @page {
             size: 216mm 279mm;
-            margin: 0 !important;
+            margin-top: 1.5cm;
             padding: 0 !important;
             height: 100%;
         }

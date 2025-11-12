@@ -126,6 +126,9 @@ if (!isset($statusDiplomaColor)) {
                                 <b>Persona de contacto:</b>
                                 <?php echo $empresa['personacontacto']; ?>
                         </label>
+                        <div class="text-center mt-2 mb-2">
+                                <a href="buscarVenta.php?valor=<?php echo urlencode($empresa['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-info">Información Empresa</a>
+                        </div>
                 </div>
                 <div class='row mx-auto my-2'>
                         <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:white">

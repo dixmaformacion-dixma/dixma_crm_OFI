@@ -1,15 +1,17 @@
 <?php
-    $header_style = "background-color: #52a3e9ff;";
+    $header_style = "background-color: #1EAAAF;";
+    $background_style = "background-color: #f0f5f6ff;";
     if (isset($curso['status_curso']) && $curso['status_curso'] === 'baja') {
         $header_style = "background-color: #c30d0d; color: white;";
+        $background_style = "background-color: #ffe5e5;";
     }
 ?>
 <div class="card shadow-sm mb-3">
     <div class="card-header fw-bold" style="<?php echo $header_style; ?>">
         <img src="images/iconos/book.svg" class="me-2">
-        <?php echo htmlspecialchars($curso['Denominacion']); ?>
+        <?php echo mb_strtoupper(htmlspecialchars($curso['Denominacion'])); ?>
     </div>
-    <div class="card-body" style="background-color: #fff5f6;">
+    <div class="card-body" style="<?php echo $background_style; ?>">
         <div class="row g-3">
             <!-- Fechas -->
             <div class="col-md-6">

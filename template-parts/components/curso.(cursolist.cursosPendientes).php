@@ -1,5 +1,5 @@
-<?php 
-if(!isset($statusColor) or !isset($statusDateColor)){
+<?php
+if (!isset($statusColor) or !isset($statusDateColor)) {
         $statusColor = [
                 "en curso" => "",
                 "finalizado" => "background-color:  lightblue;",
@@ -19,29 +19,29 @@ if(!isset($statusColor) or !isset($statusDateColor)){
 }
 ?>
 <style>
-.actions
-{
-        display:flex;
-        justify-content:center;
-}
-.actions a{
-        padding: 2px;
-        border:1px solid black;
-        border-radius: 25%;
-        width:30px;
-        height:30px;
-        display:flex;
-        justify-content:center;
-        padding-left:2px;
-        background-color:white;
-}
+        .actions {
+                display: flex;
+                justify-content: center;
+        }
+
+        .actions a {
+                padding: 2px;
+                border: 1px solid black;
+                border-radius: 25%;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                justify-content: center;
+                padding-left: 2px;
+                background-color: white;
+        }
 </style>
 
 <div class="col-md-12 col-12 container border border-2 text-uppercase">
         <div class='row p-0' style="<?php echo $statusColor[$curso['status_curso']] ?>">
                 <?php $empresa = cargarEmpresa($curso['idEmpresa']); ?>
                 <div class='col-md-2 border-right'>
-                        <?php echo $curso['nombre']." ".$curso['apellidos']; ?>
+                        <?php echo $curso['nombre'] . " " . $curso['apellidos']; ?>
                 </div>
                 <div style="width:10%">
                         <?php echo formattedDate($curso['Fecha_Inicio']); ?>
@@ -57,7 +57,7 @@ if(!isset($statusColor) or !isset($statusDateColor)){
                 </div>
                 <div class='col-md-2 border-right'>
                         <?php
-                                echo $empresa['nombre']; 
+                        echo $empresa['nombre'];
                         ?>
                 </div>
                 <div class="col actions">
@@ -72,12 +72,18 @@ if(!isset($statusColor) or !isset($statusDateColor)){
                                 <img src="images/iconos2/pencil-square.svg">
                         </a>
                         <a
-                                id="printDiplomaButton" 
+                                id="printDiplomaButton"
                                 href="tutoria_diplomaPDF.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>">
                                 <img src="images/iconos/filetype-pdf.svg">
                         </a>
+                        <a
+                                onclick="return confirm('¿Estás seguro de que deseas eliminar este curso del alumno? Esta acción es irreversible.');"
+                                href="tutoria_cursosPendientes.php?eliminarCurso=<?php echo $curso['StudentCursoID']; ?>">
+                                <img src="images/iconos/trash.svg">
+                        </a>
+
                 </div>
-                
+
         </div>
         <div class="collapse" id="infoCurso<?php echo $curso['StudentCursoID']; ?>">
                 <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:white">
@@ -96,7 +102,7 @@ if(!isset($statusColor) or !isset($statusDateColor)){
                         <label class='col-md-6 col-12'>
                                 <b>Persona de contacto:</b>
                                 <?php echo $empresa['personacontacto']; ?>
-                        </label>    
+                        </label>
                 </div>
                 <div class='row mx-auto my-2'>
                         <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:white">
@@ -152,15 +158,21 @@ if(!isset($statusColor) or !isset($statusDateColor)){
                                 </label>
                                 <label class='col-md-4 col-12'>
                                         <b>Recibi_Material:</b>
-                                        <input type="checkbox" <?php if($curso['Recibi_Material'] == 1){echo "checked";} ?> disabled>
+                                        <input type="checkbox" <?php if ($curso['Recibi_Material'] == 1) {
+                                                                        echo "checked";
+                                                                } ?> disabled>
                                 </label>
                                 <label class='col-md-2 col-12'>
                                         <b>CC:</b>
-                                        <input type="checkbox" <?php if($curso['CC'] == 1){echo "checked";} ?> disabled>
+                                        <input type="checkbox" <?php if ($curso['CC'] == 1) {
+                                                                        echo "checked";
+                                                                } ?> disabled>
                                 </label>
                                 <label class='col-md-2 col-12'>
                                         <b>RLT:</b>
-                                        <input type="checkbox" <?php if($curso['RLT'] == 1){echo "checked";} ?> disabled>
+                                        <input type="checkbox" <?php if ($curso['RLT'] == 1) {
+                                                                        echo "checked";
+                                                                } ?> disabled>
                                 </label>
                         </div>
                         <div class="row">
@@ -170,12 +182,12 @@ if(!isset($statusColor) or !isset($statusDateColor)){
                                         <i>(la última vez que cambió el estado del diploma): <?php echo formattedDate($curso['Diploma_Status_Ultimo_Cambio']); ?></i>
                                 </label>
                         </div>
-                        <?php 
-                                require("template-parts/components/seguimentosAndComments.(curso.listadoCursos).php");
+                        <?php
+                        require("template-parts/components/seguimentosAndComments.(curso.listadoCursos).php");
                         ?>
                 </div>
         </div>
-        <?php 
-                require("template-parts/components/cursoEditar.(curso.listadoCursos).php");
-        ?>  
+        <?php
+        require("template-parts/components/cursoEditar.(curso.listadoCursos).php");
+        ?>
 </div>
