@@ -174,6 +174,13 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
                         </tbody>
                     </table>
                 </div>
+
+                <div class="mt-4 p-3" style="border: 1px solid #003366; color: #003366;">
+                    <strong>OBSERVACIONES GENERALES:</strong>
+                    <div style="height: 60px;">
+                        <!-- Espacio para escribir observaciones -->
+                    </div>
+                </div>
             <?php endif; ?>
         </div>
     </div>

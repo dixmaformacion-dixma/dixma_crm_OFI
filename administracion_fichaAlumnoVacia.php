@@ -521,7 +521,7 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
               <option>Agosto</option>
               <option>Septiembre</option>
               <option>Octubre</option>
-              <option>Novienbre</option>
+              <option>Noviembre</option>
               <option>Diciembre</option>
             </select> 
             de<input id="noMostrar" class="text-center" style="width: 50px"> </input> </label>
