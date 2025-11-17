@@ -25,6 +25,11 @@ $file = basename($_SERVER['PHP_SELF']);
             <img class="ms-3" src="images/iconos/book.svg">
             <b> Insertar curso </b>
         </a>
+        <a class="nav-link <?php if($file == 'tutoria_asignacion_multiple.php'){echo 'active text-bg-secondary';}; ?>"
+        href="tutoria_asignacion_multiple.php">
+            <img class="ms-3" src="images/iconos/book.svg">
+            <b> Insertar múltiples cursos </b>
+        </a>
         <a class="nav-link <?php if($file == 'tutoria_llamada.php'){echo 'active text-bg-secondary';}; ?>"
         href="tutoria_llamada.php">
             <img class="ms-3" src="images/iconos/telephone.svg">

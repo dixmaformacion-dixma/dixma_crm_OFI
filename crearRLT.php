@@ -32,6 +32,11 @@ while ($dias_restados < $dias_habiles_a_restar) {
     }
 }
 
+$meses_es = [
+    1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril', 5 => 'Mayo', 6 => 'Junio',
+    7 => 'Julio', 8 => 'Agosto', 9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+];
+$mes_actual = $meses_es[(int)$fecha_informe->format('n')];
 
 
 ?>
@@ -199,7 +204,7 @@ while ($dias_restados < $dias_habiles_a_restar) {
 
         <div class="row mt-2">
             <div class="col-12">
-                <p>En <input type="text" class="border-0 text-center border-bottom-dotted" style="width: 150px;" value="Vigo">, a <input type="text" class="border-0 text-center border-bottom-dotted" style="width: 40px;" value="<?php echo $fecha_informe->format('d'); ?>"> de <input type="text" class="border-0 text-center border-bottom-dotted" style="width: 120px;" value="<?php echo ucfirst(strftime('%B', $fecha_informe->getTimestamp())); ?>"> de <?php echo $fecha_informe->format('Y'); ?></p>
+                <p>En <input type="text" class="border-0 text-center border-bottom-dotted" style="width: 150px;" value="Vigo">, a <input type="text" class="border-0 text-center border-bottom-dotted" style="width: 40px;" value="<?php echo $fecha_informe->format('d'); ?>"> de <input type="text" class="border-0 text-center border-bottom-dotted" style="width: 120px;" value="<?php echo ucfirst($mes_actual); ?>"> de <?php echo $fecha_informe->format('Y'); ?></p>
             </div>
         </div>
 

@@ -61,7 +61,7 @@ function cargarAlumnoCursosActivos($year, $Tipo_Venta)
     }
 
     $conexionPDO = realizarConexion();
-    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?) AND (`status_curso` = "en curso") ORDER BY `Fecha_Fin`';
+    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?) AND (`status_curso` = "en curso") ORDER BY `Fecha_Fin`, `N_Accion`';
 
     $stmt = $conexionPDO->prepare($sql);
 
@@ -272,6 +272,48 @@ function alumnoCursoAdjuntar($datos)
     }
 
     unset($conexionPDO);
+}
+function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
+{
+    $conexionPDO = realizarConexion();
+
+    try {
+        $conexionPDO->beginTransaction();
+
+        $sql = "INSERT INTO `alumnocursos`(`Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, `Fecha_Inicio`, `Fecha_Fin`, `tutor`, `idAlumno`, `idCurso`, `idEmpresa`, `Tipo_Venta`, `status_curso`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'en curso')";
+        $stmt = $conexionPDO->prepare($sql);
+
+        if (!$stmt) {
+            throw new Exception("Error al preparar la consulta.");
+        }
+
+        foreach ($listaAlumnos as $idAlumno) {
+            $stmt->bindValue(1, $datosCurso['Denominacion'], PDO::PARAM_STR);
+            $stmt->bindValue(2, $datosCurso['N_Accion'], PDO::PARAM_STR);
+            $stmt->bindValue(3, $datosCurso['N_Grupo'], PDO::PARAM_STR);
+            $stmt->bindValue(4, $datosCurso['N_Horas'], PDO::PARAM_STR);
+            $stmt->bindValue(5, $datosCurso['Modalidad'], PDO::PARAM_STR);
+            $stmt->bindValue(6, $datosCurso['DOC_AF'], PDO::PARAM_STR);
+            $stmt->bindValue(7, $datosCurso['Fecha_Inicio'], PDO::PARAM_STR);
+            $stmt->bindValue(8, $datosCurso['Fecha_Fin'], PDO::PARAM_STR);
+            $stmt->bindValue(9, $datosCurso['tutor'], PDO::PARAM_STR);
+            $stmt->bindValue(10, $idAlumno, PDO::PARAM_INT);
+            $stmt->bindValue(11, $datosCurso['idCurso'], PDO::PARAM_INT);
+            $stmt->bindValue(12, $datosCurso['idEmpresa'], PDO::PARAM_INT);
+            $stmt->bindValue(13, $datosCurso['Tipo_Venta'], PDO::PARAM_STR);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Error al insertar el curso para el alumno ID: " . $idAlumno);
+            }
+        }
+
+        $conexionPDO->commit();
+        return true;
+    } catch (Exception $e) {
+        $conexionPDO->rollBack();
+        // Opcional: registrar el error $e->getMessage()
+        return false;
+    }
 }
 function alumnoCursoEditar($datos)
 {

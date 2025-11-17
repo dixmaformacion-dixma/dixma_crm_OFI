@@ -132,17 +132,21 @@ if (!isset($statusDiplomaColor)) {
                 </div>
                 <div class='row mx-auto my-2'>
                         <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:white">
-                                <label class='col-md-4 col-12'>
+                                <label class='col-md-6 col-12'>
                                         <b>telefono alumno:</b>
                                         <?php echo $curso['telefono']; ?>
                                 </label>
-                                <label class='col-md-4 col-12'>
+                                <label class='col-md-6 col-12'>
                                         <b>email alumno:</b>
                                         <span class="text-lowercase"><?php echo $curso['email']; ?></span>
                                 </label>
-                                <label class='col-md-4 col-12'>
+                                <label class='col-md-6 col-12'>
                                         <b>DNI/NIE:</b>
                                         <?php echo $curso['nif']; ?>
+                                </label>
+                                <label class='col-md-6 col-12'>
+                                        <b>Horario Laboral:</b>
+                                        <?php echo $curso['horarioLaboral']; ?>
                                 </label>
                         </div>
                 </div>
