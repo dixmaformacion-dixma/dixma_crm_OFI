@@ -202,7 +202,7 @@ function buscarAlumnoCursos($filters, $operators, $values, $limit = 20, $offset 
         $sql .= ' WHERE ' . implode(' AND ', $where_clauses);
     }
 
-    $sql .= " ORDER BY alumnocursos.Fecha_Inicio DESC, alumnocursos.StudentCursoID DESC";
+    $sql .= " ORDER BY alumnocursos.Fecha_Fin ASC, alumnocursos.N_Accion ASC";
     $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
 
     $stmt = $conexionPDO->prepare($sql);
