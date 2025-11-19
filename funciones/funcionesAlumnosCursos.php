@@ -280,7 +280,12 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
     try {
         $conexionPDO->beginTransaction();
 
-        $sql = "INSERT INTO `alumnocursos`(`Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, `Fecha_Inicio`, `Fecha_Fin`, `tutor`, `idAlumno`, `idCurso`, `idEmpresa`, `Tipo_Venta`, `status_curso`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'en curso')";
+        $sql = "INSERT INTO `alumnocursos`(
+                    `Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, 
+                    `Fecha_Inicio`, `Fecha_Fin`, `tutor`, `idAlumno`, `idCurso`, `idEmpresa`, 
+                    `Tipo_Venta`, `status_curso`, `seguimento0`, `seguimento1`, `seguimento2`, 
+                    `seguimento3`, `seguimento4`, `seguimento5`
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'en curso', ?, ?, ?, ?, ?, ?)";
         $stmt = $conexionPDO->prepare($sql);
 
         if (!$stmt) {
@@ -301,6 +306,12 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
             $stmt->bindValue(11, $datosCurso['idCurso'], PDO::PARAM_INT);
             $stmt->bindValue(12, $datosCurso['idEmpresa'], PDO::PARAM_INT);
             $stmt->bindValue(13, $datosCurso['Tipo_Venta'], PDO::PARAM_STR);
+            $stmt->bindValue(14, $datosCurso['seguimento0'], PDO::PARAM_STR);
+            $stmt->bindValue(15, $datosCurso['seguimento1'], PDO::PARAM_STR);
+            $stmt->bindValue(16, $datosCurso['seguimento2'], PDO::PARAM_STR);
+            $stmt->bindValue(17, $datosCurso['seguimento3'], PDO::PARAM_STR);
+            $stmt->bindValue(18, $datosCurso['seguimento4'], PDO::PARAM_STR);
+            $stmt->bindValue(19, $datosCurso['seguimento5'], PDO::PARAM_STR);
 
             if (!$stmt->execute()) {
                 throw new Exception("Error al insertar el curso para el alumno ID: " . $idAlumno);

@@ -42,6 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
             'idCurso' => isset($_POST['selectFromCourseList']) ? $_POST['idCurso'] : null,
             'idEmpresa' => $idEmpresa,
             'Tipo_Venta' => $_POST['Tipo_Venta'],
+            'seguimento0' => !empty($_POST['seguimento0']) ? $_POST['seguimento0'] : null,
+            'seguimento1' => !empty($_POST['seguimento1']) ? $_POST['seguimento1'] : null,
+            'seguimento2' => !empty($_POST['seguimento2']) ? $_POST['seguimento2'] : null,
+            'seguimento3' => !empty($_POST['seguimento3']) ? $_POST['seguimento3'] : null,
+            'seguimento4' => !empty($_POST['seguimento4']) ? $_POST['seguimento4'] : null,
+            'seguimento5' => !empty($_POST['seguimento5']) ? $_POST['seguimento5'] : null,
         ];
 
         if (alumnoCursoAdjuntarMultiple($alumnosSeleccionados, $datosCurso)) {
@@ -202,8 +208,8 @@ if (isset($_GET['idEmpresa'])) {
                                         </div>
 
                                         <div class="row mb-3 g-3">
-                                            <div class="col-md-6"><label class="form-label fw-bold">Fecha Inicio:</label><input onchange="changeSeguimentoDates('form-multiple-container')" name="Fecha_Inicio" class="form-control form-control-sm Fecha_Inicio" type="date"></div>
-                                            <div class="col-md-6"><label class="form-label fw-bold">Fecha Fin:</label><input onchange="changeSeguimentoDates('form-multiple-container')" name="Fecha_Fin" class="form-control form-control-sm Fecha_Fin" type="date"></div>
+                                            <div class="col-md-6"><label class="form-label fw-bold">Fecha Inicio:</label><input onchange="changeSeguimentoDatesMultiple('form-multiple-container')" name="Fecha_Inicio" class="form-control form-control-sm Fecha_Inicio" type="date"></div>
+                                            <div class="col-md-6"><label class="form-label fw-bold">Fecha Fin:</label><input onchange="changeSeguimentoDatesMultiple('form-multiple-container')" name="Fecha_Fin" class="form-control form-control-sm Fecha_Fin" type="date"></div>
                                         </div>
 
                                         <div class="row mb-3">

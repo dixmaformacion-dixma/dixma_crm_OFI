@@ -44,6 +44,44 @@ function changeSeguimentoDates(id){
     startElement.style.backgroundColor = "white";
     endElement.style.backgroundColor = "white";
 }
+
+function changeSeguimentoDatesMultiple(id){
+    const SEGMENT_COUNT = 6;
+
+    let startElement = $(`#${id} .Fecha_Inicio`).get(0);
+    let endElement = $(`#${id} .Fecha_Fin`).get(0);
+    let startDate = startElement.value;
+    let endDate = endElement.value;
+
+    if(startDate == '' || endDate == ''){
+        startElement.style.backgroundColor = "red";
+        endElement.style.backgroundColor = "red";
+        return;
+    }
+
+    startDate = new Date(startDate);
+    endDate = new Date(endDate);
+
+    if(startDate >= endDate){
+        startElement.style.backgroundColor = "red";
+        endElement.style.backgroundColor = "red";
+        return;
+    }
+
+    //calculate day distance
+    let timeBetween = endDate - startDate;
+    let interval = timeBetween/(SEGMENT_COUNT - 1);
+
+    for(let i = 0; i < SEGMENT_COUNT; i++){
+        let date = new Date(new Date(startDate).getTime() + i * interval);
+        $(`#${id} .seguimento${i}`).get(0).value = date.toISOString().split('T')[0];
+    }
+
+    //reset error colors if any exist
+    startElement.style.backgroundColor = "white";
+    endElement.style.backgroundColor = "white";
+}
+
 function changeCourseSelectionMode(id){
     let checked = $(`#${id} input[name="selectFromCourseList"]`).get(0).checked;
     
