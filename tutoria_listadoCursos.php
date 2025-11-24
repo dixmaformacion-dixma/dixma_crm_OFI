@@ -20,6 +20,18 @@
     include "tutoria_insertar_commentario_function.php";
     include "tutoria_editar_seguimentos_function.php";
 
+    // Manejo de eliminación de un curso asignado al alumno
+    if (isset($_GET['eliminarCurso']) && is_numeric($_GET['eliminarCurso'])) {
+        $idToDelete = (int) $_GET['eliminarCurso'];
+        if (eliminarAlumnoCurso($idToDelete)) {
+            $deleteMessage = "Inscripción de curso eliminada correctamente.";
+            $deleteMessageClass = 'alert-success';
+        } else {
+            $deleteMessage = "Error al eliminar la inscripción del curso.";
+            $deleteMessageClass = 'alert-danger';
+        }
+    }
+
     $date = date("Y-m-d");
     $year = date("Y");
     if(isset($_GET['year']) && $_GET['year'] != ''){

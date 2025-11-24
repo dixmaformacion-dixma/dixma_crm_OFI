@@ -61,7 +61,7 @@ function cargarAlumnoCursosActivos($year, $Tipo_Venta)
     }
 
     $conexionPDO = realizarConexion();
-    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?) AND (`status_curso` = "en curso") ORDER BY `Fecha_Fin`, `N_Accion`';
+    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?) AND (`status_curso` = "en curso") ORDER BY `Fecha_Fin`, `N_Accion`, `N_Grupo`, `apellidos`, `nombre`';
 
     $stmt = $conexionPDO->prepare($sql);
 
@@ -271,7 +271,6 @@ function alumnoCursoAdjuntar($datos)
         return false;
     }
 
-    unset($conexionPDO);
 }
 function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
 {
@@ -374,7 +373,6 @@ function alumnoCursoEditar($datos)
         return false;
     }
 
-    unset($conexionPDO);
 }
 function editarFetchaSeguimentos($datos)
 {
@@ -401,7 +399,6 @@ function editarFetchaSeguimentos($datos)
     } else {
         return false;
     }
-    unset($conexionPDO);
 }
 function cargarCursoCommentario($StudentCursoID)
 {
@@ -437,7 +434,6 @@ function insertarCursoCommentario($datosCommentario)
         return false;
     }
 
-    unset($conexionPDO);
 }
 function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on")
 {

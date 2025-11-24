@@ -46,7 +46,7 @@ if (!$datos) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Recepción de Material</title>
+    <title>0_Recepción de Material</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     </link>
     <script src="js/bootstrap.bundle.min.js"></script>

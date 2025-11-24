@@ -218,6 +218,7 @@ if(!isset($tipoCursosArray)){
                                 <option <?php if($curso['status_curso'] == "finalizado"){ echo " selected ";} ?> value="finalizado">finalizado</option>
                                 <option <?php if($curso['status_curso'] == "descargado"){ echo " selected ";} ?> value="descargado">descargado</option>
                                 <option <?php if($curso['status_curso'] == "cerrado"){ echo " selected ";} ?> value="cerrado">cerrado</option>
+                                <option <?php if($curso['status_curso'] == "cerrado + sensibilización"){ echo " selected ";} ?> value="cerrado + sensibilización">cerrado + sensibilización</option>
                                 <option <?php if($curso['status_curso'] == "baja"){ echo " selected ";} ?> value="baja">baja</option>
                                 <option <?php if($curso['status_curso'] == "problem"){ echo " selected ";} ?> value="problem">problem</option>
                         </select>
