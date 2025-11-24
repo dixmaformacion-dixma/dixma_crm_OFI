@@ -27,6 +27,8 @@ if (isset($_GET['eliminarCurso']) && is_numeric($_GET['eliminarCurso'])) {
     }
 }
 
+$page_from = 'tutoria_cursosPendientes.php';
+
 
 ?>
 

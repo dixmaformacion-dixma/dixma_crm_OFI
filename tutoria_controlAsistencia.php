@@ -67,13 +67,13 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
 
             body {
                 background-color: #fff !important;
-                width: 100%; /* Dejamos que el navegador controle el ancho */
+                width: 100%;
                 font-size: 12px;
                 color: #003366;
             }
 
             .printable-area {
-                border: none !important; /* Aseguramos que el área imprimible no tenga bordes */
+                border: none !important;
             }
 
             .editable-input {
@@ -96,8 +96,27 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
             }
 
             tr {
-                page-break-inside: avoid; /* Evita que las filas se corten entre páginas */
+                page-break-inside: avoid;
             }
+        }
+        .printable-area {
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 40px);
+        }
+        .content-body {
+            flex: 1 0 auto;
+        }
+        .observaciones {
+            border: 1px solid #003366;
+            color: #003366;
+            padding: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        @media print {
+            .printable-area { min-height: 280mm; }
+            .observaciones { position: relative; bottom: 0; }
         }
     </style>
 </head>
@@ -113,6 +132,7 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
         </div>
 
         <div class="printable-area p-4 border rounded bg-white">
+            <div class="content-body">
             <?php if (!$course_data || empty($students_list)) : ?>
                 <div class="alert alert-warning text-center">
                     No se encontraron datos del curso o no se seleccionaron alumnos.
@@ -152,8 +172,8 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
                         <thead class="thead-light">
                             <tr>
                                 <th colspan="3" class="text-center">DATOS DE LOS ASISTENTES</th>
-                                <th rowspan="2" class="text-center align-middle">FIRMAS</th>
-                                <th rowspan="2" class="text-center align-middle">OBSERVACIONES</th>
+                                <th rowspan="2" class="text-center align-middle" style="width: 15%;">FIRMAS</th>
+                                <th rowspan="2" class="text-center align-middle" style="width: 15%;">OBS.</th>
                             </tr>
                             <tr>
                                 <th>APELLIDOS</th>
@@ -175,7 +195,8 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
                     </table>
                 </div>
 
-                <div class="mt-4 p-3" style="border: 1px solid #003366; color: #003366;">
+            </div>
+                <div class="observaciones">
                     <strong>OBSERVACIONES GENERALES:</strong>
                     <div style="height: 60px;">
                         <!-- Espacio para escribir observaciones -->

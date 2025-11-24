@@ -188,6 +188,8 @@ if (!isset($statusColor) or !isset($statusDateColor)) {
                 </div>
         </div>
         <?php
-        require("template-parts/components/cursoEditar.(curso.listadoCursos).php");
+        if (isset($page_from)) {
+                require("template-parts/components/cursoEditar.(curso.listadoCursos).php");
+        }
         ?>
 </div>

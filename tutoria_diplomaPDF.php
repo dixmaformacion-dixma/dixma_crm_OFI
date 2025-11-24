@@ -440,7 +440,7 @@ function MostrarDiploma(tipo, aditional = false){
       </div>
       <div class="firma_docente" style="position:absolute;bottom: 0mm;left: 159mm;">
 		    <?php if(!empty($alumnocurso['firma_docente'])): ?>
-		    <img src="/firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
+		    <img src="firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
         <?php endif ?>
       </div>
       <div id="fecha_privado" style="position:absolute; bottom:22mm;">
@@ -539,7 +539,7 @@ function MostrarDiploma(tipo, aditional = false){
     </div>
     <div style="position:absolute;bottom: 0mm;left: 156mm;">
       <?php if(!empty($alumnocurso['firma_docente'])): ?>
-      <img src="/firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
+      <img src="firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
       <?php endif ?>
     </div>
     <div class="estetica_info" style="position:absolute;bottom: 17mm;left: 121mm;">
@@ -624,7 +624,7 @@ function MostrarDiploma(tipo, aditional = false){
   </div>
   <div style="position:absolute;bottom: 53mm;left: 82mm;">
     <?php if(!empty($alumnocurso['firma_docente'])): ?>
-    <img src="/firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
+    <img src="firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
     <?php endif ?>
   </div>
   <div class="soldadura_info" style="position:absolute; bottom:37mm; left: 160mm">

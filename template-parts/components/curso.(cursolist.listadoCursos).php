@@ -94,6 +94,13 @@ if (!isset($statusDiplomaColor)) {
                                 href="#infoEdit<?php echo $curso['StudentCursoID']; ?>">
                                 <img src="images/iconos2/pencil-square.svg">
                         </a>
+                        <?php if (!empty($_SESSION) && isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+                        <a
+                                onclick="return confirm('¿Estás seguro de que deseas eliminar este curso del alumno? Esta acción es irreversible.');"
+                                href="tutoria_listadoCursos.php?eliminarCurso=<?php echo $curso['StudentCursoID']; ?>">
+                                <img src="images/iconos/trash.svg" alt="Eliminar">
+                        </a>
+                        <?php endif; ?>
                         <div class="dropdown d-flex">
                                 <a href="#" class="dropdown-toggle no-arrow" data-bs-toggle="dropdown" aria-expanded="false">
                                         <img src="images/iconos/filetype-pdf.svg" alt="PDF">
