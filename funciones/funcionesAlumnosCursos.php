@@ -1,4 +1,3 @@
-
 <?php
 
 function fetchAttachedCourses($idAlumno)
@@ -270,7 +269,6 @@ function alumnoCursoAdjuntar($datos)
     } else {
         return false;
     }
-
 }
 function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
 {
@@ -372,7 +370,6 @@ function alumnoCursoEditar($datos)
     } else {
         return false;
     }
-
 }
 function editarFetchaSeguimentos($datos)
 {
@@ -433,7 +430,6 @@ function insertarCursoCommentario($datosCommentario)
     } else {
         return false;
     }
-
 }
 function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on")
 {

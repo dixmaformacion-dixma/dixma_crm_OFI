@@ -1,18 +1,24 @@
 <div class="mb-5 courseWrapper">
         <div class="col-md-12 col-12 container border border-2" style="background-color:#88c743">
-        <div class='row p-0'>
-                <div class='col-md-2 border-right'><b>Nombre</b></div>
-                <div style="width:10%"><b>Fecha_Inicio</b></div>
-                <div style="width:10%"><b>Fecha_Fin</b></div>
-                <div class='col-md-2 border-right'><b>Denominacion</b></div>
-                <div class='col-md-2 border-right'><b>Horas</b></div>
-                <div class='col-md-2 border-right'><b>Empresa</b></div>
-                <div class="col-md-1"></div>
+        <div class='row p-0' style="display: flex; flex-wrap: nowrap; align-items: center;">
+                <div style="width:4%; flex-shrink: 0;"><b>
+                    <input type="checkbox" class="selectable" value="all">
+                    #
+                </b></div>
+                <div style="width:18%;"><b>Nombre</b></div>
+                <div style="width:9%;"><b>Fecha_Inicio</b></div>
+                <div style="width:9%;"><b>Fecha_Fin</b></div>
+                <div style="width:18%;"><b>Denominacion</b></div>
+                <div style="width:9%;"><b>Horas</b></div>
+                <div style="width:14%;"><b>Empresa</b></div>
+                <div style="width:10%; flex-shrink: 0;"><b>Acciones</b></div>
         </div>
         </div>
         <?php
+        $numr = 1;
         foreach($cursos as $curso){
                 require("template-parts/components/curso.(cursolist.cursosPendientes).php");
+                $numr++;
         }
         ?>
 </div>

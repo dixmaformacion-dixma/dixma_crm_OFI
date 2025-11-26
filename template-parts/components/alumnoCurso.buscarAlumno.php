@@ -4,6 +4,12 @@
     if (isset($curso['status_curso']) && $curso['status_curso'] === 'baja') {
         $header_style = "background-color: #c30d0d; color: white;";
         $background_style = "background-color: #ffe5e5;";
+    } elseif (isset($curso['status_curso']) && (isset($curso['Tipo_Venta']) && $curso['Tipo_Venta'] === 'Privado')) {
+        $header_style = "background-color: #F8A362;";
+        $background_style = "background-color: #f4e2acff;";
+    } elseif (empty($curso['Fecha_Inicio']) || $curso['Fecha_Inicio'] === '0000-00-00' || $curso['Fecha_Inicio'] === '1970-01-01') {
+        $header_style = "background-color: #F7CA36;";
+        $background_style = "background-color: #f7f7bbff;";
     }
 ?>
 <div class="card shadow-sm mb-3">
@@ -55,16 +61,6 @@
                 ?>
                 <span class="text-muted">(ID: <?php echo $curso['idEmpresa']; ?>)</span>
             </div>
-        </div>
-
-        <!-- Botón de Acción -->
-        <div class="text-center mt-4">
-            <a type='button' 
-               class='btn btn-outline-danger col-md-4 col-12'
-               href="administracion_fichaAlumno.php?idEmpresa=<?php echo $alumno["idEmpresa"]; ?>&idAlumno=<?php echo $alumno["idAlumno"]; ?>&StudentCursoID=<?php echo $curso["StudentCursoID"]; ?>">
-                <img src='images/iconos/file-earmark-pdf.svg' class='me-2'>
-                Crear PDF del Curso
-            </a>
         </div>
     </div>
 </div>

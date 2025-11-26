@@ -1,64 +1,64 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
+  error_reporting(E_ALL);
 
-include "funciones/conexionBD.php";
-include "funciones/funcionesAlumnos.php";
-include "funciones/funcionesEmpresa.php";
-include "funciones/funcionesAlumnosCursos.php";
-include "funciones/funcionesContenidos.php";
+  include "funciones/conexionBD.php";
+  include "funciones/funcionesAlumnos.php";
+  include "funciones/funcionesEmpresa.php";
+  include "funciones/funcionesAlumnosCursos.php";
+  include "funciones/funcionesContenidos.php";
 
-setlocale(LC_ALL, 'ES_es');
+  setlocale(LC_ALL, 'ES_es');
 
-session_start();
+  session_start();
 
-if(empty($_SESSION)){
+  if(empty($_SESSION)){
 
-    header("Location: index.php");
+      header("Location: index.php");
 
-}
-
-date_default_timezone_set("Europe/Madrid");
-setlocale(LC_ALL, "spanish");
-
-if(!isset($_GET['StudentCursoID'])){
-  die("Parameters are missing!");
-}
-
-
-##procedure to get the courses which belong to this company
-
-  $conexionPDO = realizarConexion();
-  $sql = '
-  SELECT
-  alumnos.nombre as nombre,
-  alumnos.apellidos as apellidos,
-  alumnos.nif as nif,
-  empresas.nombre as nombreEmpresa,
-  empresas.cif as cif,
-  alumnocursos.*
-  FROM `alumnocursos` join alumnos on alumnocursos.idAlumno = alumnos.idAlumno 
-  join empresas on alumnocursos.idEmpresa = empresas.idempresa 
-  WHERE `StudentCursoID` = ?
-  ';
-
-  $conexionPDO->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
-  $stmt = $conexionPDO->prepare($sql);
-      
-  $stmt->bindValue(1, $_GET['StudentCursoID'], PDO::PARAM_INT);
-
-  $stmt->execute();
-
-  if($alumnocurso = $stmt->fetch()){
-    unset($conexionPDO);
-  } else {
-    //echo $sql;
-    die("Error occured while fetching course information");;
   }
-##end of procedure
 
-$contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
+  date_default_timezone_set("Europe/Madrid");
+  setlocale(LC_ALL, "spanish");
+
+  if(!isset($_GET['StudentCursoID'])){
+    die("Parameters are missing!");
+  }
+
+
+  ##procedure to get the courses which belong to this company
+
+    $conexionPDO = realizarConexion();
+    $sql = '
+    SELECT
+    alumnos.nombre as nombre,
+    alumnos.apellidos as apellidos,
+    alumnos.nif as nif,
+    empresas.nombre as nombreEmpresa,
+    empresas.cif as cif,
+    alumnocursos.*
+    FROM `alumnocursos` join alumnos on alumnocursos.idAlumno = alumnos.idAlumno 
+    join empresas on alumnocursos.idEmpresa = empresas.idempresa 
+    WHERE `StudentCursoID` = ?
+    ';
+
+    $conexionPDO->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
+    $stmt = $conexionPDO->prepare($sql);
+        
+    $stmt->bindValue(1, $_GET['StudentCursoID'], PDO::PARAM_INT);
+
+    $stmt->execute();
+
+    if($alumnocurso = $stmt->fetch()){
+      unset($conexionPDO);
+    } else {
+      //echo $sql;
+      die("Error occured while fetching course information");;
+    }
+  ##end of procedure
+
+  $contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
 ?>
 
 <!doctype html>
