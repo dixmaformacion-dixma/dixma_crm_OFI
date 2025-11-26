@@ -22,6 +22,9 @@ if (!isset($statusColor) or !isset($statusDateColor)) {
         .actions {
                 display: flex;
                 justify-content: center;
+                gap: 4px;
+                white-space: nowrap;
+                flex-shrink: 0;
         }
 
         .actions a {
@@ -32,35 +35,40 @@ if (!isset($statusColor) or !isset($statusDateColor)) {
                 height: 30px;
                 display: flex;
                 justify-content: center;
-                padding-left: 2px;
                 background-color: white;
+                flex-shrink: 0;
         }
+
 </style>
 
 <div class="col-md-12 col-12 container border border-2 text-uppercase">
-        <div class='row p-0' style="<?php echo $statusColor[$curso['status_curso']] ?>">
+        <div class='row p-0' style="<?php echo $statusColor[$curso['status_curso']] ?>; display: flex; flex-wrap: nowrap; align-items: center;">
+                <div style="width:4%; flex-shrink: 0;">
+                        <input type="checkbox" class="selectable" value="<?php echo $curso['StudentCursoID'] ?>">
+                        <?php echo $numr; ?>
+                </div>
                 <?php $empresa = cargarEmpresa($curso['idEmpresa']); ?>
-                <div class='col-md-2 border-right'>
+                <div style="width:18%;">
                         <?php echo $curso['nombre'] . " " . $curso['apellidos']; ?>
                 </div>
-                <div style="width:10%">
+                <div style="width:9%;">
                         <?php echo formattedDate($curso['Fecha_Inicio']); ?>
                 </div>
-                <div style="width:10%; <?php echo $statusDateColor[$curso['status_curso']] ?>">
+                <div style="width:9%; <?php echo $statusDateColor[$curso['status_curso']] ?>">
                         <?php echo formattedDate($curso['Fecha_Fin']); ?>
                 </div>
-                <div class='col-md-2 border-right'>
+                <div style="width:18%;">
                         <?php echo $curso['Denominacion']; ?>
                 </div>
-                <div class='col-md-2 border-right'>
+                <div style="width:9%;">
                         <?php echo str_replace('.', ',', $curso['N_Horas']); ?>
                 </div>
-                <div class='col-md-2 border-right'>
+                <div style="width:14%;">
                         <?php
                         echo $empresa['nombre'];
                         ?>
                 </div>
-                <div class="col actions">
+                <div class="actions" style="width:10%; flex-shrink: 0;">
                         <a
                                 data-bs-toggle="collapse"
                                 href="#infoCurso<?php echo $curso['StudentCursoID']; ?>">
