@@ -69,6 +69,18 @@ if (isset($_GET['idEmpresa'])) {
     $empresa = cargarEmpresa($idEmpresa);
     if ($empresa) {
         $alumnos = todoAlumnoPorEmpresa($idEmpresa);
+            // Ordenar la lista de alumnos por nombre y, en caso de empate, por apellidos
+            usort($alumnos, function($a, $b) {
+                $nameA = $a['nombre'] ?? '';
+                $nameB = $b['nombre'] ?? '';
+                $cmp = strcasecmp($nameA, $nameB);
+                if ($cmp === 0) {
+                    $lastA = $a['apellidos'] ?? '';
+                    $lastB = $b['apellidos'] ?? '';
+                    return strcasecmp($lastA, $lastB);
+                }
+                return $cmp;
+            });
     }
 }
 
@@ -169,42 +181,17 @@ if (isset($_GET['idEmpresa'])) {
                                     <div id="form-multiple-container">
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" name="selectFromCourseList" class="form-check-input" onchange='changeCourseSelectionMode("form-multiple-container")'>
-                                                    <b>Seleccionar de la lista de cursos</b>
-                                                </label>
-                                                <div class="d-flex mt-2">
-                                                    <select class="form-select me-2" name="type" onchange='selectTypeOfCourses("form-multiple-container")' disabled>
-                                                        <option disabled selected value>-- Tipo --</option>
-                                                        <?php
-                                                        $tipoCursosArray = cargarTipoCurso();
-                                                        foreach ($tipoCursosArray as $tipo) {
-                                                            echo '<option value="' . $tipo . '">' . $tipo . '</option>';
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                    <select class="form-select" name="idCurso" onchange='selectCourse("form-multiple-container")' disabled>
-                                                        <option disabled selected value>-- Curso --</option>
-                                                        <?php
-                                                        $cursos = listadoCursos();
-                                                        foreach ($cursos as $cursoItem) {
-                                                            echo '<option style="display:none" class="courseOptions class' . $cursoItem['tipoCurso'] . '" value="' . $cursoItem['idCurso'] . '">' . htmlspecialchars($cursoItem['nombreCurso']) . '</option>';
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
                                                 <label class="form-label fw-bold">Denominación:</label>
                                                 <input name="Denominacion" class="form-control form-control-sm text-uppercase" type="text" required>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3 g-3">
-                                            <div class="col-md-3"><label class="form-label fw-bold">Nº Acción:</label><input name="N_Accion" class="form-control form-control-sm" type="number" required></div>
-                                            <div class="col-md-3"><label class="form-label fw-bold">Nº Grupo:</label><input name="N_Grupo" class="form-control form-control-sm" type="number" required></div>
-                                            <div class="col-md-3"><label class="form-label fw-bold">Nº Horas:</label><input name="N_Horas" class="form-control form-control-sm" type="text"></div>
+                                            <div class="col-md-2"><label class="form-label fw-bold">Nº Acción:</label><input name="N_Accion" class="form-control form-control-sm" type="number" required></div>
+                                            <div class="col-md-2"><label class="form-label fw-bold">Nº Grupo:</label><input name="N_Grupo" class="form-control form-control-sm" type="number" required></div>
+                                            <div class="col-md-2"><label class="form-label fw-bold">Nº Horas:</label><input name="N_Horas" class="form-control form-control-sm" type="text"></div>
                                             <div class="col-md-3"><label class="form-label fw-bold">Tutor:</label><input name="tutor" class="form-control form-control-sm text-uppercase" type="text"></div>
+                                            <div class="col-md-3"><label class="form-label fw-bold">DOC AF:</label><input name="DOC_AF" class="form-control form-control-sm" type="text"></div>
                                         </div>
 
                                         <div class="row mb-3 g-3">
@@ -240,7 +227,6 @@ if (isset($_GET['idEmpresa'])) {
                                             <div class="col-md-4"><label class="form-label">SEGUIMIENTO 4:</label><input name="seguimento4" class="form-control form-control-sm seguimento4" type="date"></div>
                                             <div class="col-md-4"><label class="form-label">SEGUIMIENTO 5:</label><input name="seguimento5" class="form-control form-control-sm seguimento5" type="date"></div>
                                         </div>
-                                        <input name="DOC_AF" type="hidden" value="">
                                     </div>
                                     <!-- Fin del nuevo formulario -->
                                 </div>

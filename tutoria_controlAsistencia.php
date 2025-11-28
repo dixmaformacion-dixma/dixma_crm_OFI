@@ -145,7 +145,7 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
                 <h2 class="text-center mb-4">Control de Asistencia</h2>
                 <div class="mb-4 p-3" style="border: 1px solid #003366; color: #003366;">
                     <div>
-                        <strong>DENOMINACIÓN DE LA ACCIÓN FORMATIVA:</strong> <?= htmlspecialchars($course_data['Denominacion']) ?>
+                        <strong>DENOMINACIÓN DE LA ACCIÓN FORMATIVA:</strong> <?= htmlspecialchars(mb_strtoupper($course_data['Denominacion'])) ?>
                     </div>
                     <div class="mt-2">
                         <span class="me-4"><strong>Nº AF:</strong> <?= htmlspecialchars($course_data['N_Accion']) ?></span>
