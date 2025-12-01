@@ -46,7 +46,7 @@ if (!isset($statusDiplomaColor)) {
 </style>
 
 <div class="col-md-12 col-12 container border border-2 text-uppercase">
-        <div class='row p-0' style="<?php echo $statusColor[$curso['status_curso']] ?>">
+        <div class='row p-0' style="<?php echo $statusColor[$curso['status_curso']]; ?>">
                 <div style="width:5%">
                         <input type="checkbox" class="selectable" value="<?php echo $curso['StudentCursoID'] ?>">
                         <?php echo $numr; ?>
@@ -77,7 +77,13 @@ if (!isset($statusDiplomaColor)) {
                                                         echo "checked";
                                                 } ?> disabled>
                 </div>
-                <div class='col-md-1 border-right'>
+                <?php
+                    $empresaStyle = '';
+                    if (isset($curso['idEmpresa']) && in_array($curso['idEmpresa'], $empresasConPendientes)) {
+                        $empresaStyle = 'background-color: #ffcccc;'; // Fondo rojo claro
+                    }
+                ?>
+                <div class='col-md-1 border-right' style="<?php echo $empresaStyle; ?>">
                         <?php echo $empresa['nombre']; ?>
                 </div>
                 <div class='col-md-1 border-right' style="<?php echo @$statusDiplomaColor[$curso['Diploma_Status']] ?>">

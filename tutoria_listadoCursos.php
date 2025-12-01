@@ -110,6 +110,9 @@
                             if ($page < 1) $page = 1;
                             $offset = ($page - 1) * $limit;
 
+                            // Obtener IDs de empresas con cursos pendientes
+                            $empresasConPendientes = obtenerEmpresasConCursosPendientes();
+
                             $result = cargarAlumnoCursos($year, $Tipo_Venta_Display, $limit, $offset);
                             
                             if ($result) {
