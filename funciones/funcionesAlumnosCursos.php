@@ -565,4 +565,23 @@ function eliminarAlumnoCurso($StudentCursoID)
     $stmt->bindValue(1, $StudentCursoID, PDO::PARAM_INT);
     return $stmt->execute();
 }
+
+function obtenerEmpresasConCursosPendientes()
+{
+    $conexionPDO = realizarConexion();
+    $sql = 'SELECT DISTINCT idEmpresa FROM `alumnocursos` WHERE 
+            `Fecha_Inicio` = 0 OR `Fecha_Fin` = 0 OR 
+            `Fecha_Inicio` IS NULL OR `Fecha_Fin` IS NULL OR 
+            `Fecha_Inicio` = "0000-00-00" OR `Fecha_Fin` = "0000-00-00" OR
+            `Fecha_Inicio` = "1970-01-01" OR `Fecha_Fin` = "1970-01-01" OR 
+            `Fecha_Inicio` = "0001-01-01" OR `Fecha_Fin` = "0001-01-01"';
+
+    $stmt = $conexionPDO->prepare($sql);
+    $stmt->execute();
+
+    $empresasIds = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+
+    unset($conexionPDO);
+    return $empresasIds ?: [];
+}
 ?>
