@@ -45,14 +45,14 @@ if (!isset($statusDiplomaColor)) {
         }
 </style>
 
-<div class="col-md-12 col-12 container border border-2 text-uppercase">
-        <div class='row p-0' style="<?php echo $statusColor[$curso['status_curso']]; ?>">
+<div class="col-md-12 col-12 container border border-2">
+        <div class='row p-0 text-uppercase' style="<?php echo $statusColor[$curso['status_curso']]; ?>">
                 <div style="width:5%">
                         <input type="checkbox" class="selectable" value="<?php echo $curso['StudentCursoID'] ?>">
                         <?php echo $numr; ?>
                 </div>
                 <?php $empresa = cargarEmpresa($curso['idEmpresa']); ?>
-                <div class='col-md-2 border-right'>
+                <div class='col-md-2 border-right text-uppercase'>
                         <?php echo $curso['nombre'] . " " . $curso['apellidos']; ?>
                 </div>
                 <div style="width:9%">
@@ -61,7 +61,7 @@ if (!isset($statusDiplomaColor)) {
                 <div style="width:9%; <?php echo $statusDateColor[$curso['status_curso']] ?>">
                         <?php echo formattedDate($curso['Fecha_Fin']); ?>
                 </div>
-                <div class='col-md-2 border-right'>
+                <div class='col-md-2 border-right text-uppercase'>
                         <?php echo $curso['Denominacion']; ?>
                 </div>
                 <div style="width:3%">
@@ -83,10 +83,10 @@ if (!isset($statusDiplomaColor)) {
                         $empresaStyle = 'background-color: #ffcccc;'; // Fondo rojo claro
                     }
                 ?>
-                <div class='col-md-1 border-right' style="<?php echo $empresaStyle; ?>">
+                <div class='col-md-1 border-right text-uppercase' style="<?php echo $empresaStyle; ?>">
                         <?php echo $empresa['nombre']; ?>
                 </div>
-                <div class='col-md-1 border-right' style="<?php echo @$statusDiplomaColor[$curso['Diploma_Status']] ?>">
+                <div class='col-md-1 border-right text-uppercase' style="<?php echo @$statusDiplomaColor[$curso['Diploma_Status']] ?>">
                         <?php echo $curso['Diploma_Status']; ?>
                 </div>
                 <div class="col actions">
@@ -122,14 +122,14 @@ if (!isset($statusDiplomaColor)) {
 
         </div>
         <div class="collapse" id="infoCurso<?php echo $curso['StudentCursoID']; ?>">
-                <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:white">
+                <div class='row mx-auto my-2 container border border-5 m-2 text-uppercase' style="background-color:white">
                         <label class='col-md-6 col-12'>
                                 <b>Empresa:</b>
                                 <?php echo $empresa['nombre']; ?>
                         </label>
                         <label class='col-md-6 col-12'>
                                 <b>Email Empresa:</b>
-                                <span class="text-lowercase"><?php echo $empresa['email']; ?></span>
+                                <span><?php echo $empresa['email']; ?></span>
                         </label>
                         <label class='col-md-6 col-12'>
                                 <b>telefono Empresa:</b>
@@ -144,14 +144,14 @@ if (!isset($statusDiplomaColor)) {
                         </div>
                 </div>
                 <div class='row mx-auto my-2'>
-                        <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:white">
+                        <div class='row mx-auto my-2 container border border-5 m-2 text-uppercase' style="background-color:white">
                                 <label class='col-md-6 col-12'>
                                         <b>telefono alumno:</b>
                                         <?php echo $curso['telefono']; ?>
                                 </label>
                                 <label class='col-md-6 col-12'>
                                         <b>email alumno:</b>
-                                        <span class="text-lowercase"><?php echo $curso['email']; ?></span>
+                                        <span><?php echo $curso['email']; ?></span>
                                 </label>
                                 <label class='col-md-6 col-12'>
                                         <b>DNI/NIE:</b>
@@ -164,6 +164,7 @@ if (!isset($statusDiplomaColor)) {
                         </div>
                 </div>
                 <div class="col-md-12 col-12 container mt-3 mb-2 border border-2 rounded" style="background-color:white">
+                        <div class="text-uppercase">
                         <label class='col-md-12 col-12'>
                                 <b>Denominacion:</b>
                                 <?php echo $curso['Denominacion']; ?>
@@ -229,14 +230,19 @@ if (!isset($statusDiplomaColor)) {
                                         <i>(la última vez que cambió el estado del diploma): <?php echo formattedDate($curso['Diploma_Status_Ultimo_Cambio']); ?></i>
                                 </label>
                         </div>
+                        </div>
+                        <div style="background-color: white;">
                         <?php
                         require("template-parts/components/seguimentosAndComments.(curso.listadoCursos).php");
                         ?>
+                        </div>
                 </div>
         </div>
         <?php
-        require("template-parts/components/cursoEditar.(curso.listadoCursos).php");
         ?>
+        <div class="text-uppercase">
+        <?php require("template-parts/components/cursoEditar.(curso.listadoCursos).php"); ?>
+        </div>
 </div>
 <script>
         // Toggle custom PDF menus (no Bootstrap)

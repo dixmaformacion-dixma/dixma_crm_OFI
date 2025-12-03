@@ -316,8 +316,8 @@ function MostrarDiploma(tipo, aditional = false){
         <div class="inputrow" style="margin-top: 0.75cm">
           <div class="single-input">
             <div class="label">Ha superado con evaluación positiva la Acción Formativa</div>
-            <div class="dato" style="width:14.2cm;" contenteditable="true"><?php echo $alumnocurso['Denominacion'] ?></div>
-            <!--<input class="form-control" style="width:14.2cm;" value="<?php echo $alumnocurso['Denominacion'] ?>" type="text"></input>-->
+            <div class="dato" style="width:14.2cm;" contenteditable="true"><?php echo mb_strtoupper($alumnocurso['Denominacion'],'UTF-8') ?></div>
+            <!--<input class="form-control" style="width:14.2cm;" value="<?php echo mb_strtoupper($alumnocurso['Denominacion'],'UTF-8') ?>" type="text"></input>-->
           </div>
         </div>
 
@@ -454,7 +454,7 @@ function MostrarDiploma(tipo, aditional = false){
     <label>DNI:</label>
     <input class="form-control" id="DNIfield" onchange="changefield('DNI')" value="<?php echo strtoupper($alumnocurso['nif']); ?>" type="text"></input>
     <label>Denominacion:</label>
-    <input class="form-control" id="Denominacionfield" onchange="changefield('Denominacion')" value="<?php echo $alumnocurso['Denominacion']; ?>" type="text"></input>
+    <input class="form-control" id="Denominacionfield" onchange="changefield('Denominacion')" value="<?php echo mb_strtoupper($alumnocurso['Denominacion'],'UTF-8'); ?>" type="text"></input>
     <label>Details:</label>
 
 
@@ -553,7 +553,7 @@ function MostrarDiploma(tipo, aditional = false){
   <label>DNI:</label>
   <input class="form-control estetica_info" id="est_DNIfield" onchange="changefield('est_DNI')" value="<?php echo strtoupper($alumnocurso['nif']); ?>" type="text"></input>
   <label>Denominacion:</label>
-  <input class="form-control estetica_info" id="est_Denominacionfield" onchange="changefield('est_Denominacion')" value="<?php echo $alumnocurso['Denominacion']; ?>" type="text"></input>
+  <input class="form-control estetica_info" id="est_Denominacionfield" onchange="changefield('est_Denominacion')" value="<?php echo mb_strtoupper($alumnocurso['Denominacion'],'UTF-8'); ?>" type="text"></input>
   <label>Details:</label>
 
 
@@ -638,7 +638,7 @@ function MostrarDiploma(tipo, aditional = false){
   <label>DNI:</label>
   <input class="form-control soldadura_info" id="sold_DNIfield" onchange="changefield('sold_DNI')" value="<?php echo strtoupper($alumnocurso['nif']); ?>" type="text"></input>
   <label>Denominacion:</label>
-  <input class="form-control soldadura_info" id="sold_Denominacionfield" onchange="changefield('sold_Denominacion')" value="<?php echo $alumnocurso['Denominacion']; ?>" type="text"></input>
+  <input class="form-control soldadura_info" id="sold_Denominacionfield" onchange="changefield('sold_Denominacion')" value="<?php echo mb_strtoupper($alumnocurso['Denominacion'],'UTF-8'); ?>" type="text"></input>
   <label>Details:</label>
 
 

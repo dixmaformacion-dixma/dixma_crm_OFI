@@ -6,6 +6,7 @@ include "funciones/conexionBD.php";
 include "funciones/funcionesAlumnos.php";
 include "funciones/funcionesEmpresa.php";
 include "funciones/funcionesAlumnosCursos.php";
+include "funciones/funcionesVentas.php";
 
 setlocale(LC_ALL, 'ES_es');
 
@@ -53,18 +54,8 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
 ##end of procedure
 
 ##procedure to get the sale information
-  $conexionPDO = realizarConexion();
-  $sql = 'SELECT * FROM `ventas` WHERE `idempresa` = ?';
-
-  $stmt = $conexionPDO->prepare($sql);
-
-  $stmt->bindValue(1, $_GET['idEmpresa'], PDO::PARAM_STR);
-
-  $stmt->execute();
-
-  if($venta = $stmt->fetch()){
-    unset($conexionPDO);
-  }
+  // Use the helper function which returns the latest sale for the company
+  $venta = cargarVenta($_GET['idEmpresa']);
 ##end of procedure
 ?>
 
@@ -247,7 +238,7 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
         </tr>
         <tr>
           <td><div><input class="form-control border-0" value="1" type="text" style="width:50px; text-align:center"></input></div></td>
-          <td><div><input class="form-control border-0" value="ACCION FORMATIVA: <?php echo $alumnocurso[0]['Denominacion'] ?>" type="text" style="width:470px; text-align:left"></input></div></td>
+          <td><div><textarea class="form-control border-0" style="width:470px; text-align:left; resize: none; font-size: 11px;"><?php echo "ACCION FORMATIVA: ".$alumnocurso[0]['Denominacion'] ?></textarea></div></td>
           <td><div><input id="mainprice" class="form-control border-0" onchange="changePrice()" value="<?php if($venta){echo floatval($venta['importe']);} ?>" type="text" style="width:150px; text-align:right"></input></div></td>
           <td><div><input id="importe" class="form-control border-0" type="text" style="width:100px; text-align:right"></input></div></td>
         </tr>
