@@ -19,6 +19,7 @@ include "tutoria_editar_AlumnoCurso_function.php";
 include "tutoria_insertar_commentario_function.php";
 include "tutoria_editar_seguimentos_function.php";
 
+$empresasConPendientes = obtenerEmpresasConCursosPendientes();
 //include "tutoria_editar_AlumnoCurso_function.php";
 ?>
 
