@@ -129,6 +129,8 @@ $empresasConPendientes = obtenerEmpresasConCursosPendientes();
                                 $baseUrl = "tutoria_controlAsistencia.php?N_Accion=" . urlencode($n_accion) . "&N_Grupo=" . urlencode($n_grupo);
                                 echo '<div class="text-center mt-4">';
                                 echo '<a href="' . $baseUrl . '" id="controlAsistenciaBtn" class="btn btn-success">Control de Asistencia</a>';
+                                echo '<a href="tutoria_diplomaPDF_all.php" id="printAll" target="_blank" class="btn btn-danger ms-2">';
+                                echo '<i class="fa fa-print"></i> Imprimir Diplomas Seleccionados</a>';
                                 echo '</div>';
                             }
                             ?>
@@ -171,6 +173,39 @@ $empresasConPendientes = obtenerEmpresasConCursosPendientes();
             let baseUrl = $(this).attr('href');
             window.location.href = baseUrl + '&ids=' + selectedIds.join(',');
         });
+
+       /* 
+       // Handler per validare prima del click
+        $('#printAll').on('click', function(e) {
+            let selectedIds = $('input.selectable:checked')
+                .toArray()
+                .map(x => $(x).val())
+                .filter(x => x !== 'all' && !isNaN(parseInt(x)));
+
+            if (selectedIds.length === 0) {
+                e.preventDefault();
+                alert('Por favor, selecciona al menos un alumno para imprimir diplomas.');
+                return false;
+            }
+        });
+        */
+    });
+    
+
+    // Event handler per aggiornare il link quando cambiano i checkbox
+    $(document).on('click', '.selectable', function(){
+        let href = $('#printAll').attr('href').split('?')[0];
+        
+        if($(this).val() == 'all'){
+            $('.selectable').prop('checked', $(this).prop('checked'));
+        }
+        
+        let selectables = $(".selectable:checked").toArray()
+            .map(x => $(x).val())
+            .filter(x => !isNaN(parseInt(x)));
+        
+        href += `?ids=${selectables.join(',')}`;
+        $('#printAll').attr('href', href);
     });
 
     // Toggle custom PDF menus (no Bootstrap)
