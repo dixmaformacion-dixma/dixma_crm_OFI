@@ -57,8 +57,21 @@
       die("Error occured while fetching course information");;
     }
   ##end of procedure
+   $contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
+$fecha_inicio             = date('Y-m-d', strtotime($alumnocurso['Fecha_Inicio']));
+$fecha_fin                = date('Y-m-d', strtotime($alumnocurso['Fecha_Fin']));
+$same_date                = ($fecha_inicio === $fecha_fin);
+$fecha_expedicion         = date("Y-m-d", strtotime($fecha_fin . ' +5 days'));
+$fecha_inicio_display     = formattedDate($fecha_inicio);
+$fecha_fin_display        = formattedDate($fecha_fin);
+$day_of_week = date('N', strtotime($fecha_expedicion)); 
+if ($day_of_week == 6) {
+    $fecha_expedicion = date("Y-m-d", strtotime($fecha_expedicion . ' +2 days'));
+} elseif ($day_of_week == 7) {
+    $fecha_expedicion = date("Y-m-d", strtotime($fecha_expedicion . ' +1 day'));
+}
+$fecha_expedicion_display = formattedDate($fecha_expedicion);
 
-  $contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
 ?>
 
 <!doctype html>
@@ -66,7 +79,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PDF</title>
+  <title><?php
+  // Prepara el nombre del archivo para descargar 
+  $filename = $alumnocurso['nombre'] . ' ' . $alumnocurso['apellidos'];
+  // Convertir caracteres acentuados en versiones sin acento
+  $filename = str_replace(
+    ['á', 'é', 'í', 'ó', 'ú', 'ñ', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ñ', 'ü', 'Ü'],
+    ['a', 'e', 'i', 'o', 'u', 'n', 'A', 'E', 'I', 'O', 'U', 'N', 'u', 'U'],
+    $filename
+  );
+  $filename = str_replace(' ', '_', $filename);
+  // Agregar N_Accion y N_Grupo al inicio
+  $filename = $alumnocurso['N_Accion'] . '_' . $alumnocurso['N_Grupo'] . '_' . $filename;
+  echo $filename;
+?></title>
   <link href="css/bootstrap.min.css" rel="stylesheet"></link>
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/jquery.min.js"></script>
@@ -371,7 +397,7 @@ function MostrarDiploma(tipo, aditional = false){
           </div>
           <div>
             <div class="label" style="font-size:3mm; text-align:center"><b>Fecha de expedición</b></div>
-            <div class="d-flex" style="text-align:center; justify-content:center;"><input class="form-control border-0" style="width:7.25cm; text-align:center; font-weight:bold" value="<?php echo Date("d/m/Y"); ?>" type="text"></input></div>
+            <div class="d-flex" style="text-align:center; justify-content:center;"><input class="form-control border-0" style="width:7.25cm; text-align:center; font-weight:bold" value="<?php echo $fecha_expedicion_display; ?>" type="text"></input></div>
           </div>
           <div>
             <div class="label" style="font-size:3mm; text-align:center"><b>Firma del trabajador/a</b></div>
@@ -458,10 +484,20 @@ function MostrarDiploma(tipo, aditional = false){
     <label>Details:</label>
 
 
-    <input class="form-control" id="detailsfield" onchange="changefield('details')" value=" entre el <?php echo formattedDate(strtoupper($alumnocurso['Fecha_Inicio'])); ?> y el <?php echo formattedDate(strtoupper($alumnocurso['Fecha_Fin'])); ?> con una duración de <?php echo strtoupper($alumnocurso['N_Horas']); ?> horas en modalidad <?php echo $alumnocurso['Modalidad']; ?>" type="text"></input>
+    <input class="form-control" id="detailsfield" onchange="changefield('details')" 
+       value=" 
+       <?php 
+       if ($same_date) {
+           echo "el $fecha_inicio_display"; 
+       } else {
+           echo "entre el $fecha_inicio_display y el $fecha_fin_display";
+       } ?> 
+       con una duración de <?php echo strtoupper($alumnocurso['N_Horas']); ?> horas en modalidad <?php echo $alumnocurso['Modalidad']; ?>" 
+       type="text">
+    </input>
     <?php 
       $fecha = $alumnocurso['Fecha_Fin'];
-      $fecha = strtotime($fecha.' +15 days');
+      $fecha = strtotime($fecha.' +2 days');
       $fecha_emision = date("Y-m-d",$fecha);
       if(in_array(date("w",$fecha),[6,0])){
         $fecha_emision = date("Y-m-d",strtotime($fecha_emision.' next monday'));
