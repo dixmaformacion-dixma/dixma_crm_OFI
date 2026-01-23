@@ -1,5 +1,3 @@
-
-
 <?php
 
 include "funciones/conexionBD.php";
@@ -374,12 +372,19 @@ function changeFormaDePago(){
   }
 }
 function changePrice(){
-  price = $('#mainprice').get(0).value * 1.0;
-  $('#mainprice').get(0).value = price.toFixed(2);
-  $('#importe').get(0).value = price.toFixed(2);
-  $('#costes_directos').get(0).value = (price/1.1).toFixed(2);
-  $('#costes_organizacion').get(0).value = (price/1.1*0.1).toFixed(2);
-  $('#total').get(0).value = price.toFixed(2);
+  let priceInput = $('#mainprice').get(0).value;
+  priceInput = priceInput.replace(',', '.');
+  const price = parseFloat(priceInput);
+  if (!isNaN(price)) {
+    $('#mainprice').get(0).value = price.toFixed(2);
+    $('#importe').get(0).value = price.toFixed(2);
+    $('#costes_directos').get(0).value = (price / 1.1).toFixed(2);
+    $('#costes_organizacion').get(0).value = (price / 1.1 * 0.1).toFixed(2);
+    $('#total').get(0).value = price.toFixed(2);
+  } else {
+    $('#mainprice').get(0).value = '';
+    alert('Inserisci un numero valido.');
+  }
 }
 
 changeFormaDePago();
