@@ -128,7 +128,11 @@ if (!isset($statusDiplomaColor)) {
                                 <?php echo $empresa['nombre']; ?>
                         </label>
                         <label class='col-md-6 col-12'>
-                                <b>Email Empresa:</b>
+                                <b>CIF:</b>
+                                <?php echo $empresa['cif']; ?>
+                        </label>
+                        <label class='col-md-6 col-12'>
+                                <b></b>Email Empresa:</b>
                                 <span><?php echo $empresa['email']; ?></span>
                         </label>
                         <label class='col-md-6 col-12'>
