@@ -72,7 +72,17 @@ while ($curso = $stmt->fetch()) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PDF</title>
+  <title><?php
+    // Genera il nome del file: N_Accion_N_Grupo_varios
+    if (!empty($diplomas)) {
+        $primer_diploma = $diplomas[0];
+        $n_accion = isset($primer_diploma['N_Accion']) ? $primer_diploma['N_Accion'] : 'ACCION';
+        $n_grupo = isset($primer_diploma['N_Grupo']) ? $primer_diploma['N_Grupo'] : 'GRUPO';
+        echo $n_accion . '_' . $n_grupo . '_varios';
+    } else {
+        echo 'Diplomas_varios';
+    }
+    ?></title>
   <link href="css/bootstrap.min.css" rel="stylesheet">
   </link>
   <script src="js/bootstrap.bundle.min.js"></script>
@@ -316,13 +326,26 @@ while ($curso = $stmt->fetch()) {
   </div>
   <?php
   foreach ($diplomas as $alumnocurso) {
-    $contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y'));
+    $contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
     $fecha = $alumnocurso['Fecha_Fin'];
-    $fecha = strtotime($fecha . ' +15 days');
+    $fecha = strtotime($fecha . ' +3 days');
     $fecha_emision = date("Y-m-d", $fecha);
     if (in_array(date("w", $fecha), [6, 0])) {
       $fecha_emision = date("Y-m-d", strtotime($fecha_emision . ' next monday'));
     }
+    $fecha_inicio             = date('Y-m-d', strtotime($alumnocurso['Fecha_Inicio']));
+$fecha_fin                = date('Y-m-d', strtotime($alumnocurso['Fecha_Fin']));
+$same_date                = ($fecha_inicio === $fecha_fin);
+$fecha_expedicion         = date("Y-m-d", strtotime($fecha_fin . ' +5 days'));
+$fecha_inicio_display     = formattedDate($fecha_inicio);
+$fecha_fin_display        = formattedDate($fecha_fin);
+$day_of_week = date('N', strtotime($fecha_expedicion)); 
+if ($day_of_week == 6) {
+    $fecha_expedicion = date("Y-m-d", strtotime($fecha_expedicion . ' +2 days'));
+} elseif ($day_of_week == 7) {
+    $fecha_expedicion = date("Y-m-d", strtotime($fecha_expedicion . ' +1 day'));
+}
+$fecha_expedicion_display = formattedDate($fecha_expedicion);    
   ?>
     <div class="bonificado">
       <div class="pagewrapper" style="padding:1cm">
@@ -419,7 +442,7 @@ while ($curso = $stmt->fetch()) {
               </div>
               <div>
                 <div class="label" style="font-size:3mm; text-align:center"><b>Fecha de expedición</b></div>
-                <div class="d-flex" style="text-align:center; justify-content:center;"><input class="form-control border-0" style="width:7.25cm; text-align:center; font-weight:bold" value="<?php echo Date("d/m/Y"); ?>" type="text"></input></div>
+                <div class="d-flex" style="text-align:center; justify-content:center;"><input class="form-control border-0" style="width:7.25cm; text-align:center; font-weight:bold" value="<?php echo $fecha_expedicion_display ?>" type="text"></input></div>
               </div>
               <div>
                 <div class="label" style="font-size:3mm; text-align:center"><b>Firma del trabajador/a</b></div>
@@ -478,9 +501,15 @@ while ($curso = $stmt->fetch()) {
             </div>
           </div>
           <div class="d-flex justify-content-center">
-            <div id="details" style="text-align:center; font-size:6mm; margin-top:0.75cm;" contenteditable="true">
-              entre el <?php echo formattedDate(strtoupper($alumnocurso['Fecha_Inicio'])); ?> y el <?php echo formattedDate(strtoupper($alumnocurso['Fecha_Fin'])); ?> con una duración de <?php echo strtoupper($alumnocurso['N_Horas']); ?> horas en modalidad <?php echo $alumnocurso['Modalidad']; ?>
-            </div>
+              <div id="details" style="text-align:center; font-size:6mm; margin-top:0.75cm;" contenteditable="true">
+                  <?php 
+                  if ($same_date) {
+                      echo "el $fecha_inicio_display";
+                  } else {
+                      echo "entre el $fecha_inicio_display y el $fecha_fin_display";
+                  }
+                  ?> con una duración de <?php echo strtoupper($alumnocurso['N_Horas']); ?> horas en modalidad <?php echo $alumnocurso['Modalidad']; ?>
+              </div>
           </div>
           <div class="entidadText" style="text-align: center;font-size: 3.9mm;position: absolute;left: 5.4cm;width: 217px;bottom: 0.6cm;z-index: 10;font-weight: 300;" contentEditable="true">
             <b>Entidad Responsable de Impartir la Formación</b>
@@ -512,7 +541,15 @@ while ($curso = $stmt->fetch()) {
         <label>Details:</label>
 
 
-        <input class="form-control" id="detailsfield" onchange="changefield('details')" value=" entre el <?php echo formattedDate(strtoupper($alumnocurso['Fecha_Inicio'])); ?> y el <?php echo formattedDate(strtoupper($alumnocurso['Fecha_Fin'])); ?> con una duración de <?php echo strtoupper($alumnocurso['N_Horas']); ?> horas en modalidad <?php echo $alumnocurso['Modalidad']; ?>" type="text"></input>
+        <input class="form-control" id="detailsfield" onchange="changefield('details')" 
+        value="<?php 
+        if ($same_date) {
+        echo "el $fecha_inicio_display";
+        } else {
+        echo "entre el $fecha_inicio_display y el $fecha_fin_display";
+        }
+        ?> con una duración de <?php echo strtoupper($alumnocurso['N_Horas']); ?> horas en modalidad <?php echo $alumnocurso['Modalidad']; ?>" 
+        type="text"></input>
 
 
         <label>Fecha:</label>
