@@ -57,7 +57,7 @@
       die("Error occured while fetching course information");;
     }
   ##end of procedure
-   $contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
+$contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
 $fecha_inicio             = date('Y-m-d', strtotime($alumnocurso['Fecha_Inicio']));
 $fecha_fin                = date('Y-m-d', strtotime($alumnocurso['Fecha_Fin']));
 $same_date                = ($fecha_inicio === $fecha_fin);
