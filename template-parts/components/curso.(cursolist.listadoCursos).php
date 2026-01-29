@@ -128,11 +128,7 @@ if (!isset($statusDiplomaColor)) {
                                 <?php echo $empresa['nombre']; ?>
                         </label>
                         <label class='col-md-6 col-12'>
-                                <b>CIF:</b>
-                                <?php echo $empresa['cif']; ?>
-                        </label>
-                        <label class='col-md-6 col-12'>
-                                <b></b>Email Empresa:</b>
+                                <b>Email Empresa:</b>
                                 <span><?php echo $empresa['email']; ?></span>
                         </label>
                         <label class='col-md-6 col-12'>
@@ -235,7 +231,7 @@ if (!isset($statusDiplomaColor)) {
                                 </label>
                         </div>
                         </div>
-                        <div style="background-color: white;">
+                       <div style="background-color: white;">
                         <?php
                         require("template-parts/components/seguimentosAndComments.(curso.listadoCursos).php");
                         ?>

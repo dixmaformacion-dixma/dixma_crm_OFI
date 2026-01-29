@@ -57,6 +57,10 @@
             
             echo "<div class='alert alert-success' role='alert'>Fechas cambiadas con exito</div>";
 
+            if(!empty($_GET['redirect'])){
+                header("Refresh: 1; URL={$_GET['redirect']}");
+            }
+
         } else {
 
             echo "<div class='alert alert-danger' role='alert'>No se ha seleccionado ninguna llamada</div>";
@@ -87,65 +91,10 @@
 
     <!-- Menu cabecera -->
 
-    <nav class="navbar navbar-expand-lg justify-content-center border-bottom border-secondary" style="background-color:#e4e4e4;">
-
-        <div class="container-fluid">
-
-            <a class="navbar-brand" href="inicio.php"><img src="images/logo.gif" id="logo" class="img-fluid" style="width: 200px; heigth: 50px"></a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-center"  id="navbarSupportedContent">
-
-                <div class="navbar-nav nav-pills">
-
-                    <a class="nav-link active text-bg-secondary" href="inicio.php" aria-current="page"><b> Call Center </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin"){
-
-                    echo "<a class='nav-link' href='administracion.php'><b> Administracion </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link" href="comercial.php"><b> Comercial </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin" || $_SESSION['codigoUsuario'][0] == "3"){
-
-                    echo "<a class='nav-link' href='tutoria.php'><b> Tutoria </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link disabled me-5" href=""><b> Estadisticas </b></a>
-                    
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <b> <?php echo $_SESSION['usuario'] ?> </b>
-                        </a>
-
-                        <div class="dropdown-menu" style="background-color: #e4e4e4">
-                            <a class="dropdown-item " href="perfilUsuario.php"><b> Perfil </b></a>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item " href="funciones/cerrarSesion.php"><b> Cerrar sesion </b></a>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </nav>
+    <?php 
+        $menuaction = 'callcenter';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 
@@ -224,16 +173,11 @@
                     echo "<table class='table table-striped table-bordered table-sm text-center align-middle'>";
                     echo "<tr style='background-color: #8fd247;'>";
                     echo  "<th> ID </th>";
-                    echo  "<th> Código </th>";
+                    echo  "<th> Codigo </th>";
                     echo  "<th> Nombre </th>";
                     echo  "<th> Horario </th>";
                     echo  "<th> Poblacion </th>";
-
-                    if($_SESSION['codigoUsuario'] == "103"){
-
-                        echo "<th>Cambiar fecha</th>";
-
-                    }
+                    echo "<th>Cambiar fecha</th>";
 
                     echo  "<th></th>";
                     echo "</tr>";
@@ -243,30 +187,32 @@
                         echo "<tr>";
 
                         echo "<td class='text-uppercase'>" . $llamadas[$i]['idempresa'] . "</td>";
-                        echo "<td>" . $llamadas[$i]['horapendiente'] . "</td>";
+                        echo "<td>" . $llamadas[$i]['tipo_seguimiento'].$llamadas[$i]['horapendiente'] . "</td>";
                         echo "<td>" . $llamadas[$i]['nombre'] . "</td>";
                         echo "<td>" . $llamadas[$i]['horario'] . "</td>";
                         echo "<td>" . $llamadas[$i]['poblacion'] . "</td>";
-
-                        if($_SESSION['codigoUsuario'] == "103"){
-
-                            echo "<form method='GET' name='cambiarFechas'>";
-
-                            echo "<td> <input name='cambiarFechaCheck[]' value='" . $llamadas[$i]['idempresa'] . "' type='checkbox'></td>";
-                           
-                        }
+                        echo "<td> <input name='cambiarFechaCheck[]' value='" . $llamadas[$i]['idempresa'] . "' type='checkbox'></td>";
 
                         $fechaInicio = $_GET['fechaInicio'];
                         $fechaFin = $_GET['fechaFin'];
                         $provincia = $_GET['provincia'];
                         $poblacion = $_GET['poblacion'];
-                        echo "<td> <button type='button' class='btn' style='background-color: #1e989e;' onclick='enviarConsulta(" . $llamadas[$i]['idempresa'] . ', "pendiente", "' . $fechaInicio . '", "' . $fechaFin . '", "' . $provincia . '", "' . $poblacion . '"' . ")'> Consultar <img src='images/iconos/info-circle.svg' class='ml-5'> </button> </td>";
+                        $redirectTo="pendientes.php?fechaInicio={$fechaInicio}&provincia={$provincia}&fechaFin={$fechaFin}&poblacion={$poblacion}&consultar=Buscar";
+                        echo "<td> 
+                            <form action='pedirCitaForm.php'>
+                                <input type='hidden' name='idEmpresa' value='{$llamadas[$i]['idempresa']}'>
+                                <input type='hidden' name='idLlamada' value='pendiente'>
+                                <input type='hidden' name='tipo' value=''>
+                                <input type='hidden' name='redirect' value='{$redirectTo}'>
+                                <button type='submit' class='btn' style='background-color: #1e989e;'>Consultar <img src='images/iconos/info-circle.svg' class='ml-5'> </button> 
+                            </form>
+                        </td>";
 
                         echo "</tr>";
 
                     }
 
-                    if($_SESSION['codigoUsuario'] == "103"){
+                    //if($_SESSION['codigoUsuario'] == "103"){
 
                     echo "<tr>";
                     echo "<th>Fecha</th>";
@@ -287,13 +233,11 @@
                     echo "</td>";
 
                     echo "<td> <input class='form-control' name='nuevaFecha' value='$fechaHoy' type='date' required> </input> </td>";
-                    echo "<td> <button class='btn btn-danger' name='cambiarFechaBoton' value='cambiarFecha'>Cambiar fecha <img src='images/iconos/arrow-repeat.svg' class='ml-5'> </button> </td>";
-
-                    echo "</form>";
+                    echo "<td> <button class='btn btn-danger' onclick='cambiarFechaBtnClick()' name='cambiarFechaBoton' value='cambiarFecha'>Cambiar fecha <img src='images/iconos/arrow-repeat.svg' class='ml-5'> </button> </td>";
 
                     echo " </tr>";
 
-                }
+                //}
 
                     echo "<tr>";
                     echo "<td colspan=6> <b> TOTAL PENDIENTES: $i </b> </td>";
@@ -315,6 +259,37 @@
             <p class="text-center mt-md-4" style='color: #8fd247;'> <b> © Dixma Formación 2022. | Ctra. Madrid 152, Vigo 36318 | info@dixmaformacion.com | Tlf: +34 604 067 035 </b> </p>
 
     </footer>
+
+    <script>
+        function cambiarFechaBtnClick(){
+            let f = document.createElement('form')
+            f.name = 'cambiarFechas';
+            let n = null;
+            $('input[name="cambiarFechaCheck[]"]:checked').toArray().map(x=>{
+                n = document.createElement('input');
+                n.type = 'hidden';
+                n.name = 'cambiarFechaCheck[]';
+                n.value = x.getAttribute('value');
+                f.append(n);
+            })
+            n = document.createElement('input');
+            n.type = 'hidden';
+            n.name = 'cambiarFechaBoton';
+            n.value = 'cambiarFecha';
+            f.append(n);
+            f.append(document.querySelectorAll('input[name="nuevaFecha"]')[0])
+
+            n = document.createElement('input');
+            n.type = 'hidden';
+            n.name = 'redirect';
+            n.value = document.location.href;
+            f.append(n);
+
+            f.action = document.location.href;
+            document.body.append(f);
+            f.submit();
+        }
+    </script>
     
 </body>
 </html>

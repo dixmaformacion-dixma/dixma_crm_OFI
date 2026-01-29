@@ -41,6 +41,7 @@
             'cargoPersonaContacto' => $_POST['cargoPersonaContacto'],
             'email' => $_POST['email'],
             'email2' => $_POST['email2'],
+            'horario' => $_POST['horario'],
             'creditoVigente' => $_POST['creditoVigente'],
             'creditoAnhoAnterior' => $_POST['creditoAnhoAnterior'],
             'nEmpleados' => $_POST['nEmpleados'],
@@ -48,7 +49,7 @@
             'codigoPostal' => $_POST['codigoPostal'],
             'provincia' => $_POST['provincia'],
             'poblacion' => $_POST['poblacion'],
-            'sector' => $_POST['sector'],
+            'sector' => implode('|!!|',$_POST['sector']),
             'pais' => "ESP",
             'telefono' => $_POST['telefono'],
             'telefono2' => $_POST['telefono2'],
@@ -56,7 +57,10 @@
             'observacionesEmpresa' => $_POST['observacionesEmpresa'],
             'creditoGuardado' => $_POST['creditoGuardado'],
             'creditoCaducar' => $_POST['creditoCaducar'],
-
+            'referencia'=>$_POST['referencia'],
+            'codigo'=>$_POST['codigo'],
+            'pdte_bonificar'=>$_POST['pdte_bonificar']
+            
         ];
 
         if(actualizarEmpresa($datosEmpresa, $_GET['idEmpresa'])){
@@ -69,7 +73,7 @@
 
         }
 
-        if($_POST['nuevaVenta'] == "si"){
+        if(strtolower($_POST['nuevaVenta']) == "si"){
 
             $fechaCobro = date('d-m-Y', strtotime($_POST['fechaCobro']));
 
@@ -115,7 +119,7 @@
     }
 
 
-       header('Refresh: 1; URL=administracion.php');
+       //header('Refresh: 1; URL=administracion.php');
 
     };
     
@@ -150,55 +154,10 @@
 
     <!-- Menu cabecera -->
 
-    <nav class="navbar navbar-expand-lg justify-content-center border-bottom border-secondary" style="background-color:#e4e4e4;">
-
-        <div class="container-fluid">
-
-            <a class="navbar-brand" href="inicio.php"><img src="images/logo.gif" id="logo" class="img-fluid" style="width: 200px; heigth: 50px"></a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-center"  id="navbarSupportedContent">
-
-                <div class="navbar-nav nav-pills">
-
-                    <a class="nav-link" href="inicio.php" aria-current="page"><b> Call Center </b></a>
-                    <a class="nav-link active text-bg-secondary" href="administracion.php"><b> Administracion </b></a>
-                    <a class="nav-link" href="comercial.php"><b> Comercial </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin" || $_SESSION['codigoUsuario'][0] == "3"){
-
-                    echo "<a class='nav-link' href='tutoria.php'><b> Tutoria </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link disabled me-5" href=""><b> Estadisticas </b></a>
-                    
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <b> <?php echo $_SESSION['usuario'] ?> </b>
-                        </a>
-
-                        <div class="dropdown-menu" style="background-color: #e4e4e4">
-                            <a class="dropdown-item " href="perfilUsuario.php"><b> Perfil </b></a>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item " href="funciones/cerrarSesion.php"><b> Cerrar sesion </b></a>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </nav>
+    <?php 
+        $menuaction = 'administracion';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 
@@ -220,139 +179,7 @@
 
                             <input name="idEmpresa" value="<?php echo $_GET['idEmpresa'] ?>" hidden></input>
 
-                            <div class="row">
-                                <div class="col-md-8 col-12">
-                                    <label for="validationCustom03"><b>Nombre empresa:</b></label>
-                                    <input id="validationCustom03" class="form-control" name="nombreEmpresa" value="<?php echo $empresa['nombre'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>CIF:</b></label>
-                                    <input class="form-control" name="CIF" value="<?php echo $empresa['cif'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                            <div class="col-md-2 col-12">
-                                    <label><b>Credito vigente:</b></label>
-                                    <input class="form-control" name="creditoVigente" type="text" value="<?php echo $empresa['credito'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-2 col-12">
-                                    <label><b>Credito año anterior:</b></label>
-                                    <input class="form-control" name="creditoAnhoAnterior" type="text" value="<?php echo $empresa['creditoAnhoAnterior'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-3 col-12">
-                                    <label><b>Credito guardado:</b></label>
-
-                                    <label>Si:</label>
-                                    <input type="radio" id="guardaCredito" name="guardaCredito" checked>
-
-                                    <label>No:</label>
-                                    <input type="radio" id="guardaCreditoNo" name="guardaCredito" value="No">
-
-                                    <input class="form-control" id="cajaGuardaCredito" value="<?php echo $empresa['creditoGuardado'] ?>" name="creditoGuardado" type="text"></input>
-                                </div>
-
-                                <div class="col-md-3 col-12">        
-                                    <label><b>Importe credito a caducar:</b></label>
-                                    <input class="form-control" name="creditoCaducar" type="text" value="<?php echo $empresa['creditoCaducar'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-2 col-12">        
-                                    <label><b>Nº Empleados:</b></label>
-                                    <input class="form-control" name="nEmpleados" value="<?php echo $empresa['numeroempleados'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-5 col-12">
-                                    <label><b>Calle:</b></label>
-                                    <input class="form-control text-uppercase" name="calle" value="<?php echo $empresa['calle'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-2 col-12">
-                                    <label><b>Provincia:</b></label> <br>
-                                        <select class="form-select" name="provincia" id="selectProvincia" required>
-                                            <option hidden="true" selected> <?php echo $empresa['provincia'] ?> </option>
-                                            <option value="Pontevedra">Pontevedra</option>
-                                            <option value="Orense">Orense</option>
-                                            <option value="Lugo">Lugo</option>
-                                            <option value="Coruña">Coruña</option>
-                                        </select>
-                                </div>
-
-                                <div class="col-md-3 col-12">
-                                    <label><b>Poblacion:</b></label> <br>
-                                        <select class="form-select" name="poblacion" id="selectPoblacion" required>
-                                            <option hidden="true" selected> <?php echo $empresa['poblacion'] ?> </option>
-                                        </select>
-                                </div>
-
-                                <div class="col-md-2 col-12">
-                                    <label><b>Codigo postal:</b></label>
-                                    <input class="form-control" name="codigoPostal" value="<?php echo $empresa['cp'] ?>" required></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 col-12">
-                                    <label><b>Telefono:</b></label>
-                                    <input class="form-control" name="telefono" value="<?php echo $empresa['telef1'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Telefono 2:</b></label>
-                                    <input class="form-control" name="telefono2" value="<?php echo $empresa['telef2'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Telefono 3:</b></label>
-                                    <input class="form-control" name="telefono3" value="<?php echo $empresa['telef3'] ?>" maxlength="9"></input>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 col-12">
-                                    <label><b>Email:</b></label>
-                                    <input class="form-control" name="email" value="<?php echo $empresa['email'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-6 col-12">
-                                    <label><b>Email 2:</b></label>
-                                    <input class="form-control" name="email2" value="<?php echo $empresa['email2'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 col-12">
-                                    <label><b>Persona de contacto:</b></label>
-                                    <input class="form-control" name="personaContacto" value="<?php echo $empresa['personacontacto'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-6 col-12">
-                                    <label><b>Cargo persona de contacto:</b></label>
-                                    <input class="form-control" name="cargoPersonaContacto" value="<?php echo $empresa['cargo'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <label><b>Sector:</b></label>
-                                    <select class="form-select" name="sector" id="sectores">
-                                        <option hidden="true" selected> <?php echo $empresa['sector'] ?> </option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <label><b>Observaciones:</b></label>
-                                    <textarea class="form-control" name="observacionesEmpresa"><?php echo $empresa['observacionesempresa']?></textarea>
-                                </div>
-                            </div>
+                            <?php require_once './template-parts/components/empresaFormDatosBasicos.php' ?>
 
                             <div class="row">
                                 <div class="col-md-12 col-12">

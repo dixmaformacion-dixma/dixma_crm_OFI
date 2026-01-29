@@ -27,4 +27,4 @@ function imprimir() {
 
     window.print(1);
 
-}
+} 

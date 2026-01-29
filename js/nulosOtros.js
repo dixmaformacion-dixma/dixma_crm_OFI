@@ -71,6 +71,7 @@ $(document).ready(function() {
         $('#selectPedirCita').attr("disabled", "");
         $('#anoPedirCita').attr("disabled", "");
         $('#mesPedirCita').attr("disabled", "");
+        $('#prioridadCita').attr("disabled", "");
         $('#selectHacerSeguimiento,input[name="fecha_seguimiento"],input[name="tipo_seguimiento"]').attr("disabled", "");
 
     });
@@ -85,6 +86,7 @@ $(document).ready(function() {
         $('#selectPedirCita').attr("disabled", "");
         $('#anoPedirCita').attr("disabled", "");
         $('#mesPedirCita').attr("disabled", "");
+        $('#prioridadCita').attr("disabled", "");
         $('#selectHacerSeguimiento,input[name="fecha_seguimiento"],input[name="tipo_seguimiento"]').attr("disabled", "");
 
     });
@@ -99,6 +101,7 @@ $(document).ready(function() {
         $('#selectPedirCita').attr("disabled", "");
         $('#anoPedirCita').attr("disabled", "");
         $('#mesPedirCita').attr("disabled", "");
+        $('#prioridadCita').attr("disabled", "");
         $('#selectHacerSeguimiento,input[name="fecha_seguimiento"],input[name="tipo_seguimiento"]').attr("disabled", "");
 
     });
@@ -148,6 +151,7 @@ $(document).ready(function() {
         $('#selectPedirCita').removeAttr("disabled");
         $('#anoPedirCita').removeAttr("disabled");
         $('#mesPedirCita').removeAttr("disabled");
+        $('#prioridadCita').removeAttr("disabled");
         $('#selectPedirCita').attr("required", "");
         $('#selectHacerSeguimiento,input[name="fecha_seguimiento"],input[name="tipo_seguimiento"]').attr("disabled", "");
         $('#fechaLlamada').attr("disabled", "");
@@ -165,6 +169,7 @@ $(document).ready(function() {
         $('#selectPedirCita').attr("disabled", "");
         $('#anoPedirCita').attr("disabled", "");
         $('#mesPedirCita').attr("disabled", "");
+        $('#prioridadCita').attr("disabled", "");
         $('#fechaLlamada').attr("disabled", "");
         $('#horaLlamada').attr("disabled", "");
         $('#fechaCita').attr("disabled", "");
@@ -173,5 +178,10 @@ $(document).ready(function() {
 
     });
 
-
+    $('input,textarea').on('change',function(e){
+        if(!['email','email2','horaLlamada','tipo_seguimiento'].includes($(this).attr('name'))){
+            const mayus = $(this).val().toUpperCase(); // Añade al input 
+            $(this).val(mayus); 
+        }
+    });
 });

@@ -76,8 +76,8 @@ if(isset($_GET['StudentCursoID'])){
     Para Firefox:
       -moz-appearance: none; */
   #volver{display:none;} /* esto oculta los input cuando imprimes */
-  #flechaMes{border:none; appearance: none; -moz-appearance: none; -webkit-appearance: none;}
-  #prueba{border:none; appearance: none; -moz-appearance: none; -webkit-appearance: none;}
+  #flechaMes{border:none; -moz-appearance: none; -webkit-appearance: none;}
+  #prueba{-moz-appearance: none; -webkit-appearance: none;}
   #noMostrar{border:none;}
 
   @page{
@@ -136,7 +136,7 @@ if(isset($_GET['StudentCursoID'])){
 
       <div class="row mt-1">
 
-        <label class="col-2 col-form-label">NOMBRE Y APELLIDOS:</label>
+        <label class="col-2 col-form-label" style="">NOMBRE Y APELLIDOS:</label>
           <div class="col-6">
             <input class="form-control form-control-sm text-uppercase" value="<?php echo $alumno['nombre'] . " " . $alumno['apellidos'] ?>" type="text"></input>
           </div>        
@@ -417,7 +417,6 @@ if(isset($_GET['StudentCursoID'])){
             <label class="col-2 col-form-label">DENOMINACIÓN:</label>
             <div class="col-6 border border-2 border-bottom-0 rounded-top">
               <input id="noMostrar" class="form-control form-control-sm" type="text"
-              <input id="noMostrar" class="form-control form-control-sm text-uppercase" type="text"
               value="<?php if($alumnoCurso) echo $alumnoCurso['Denominacion'] ?>"></input>
             </div>             
 
@@ -542,7 +541,7 @@ if(isset($_GET['StudentCursoID'])){
               <option>Septiembre</option>
               <option>Octubre</option>
               <option>Noviembre</option>
-              <option>Diciembre</option>
+              <option>Diciembre</option> 
             </select> 
             de<input id="noMostrar" class="text-center" style="width: 50px"> </input> </label>
         </div>

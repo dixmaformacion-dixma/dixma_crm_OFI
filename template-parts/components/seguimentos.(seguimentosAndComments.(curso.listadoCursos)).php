@@ -4,7 +4,7 @@
                 style="background-color:#1e989e"
                 data-bs-toggle="collapse"
                 href="#EditarFetcha<?php echo $curso['StudentCursoID']; ?>">
-                Editar seguimentos
+                Editar seguimientos
         </a>
 </div>
         

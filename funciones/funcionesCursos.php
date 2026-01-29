@@ -26,7 +26,7 @@
 
             unset($conexionPDO);
            
-    }
+    } 
 
     function cargarCursos($curso){
 
@@ -220,12 +220,32 @@
 
     }
 
+    function getTiposCursos(){
+        $conexionPDO = realizarConexion();
+        $sql = "SELECT * FROM tipos_cursos";
+        $stmt = $conexionPDO->query($sql);
+        $cursos = [];
+        while($curso = $stmt->fetch()){
+            array_push($cursos, $curso);
+        }
+        return $cursos;
+    }
+
+    function getTiposCursosCollection(){
+        $cursos = getTiposCursos();
+        $c = [];
+        foreach($cursos as $c){
+            $c[] = $c->codigo;
+        }
+        return $c;
+    }
+
     function cargarCursos2($tipo) {
 
         $cursos = [];
 
         $conexionPDO = realizarConexion();
-        $sql = "SELECT * FROM listacursos WHERE tipoCurso = '$tipo'";
+        $sql = "SELECT * FROM listacursos WHERE tipoCurso = '$tipo' ORDER BY orden,TRIM(nombreCurso) ASC";
         $stmt = $conexionPDO->query($sql);
 
         while($curso = $stmt->fetch()){
@@ -262,7 +282,7 @@
         $cursos = [];
 
         $conexionPDO = realizarConexion();
-        $sql = "SELECT * FROM listacursos";
+        $sql = "SELECT * FROM listacursos ORDER BY orden,TRIM(nombreCurso) ASC";
         $stmt = $conexionPDO->query($sql);
 
         while($curso = $stmt->fetch()){

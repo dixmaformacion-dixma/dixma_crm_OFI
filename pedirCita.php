@@ -18,7 +18,7 @@
     }
 
     $pagina = 1;
-    $limite = 10;
+    $limite = 100;
 
     if(isset($_GET['pagina'])){
 
@@ -39,6 +39,7 @@
     $mes = "Todas";
     $poblacion = "Todas";
     $provincia = "Todas";
+    $prioridad = "";
     $search = "";
 
     if(isset($_GET['busqueda'])){
@@ -50,8 +51,14 @@
     if(isset($_GET['mes'])){
         $mes = $_GET['mes'];
     }
+    if(isset($_GET['provincia'])){
+        $provincia = $_GET['provincia'];
+    }
     if(isset($_GET['poblacion'])){
         $poblacion = $_GET['poblacion'];
+    }
+    if(isset($_GET['prioridad'])){
+        $prioridad = $_GET['prioridad'];
     }
 
 ?>
@@ -75,65 +82,10 @@
 
     <!-- Menu cabecera -->
 
-    <nav class="navbar navbar-expand-lg justify-content-center border-bottom border-secondary" style="background-color:#e4e4e4;">
-
-        <div class="container-fluid">
-
-            <a class="navbar-brand" href="inicio.php"><img src="images/logo.gif" id="logo" class="img-fluid" style="width: 200px; heigth: 50px"></a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-center"  id="navbarSupportedContent">
-
-                <div class="navbar-nav nav-pills">
-
-                    <a class="nav-link active text-bg-secondary" href="inicio.php" aria-current="page"><b> Call Center </b></a>
-
-                    <?php 
-
-                        if($_SESSION['rol'] == "admin"){
-
-                            echo " <a class='nav-link' href='administracion.php'><b> Administracion </b></a>";
-
-                        }
-
-                    ?>
-
-                    <a class="nav-link" href="comercial.php"><b> Comercial </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin" || $_SESSION['codigoUsuario'][0] == "3"){
-
-                    echo "<a class='nav-link' href='tutoria.php'><b> Tutoria </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link disabled me-5" href=""><b> Estadisticas </b></a>
-                    
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <b> <?php echo $_SESSION['usuario'] ?> </b>
-                        </a>
-
-                        <div class="dropdown-menu" style="background-color: #e4e4e4">
-                            <a class="dropdown-item " href="perfilUsuario.php"><b> Perfil </b></a>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item " href="funciones/cerrarSesion.php"><b> Cerrar sesion </b></a>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </nav>
+    <?php 
+        $menuaction = 'callcenter';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 
@@ -141,34 +93,7 @@
 
         <div class="row">
 
-            <div class="col-md-2 col-12 align-items-start text-justify" style="background-color:#e4e4e4;">
-                <nav class="navbar-nav nav-pills flex-column mt-2 mb-2">
-                    <a class="nav-link" href="buscarEmpresa.php"> <img class="ms-3" src="images/iconos/search.svg"> <b> Insertar / Buscar </b></a>
-                    <a class="nav-link" href="pendientes.php"> <img class="ms-3" src="images/iconos/exclamation-triangle.svg"> <b> Pendientes </b></a>
-                    <a class="nav-link" href="listado.php"> <img class="ms-3" src="images/iconos/list.svg"> <b> Listado </b></a>
-                    <a class="nav-link" href="sectores.php"> <img class="ms-3" src="images/iconos/briefcase.svg"> <b> Sectores </b></a>
-                    <a class="nav-link" href="control_llamadas.php"> <img class="ms-3" src="images/iconos/telephone.svg"> <b> Control de llamadas </b></a>
-                    <a class="nav-link" href="citas.php"> <img class="ms-3" src="images/iconos/calendar-day.svg"> <b> Citas </b></a>
-                    <a class="nav-link" href="listadoCitas.php"> <img class="ms-3" src="images/iconos/calendar-date.svg"> <b> Listado de Citas </b></a>
-                    <a class="nav-link" href="cursosInteresados.php"> <img class="ms-3" src="images/iconos/book.svg"> <b> Cursos interesados </b></a>
-
-                <?php 
-                    
-                    echo "<hr class='border border-dark'>";
-                    echo "<a class='nav-link active text-bg-secondary' href='pedirCita.php'> <img class='ms-3' src='images/iconos/calendar-plus.svg'> <b> Pedir Cita </b></a>";
-                    echo "<a class='nav-link' href='hacerSeguimiento.php'> <img class='ms-3' src='images/iconos/box-arrow-in-right.svg'> <b> Hacer seguimiento </b></a>";
-
-                    if($_SESSION['codigoUsuario'][0] == "1"){
-
-                        echo "<hr class='border border-dark'>";
-                        echo "<a class='nav-link' href='Callcenter_crearCurso.php'> <img class='ms-3' src='images/iconos/book.svg'> <b> Crear curso </b></a>";
-
-                    }
-
-                ?>
-
-                </nav> 
-            </div>
+            <?php require_once './template-parts/leftmenu/callcenter.template.php'; ?>
 
             <div class="col-md-10 col-12" id="formBusqueda">
 
@@ -196,12 +121,12 @@
                             </div>
                             <div class="col-md-2 col-12">
                                 <label><b>Poblacion:</b></label> <br>
-                                    <select class="form-select" name="poblacion" id="selectPoblacion" required>
+                                <select class="form-select" name="poblacion" id="selectPoblacion" required>
                                     <?php echo '<option selected value="'.$poblacion.'">'.$poblacion.'</option>'; ?>
-                                    </select>
+                                </select>
                             </div>
                             <div class="col-md-2 col-10">
-                                <label><b>Ano:</b></label> <br>
+                                <label><b>Año:</b></label> <br>
                                 <select name="ano" id="anoPedirCita" class="form-control">
                                     <option value="Todas" <?php if($ano == "Todas"){echo ' selected ';} ?>> Todas </option>
                                     <?php
@@ -233,17 +158,27 @@
                                     <option value="12" <?php if($mes == 12){echo ' selected ';} ?>> diciembre </option>
                                 </select>
                             </div>
+                             <div class="col-md-2 col-12">
+                                <label><b>PRIORIDAD:</b></label> <br>
+                                    <select class="form-select" name="prioridad" id="selectProvincia" required>
+                                        <option value="Todas" <?php if($prioridad == 'Todas'){echo ' selected ';} ?>>TODAS</option>
+                                        <option value="BAJO" <?php if($prioridad == 'BAJO'){echo ' selected ';} ?>>BAJO</option>
+                                        <option value="MEDIO" <?php if($prioridad == 'MEDIO'){echo ' selected ';} ?>>MEDIO</option>
+                                        <option value="ALTO" <?php if($prioridad == 'ALTO'){echo ' selected ';} ?>>ALTO</option>
+                                    </select>
+                            </div>
 
-                            <div class="col-md-2 col-2">
+                            <div class="col-md-12 text-center">
                                 <label><b>&nbsp</b></label> <br>
-                                <button class="btn btn-success" type="submit"> <img src="images/iconos2/search.svg"> </button>
+                                <button class="btn btn-success" type="submit"> <img src="images/iconos2/search.svg"> BUSCAR</button>
                             </div>
 
   
                         </div>
+                </form>
 
                         <?php
-                        if($llamadas = busquedaAnoMesPoblacion($search, $ano, $mes, $poblacion, $limite, $offset)){
+                        if($llamadas = busquedaAnoMesPoblacion($search, $ano, $mes, $poblacion,$provincia,$prioridad, $limite, $offset)){
                             $totalPaginas = ceil($llamadas[0]['full_count'] / $limite);
                         ?>
                             <div class="row d-flex justify-content-center">
@@ -260,9 +195,11 @@
                                         echo "<th> Nombre </th>";
                                         echo "<th> Poblacion </th>";
                                         echo "<th> Observaciones </th>";
-                                        echo "<th> Ano/Mes </th>";
+                                        echo "<th> Año/Mes </th>";
+                                        echo "<th> Prioridad </th>";
                                         echo "<th> </th>";
                                         echo "</tr>";
+                                        $redirectTo="/pedirCita.php?busqueda=$search&provincia=$provincia&poblacion=$poblacion&ano=$ano&mes=$mes&prioridad=$prioridad";
 
                                         foreach($llamadas as $llamada){
                                             echo "<tr>";
@@ -273,10 +210,22 @@
                                             echo "<td>";
                                             if($llamada['anoPedirCita'] != "" and $llamada['mesPedirCita'] != ""){
                                                 echo " " . $llamada['anoPedirCita'] . " " . ["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"][intval($llamada['mesPedirCita']) - 1]; 
-                                                echo ' | <a href="javascript:editarFecha('.$llamada['idllamada'].','.$llamada['mesPedirCita'].','.$llamada['anoPedirCita'].')">Editar</a>';
+                                                echo ' | <a href="javascript:editarFecha('.$llamada['idllamada'].','.$llamada['mesPedirCita'].','.$llamada['anoPedirCita'].',\''.$llamada['prioridad'].'\')">Editar</a>';
                                             };
                                             echo "</td>";
-                                            echo "<td> <button type='button' class='btn' style='background-color: #1e989e;' onclick='enviarConsultaPedirCita(" . $llamada['idempresa'] . ", " . $llamada['idllamada'] . ', "cita"' . ")'>Consultar <img src='images/iconos/info-circle.svg' class='ml-5'> </button> </td>";
+                                            echo "<td class='bg-".@['BAJO'=>'success','MEDIO'=>'warning','ALTO'=>'danger'][$llamada['prioridad']]."'>
+                                                " . $llamada['prioridad'];
+                                            echo ' | <a href="javascript:editarFecha('.$llamada['idllamada'].','.$llamada['mesPedirCita'].','.$llamada['anoPedirCita'].',\''.$llamada['prioridad'].'\')">Editar</a>';
+                                            echo "</td>";
+                                            echo "<td> 
+                                                <form action='pedirCitaForm.php'>
+                                                    <input type='hidden' name='idEmpresa' value='{$llamada['idempresa']}'/>
+                                                    <input type='hidden' name='idLlamada' value='{$llamada['idllamada']}'/>
+                                                    <input type='hidden' name='tipo' value='cita'/>
+                                                    <input type='hidden' name='redirect' value='{$redirectTo}'/>
+                                                    <button type='submit' class='btn' style='background-color: #1e989e;'>Consultar <img src='images/iconos/info-circle.svg' class='ml-5'> </button> 
+                                                </form>
+                                            </td>";
 
                                             echo "</tr>";
                                         }
@@ -322,14 +271,14 @@
                         </div>
                         
                         <?php }else{
-                                die("No results or Something went wrong when querying the database");
+                               echo "No results or Something went wrong when querying the database";
                         }
                         ?>
                         
 
                     </div>
 
-                </form>
+                
 
             </div>
 
@@ -372,6 +321,15 @@
                             <label for="">Año</label>
                             <input type="number" name="anoPedirCita" value="" class="form-control">
                         </div>
+                        <div class="form-group">
+                            <label for="">Prioridad</label>
+                            <select class="form-select" name="prioridad">
+                                <option value=""></option>
+                                <option value="BAJO">BAJO</option>
+                                <option value="MEDIO">MEDIO</option>
+                                <option value="ALTO">ALTO</option>
+                            </select>
+                        </div>
                         <input type="hidden" name="idllamada">
                         <div class="alert alert-success" id="successMsj">Datos almacenados con exito</div>
                         <div class="alert alert-danger" id="dangerMsj">Ocurrio un error al modificar la fecha, por favor intente nuevamente</div>
@@ -385,13 +343,14 @@
         </div>
         </div>
     <script>
-        function editarFecha(id,mes,ano){
+        function editarFecha(id,mes,ano,prioridad){
             $('#successMsj').hide();
             $('#dangerMsj').hide();
             $('#editarFecha').modal('show')
             $("select[name='mesPedirCita']").val(mes);
             $("input[name='anoPedirCita']").val(ano);
             $("input[name='idllamada']").val(id);
+            $("#editarFecha select[name='prioridad']").val(prioridad);
         }
         function modificarFecha(form){
             $('#successMsj').hide();
@@ -400,6 +359,7 @@
                 mesPedirCita:$("select[name='mesPedirCita']").val(),
                 anoPedirCita:$("input[name='anoPedirCita']").val(),
                 idllamada:$("input[name='idllamada']").val(),
+                prioridad:$("#editarFecha select[name='prioridad']").val(),
                 modificarFecha:1
             },function(d){
                 d = JSON.parse(d);
@@ -410,6 +370,13 @@
                     $('#dangerMsj').show();
                 }
             });
+        }
+        window.onload = function(){
+            setTimeout(function(){
+                poblacion = $('#selectPoblacion').val();
+                $('#selectProvincia').change();
+                $('#selectPoblacion').val(poblacion)
+            },600)
         }
     </script>
 </body>

@@ -27,11 +27,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' and $_POST['function'] == "editar_Alumn
             'Denominacion' => $_POST['Denominacion'],
             'N_Accion' => $_POST['N_Accion'],
             'N_Grupo' => $_POST['N_Grupo'],
-            'N_Horas' => str_replace(',', '.', $_POST['N_Horas']),
+            'N_Horas' => $_POST['N_Horas'],
             'Modalidad' => $_POST['Modalidad'],
             'DOC_AF' => $_POST['DOC_AF'],
-            'Fecha_Inicio' => !empty($_POST['Fecha_Inicio']) ? $_POST['Fecha_Inicio'] : NULL,
-            'Fecha_Fin' => !empty($_POST['Fecha_Fin']) ? $_POST['Fecha_Fin'] : NULL,
+            'Fecha_Inicio' => $_POST['Fecha_Inicio'],
+            'Fecha_Fin' => $_POST['Fecha_Fin'],
             'tutor' => $_POST['tutor'],
             'idCurso' => NULL,
             'idEmpresa' => $_POST['idEmpresa'],
@@ -42,8 +42,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' and $_POST['function'] == "editar_Alumn
             'CC' => 0,
             'RLT' => 0,
             'Factura' => $_POST['Factura'],
-            'Fecha_De_Envio_De_la_Factura' => !empty($_POST['Fecha_De_Envio_De_la_Factura']) ? $_POST['Fecha_De_Envio_De_la_Factura'] : NULL,
-            'Fecha_De_Recibido_De_La_Factura' => !empty($_POST['Fecha_De_Recibido_De_La_Factura']) ? $_POST['Fecha_De_Recibido_De_La_Factura'] : NULL,
+            'Fecha_De_Envio_De_la_Factura' => $_POST['Fecha_De_Envio_De_la_Factura'],
+            'Fecha_De_Recibido_De_La_Factura' => $_POST['Fecha_De_Recibido_De_La_Factura'],
             'Recibi_Material' => 0,
             'status_curso' => $_POST['status_curso'],
             'contenido_id' => $_POST['contenido_curso'],
@@ -64,14 +64,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' and $_POST['function'] == "editar_Alumn
         }
         if(isset($_FILES['firma_docente_file']) && !empty($_FILES['firma_docente_file'])){
             $path = './firmas/';
-            if (!is_dir($path)) {
-                mkdir($path, 0777, true);
-            }
             $name = substr(md5($_FILES['firma_docente_file']['name']),0,8).'_'.$_FILES['firma_docente_file']['name'];
             if(move_uploaded_file($_FILES['firma_docente_file']['tmp_name'],$path.$name)){
                 $datosAlumnoCurso['firma_docente'] = $name;
             }
         }
+
         if($_POST['Diploma_Status'] != $_POST['Diploma_Status_Before']){
             $datosAlumnoCurso['Diploma_Status_Ultimo_Cambio'] = date("Y-m-d");
         }

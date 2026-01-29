@@ -35,10 +35,10 @@ $(document).ready(function() {
         "Taller automovil",
 
     ].sort();
-
+    
     for(var i=0; i < sectores.length; i++){
    
-        $('#sectores').append("<option value='" + sectores[i].toUpperCase() + "'>" + sectores[i].toUpperCase() + "</option>");
+        $('.sectores,#sectores').append("<option value='" + sectores[i].toUpperCase() + "'>" + sectores[i].toUpperCase() + "</option>");
 
     }
 

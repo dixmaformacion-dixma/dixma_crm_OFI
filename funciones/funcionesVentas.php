@@ -146,22 +146,74 @@
         return $stmt->execute();
     }
 
-    function listadoVentasEmpresas($fechaInicio, $fechaFin) {
+	function listadoVentasEmpresasComercial($fechaInicio, $fechaFin, $empresa = '') {
 
         $ventas = [];
         $empresas = [];
 
-        $conexionPDO = realizarConexion();
-        $sql = "SELECT idventa, idempresa, importe, fechacobro, fecha FROM ventas WHERE STR_TO_DATE(fecha, '%d-%m-%Y') BETWEEN STR_TO_DATE('$fechaInicio', '%d-%m-%Y') AND STR_TO_DATE('$fechaFin', '%d-%m-%Y')";
-       
-        if($_SESSION['rol'] != "admin"){
-
-            $codigoUsuario = $_SESSION['codigoUsuario'];
-            $sql = "SELECT idventa, idempresa, importe, fechacobro, fecha FROM ventas WHERE STR_TO_DATE(fecha, '%d-%m-%Y') BETWEEN STR_TO_DATE('$fechaInicio', '%d-%m-%Y') AND STR_TO_DATE('$fechaFin', '%d-%m-%Y') AND idcomercial = '$codigoUsuario'";
-       
-            //$sql = "SELECT DISTINCT idempresa FROM ventas WHERE STR_TO_DATE(fecha, '%d-%m-%Y') BETWEEN STR_TO_DATE('$fechaInicio', '%d-%m-%Y') AND STR_TO_DATE('$fechaFin', '%d-%m-%Y') AND idcomercial = '$codigoUsuario'";
-           
+        $where = "";
+        if(!empty($empresa)){
+            $where.= " AND (ventas.idempresa='{$empresa}' OR empresas.nombre LIKE '%{$empresa}%')";
         }
+        if(!empty($fechaInicio) && !empty($fechaFin)){
+            $where.= " AND STR_TO_DATE(ventas.fecha, '%d-%m-%Y') BETWEEN STR_TO_DATE('$fechaInicio', '%d-%m-%Y') AND STR_TO_DATE('$fechaFin', '%d-%m-%Y')";
+        }
+        if($_SESSION['rol'] != "admin"){
+            $codigoUsuario = $_SESSION['codigoUsuario'];
+            $where.= " AND idcomercial = '$codigoUsuario'";
+        }
+
+        $conexionPDO = realizarConexion();
+        $sql = "SELECT 
+            ventas.idventa,
+            ventas.idempresa, 
+            ventas.importe, 
+            ventas.fechacobro, 
+            ventas.fecha 
+            FROM ventas 
+            INNER JOIN empresas ON empresas.idempresa = ventas.idempresa 
+            WHERE 1=1 $where AND ventas.idventa IN (SELECT MAX(idventa) FROM ventas GROUP BY idempresa)
+        ";
+
+        $stmt = $conexionPDO->query($sql);
+
+        while($venta = $stmt->fetch()){
+
+            array_push($ventas, $venta);
+
+        }
+
+        return $ventas;
+    }
+
+    function listadoVentasEmpresas($fechaInicio, $fechaFin, $empresa = '') {
+
+        $ventas = [];
+        $empresas = [];
+
+        $where = "";
+        if(!empty($empresa)){
+            $where.= " AND (ventas.idempresa='{$empresa}' OR empresas.nombre LIKE '%{$empresa}%')";
+        }
+        if(!empty($fechaInicio) && !empty($fechaFin)){
+            $where.= " AND STR_TO_DATE(ventas.fecha, '%d-%m-%Y') BETWEEN STR_TO_DATE('$fechaInicio', '%d-%m-%Y') AND STR_TO_DATE('$fechaFin', '%d-%m-%Y')";
+        }
+        if($_SESSION['rol'] != "admin"){
+            $codigoUsuario = $_SESSION['codigoUsuario'];
+            $where.= " AND idcomercial = '$codigoUsuario'";
+        }
+
+        $conexionPDO = realizarConexion();
+        $sql = "SELECT 
+            ventas.idventa,
+            ventas.idempresa, 
+            ventas.importe, 
+            ventas.fechacobro, 
+            ventas.fecha 
+            FROM ventas 
+            INNER JOIN empresas ON empresas.idempresa = ventas.idempresa 
+            WHERE 1=1 $where
+        ";
 
         $stmt = $conexionPDO->query($sql);
 

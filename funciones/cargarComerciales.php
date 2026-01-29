@@ -5,7 +5,7 @@
             $comerciales = [];
 
             $conexionPDO = realizarConexion();
-            $sql = "SELECT nombre, codigousuario, activo FROM usuarios";
+            $sql = "SELECT nombre, codigousuario, activo,idusuario FROM usuarios";
             $sql.= " WHERE activo = 1";
             //if($_SESSION['rol']=='callcenter'){
             //    $sql.= " AND tipo = 'comercial'";

@@ -50,7 +50,10 @@
 
     <!-- Menu cabecera -->
 
-    <?php require_once("template-parts/header/header.template.php"); ?>
+    <?php 
+        $menuaction = 'tutoria';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 

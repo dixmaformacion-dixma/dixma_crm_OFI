@@ -98,6 +98,7 @@
                         echo "<div class='col-md-10 col-12'>";
 
                         echo "<h2 class='text-center mt-2 pt-2 pb-2 border border-5' style='background-color: #b0d588; letter-spacing: 7px;'>FICHA DE ALUMNO</h2>";
+
                         foreach($alumnos as $alumno){
                             require("template-parts/components/alumno.buscarAlumno.php");
                         }

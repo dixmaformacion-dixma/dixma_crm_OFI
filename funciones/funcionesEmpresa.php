@@ -72,7 +72,7 @@
         email2 = ?, credito = ?, creditoAnhoAnterior = ?, numeroempleados = ?, calle = ?, cp = ?, 
         provincia = ?, poblacion = ?, sector = ?, pais = ?, telef1 = ?, telef2 = ?, telef3 = ?, 
         observacionesempresa = ?, creditoGuardado = ?, creditoCaducar = ?, referencia = ?, 
-        codigo = ?, horario = ?
+        codigo = ?, horario = ?, pdte_bonificar=?
         WHERE idempresa = ?";
         $stmt = $conexionPDO->prepare($sql);
 
@@ -102,7 +102,8 @@
                 $stmt->bindValue(22, $arrayDatos['referencia'], PDO::PARAM_STR);
                 $stmt->bindValue(23, $arrayDatos['codigo'], PDO::PARAM_STR);
                 $stmt->bindValue(24, $arrayDatos['horario'], PDO::PARAM_STR);
-                $stmt->bindValue(25, $id, PDO::PARAM_INT);
+                $stmt->bindValue(25, $arrayDatos['pdte_bonificar'], PDO::PARAM_STR);
+                $stmt->bindValue(26, $id, PDO::PARAM_INT);
                 
        
                 $stmt->execute();
@@ -133,8 +134,8 @@
         } else {
 
                 $sql = "INSERT INTO empresas 
-                (nombre, cif, numeroempleados, calle, cp, provincia, poblacion, pais, telef1, telef2, email, personacontacto, cargo, observacionesempresa, sector, credito, email2, telef3, creditoAnhoAnterior, fecha, creditoGuardado, hora, nss, horacontactodesde, horacontactohasta, protecciondedatos, codigousuario, creditoCaducar) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                (nombre, cif, numeroempleados, calle, cp, provincia, poblacion, pais, telef1, telef2, email, personacontacto, cargo, observacionesempresa, sector, credito, email2, telef3, creditoAnhoAnterior, fecha, creditoGuardado, hora, nss, horacontactodesde, horacontactohasta, protecciondedatos, codigousuario, creditoCaducar,referencia,horario,pdte_bonificar) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $conexionPDO->prepare($sql);
            
             if($stmt){
@@ -169,6 +170,9 @@
                 $stmt->bindValue(26, "", PDO::PARAM_STR);
                 $stmt->bindValue(27, $datosEmpresa['codigoUsuario'], PDO::PARAM_STR);
                 $stmt->bindValue(28, $datosEmpresa['creditoCaducar'], PDO::PARAM_STR);
+                $stmt->bindValue(29, $datosEmpresa['referencia'], PDO::PARAM_STR);
+                $stmt->bindValue(30, $datosEmpresa['horario'], PDO::PARAM_STR);
+                $stmt->bindValue(31, $datosEmpresa['pdte_bonificar'], PDO::PARAM_STR);
                 //$stmt->bindValue(29, "", PDO::PARAM_STR);
                 
                 $stmt->execute();
@@ -203,11 +207,11 @@
             $empresas = [];
 
             $conexionPDO = realizarConexion();
-            $sql = "SELECT * FROM empresas WHERE sector = '$sector'";
+            $sql = "SELECT * FROM empresas WHERE sector LIKE '%$sector%'";
             $stmt = $conexionPDO->query($sql);
 
             while($empresa = $stmt->fetch()){
-
+                $empresa['sector'] = str_replace('|!!|',', ',$empresa['sector']);
                 array_push($empresas, $empresa);
 
             }
@@ -327,6 +331,17 @@
             $annos[] = $ref['anno'];
         }
         return $annos;
+    }
+
+    function getEmpresasConCreditosACaducar(){
+        $conexionPDO = realizarConexion();
+        $sql = "SELECT empresas.*,'' as acciones FROM empresas WHERE creditoCaducar IS NOT NULL AND creditoCaducar!='' ORDER BY `idempresa` ASC";
+        $stmt = $conexionPDO->query($sql);
+        $empresas = [];
+        while($ref = $stmt->fetch()){
+            $empresas[] = $ref;
+        }
+        return $empresas;
     }
 
     

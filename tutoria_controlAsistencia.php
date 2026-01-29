@@ -67,13 +67,13 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
 
             body {
                 background-color: #fff !important;
-                width: 100%;
+                width: 100%; /* Dejamos que el navegador controle el ancho */
                 font-size: 12px;
                 color: #003366;
             }
 
             .printable-area {
-                border: none !important;
+                border: none !important; /* Aseguramos que el área imprimible no tenga bordes */
             }
 
             .editable-input {
@@ -96,27 +96,8 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
             }
 
             tr {
-                page-break-inside: avoid;
+                page-break-inside: avoid; /* Evita que las filas se corten entre páginas */
             }
-        }
-        .printable-area {
-            display: flex;
-            flex-direction: column;
-            min-height: calc(100vh - 40px);
-        }
-        .content-body {
-            flex: 1 0 auto;
-        }
-        .observaciones {
-            border: 1px solid #003366;
-            color: #003366;
-            padding: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        @media print {
-            .printable-area { min-height: 280mm; }
-            .observaciones { position: relative; bottom: 0; }
         }
     </style>
 </head>
@@ -132,7 +113,6 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
         </div>
 
         <div class="printable-area p-4 border rounded bg-white">
-            <div class="content-body">
             <?php if (!$course_data || empty($students_list)) : ?>
                 <div class="alert alert-warning text-center">
                     No se encontraron datos del curso o no se seleccionaron alumnos.
@@ -145,7 +125,7 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
                 <h2 class="text-center mb-4">Control de Asistencia</h2>
                 <div class="mb-4 p-3" style="border: 1px solid #003366; color: #003366;">
                     <div>
-                        <strong>DENOMINACIÓN DE LA ACCIÓN FORMATIVA:</strong> <?= htmlspecialchars(mb_strtoupper($course_data['Denominacion'])) ?>
+                        <strong>DENOMINACIÓN DE LA ACCIÓN FORMATIVA:</strong> <?= htmlspecialchars($course_data['Denominacion']) ?>
                     </div>
                     <div class="mt-2">
                         <span class="me-4"><strong>Nº AF:</strong> <?= htmlspecialchars($course_data['N_Accion']) ?></span>
@@ -195,8 +175,7 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
                     </table>
                 </div>
 
-            </div>
-                <div class="observaciones">
+                <div class="mt-4 p-3" style="border: 1px solid #003366; color: #003366;">
                     <strong>OBSERVACIONES GENERALES:</strong>
                     <div style="height: 60px;">
                         <!-- Espacio para escribir observaciones -->

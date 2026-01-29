@@ -7,7 +7,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "GET",
-            url: "json/cursos.json",
+            url: "funciones/ajax.php?action=getCursosList",
             data: "",
             dataType: "json",
             success: function (cursos) {

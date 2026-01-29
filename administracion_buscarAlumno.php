@@ -50,8 +50,10 @@
     <link rel="icon" href="images/favicon.ico">
 </head>
 <body style="background-color:#f3f6f4;">
-
-    <?php require_once("template-parts/header/header.template.php"); ?>
+    <?php 
+        $menuaction = 'administracion';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 

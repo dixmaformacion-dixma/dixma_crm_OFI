@@ -116,10 +116,12 @@
         $stmt = $conexionPDO->query($sql);
 
         if($contenido = $stmt->fetch()){
+
             unset($conexionPDO);
             return $contenido;
+
         }
-        unset($conexionPDO);
+
     }
 
     function ultimoAdministrador(){
@@ -216,4 +218,4 @@
     }
 
 
-?>
+    ?>
