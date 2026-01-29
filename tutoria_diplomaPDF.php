@@ -57,7 +57,8 @@
       die("Error occured while fetching course information");;
     }
   ##end of procedure
-$contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
+
+   $contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
 $fecha_inicio             = date('Y-m-d', strtotime($alumnocurso['Fecha_Inicio']));
 $fecha_fin                = date('Y-m-d', strtotime($alumnocurso['Fecha_Fin']));
 $same_date                = ($fecha_inicio === $fecha_fin);
@@ -71,7 +72,6 @@ if ($day_of_week == 6) {
     $fecha_expedicion = date("Y-m-d", strtotime($fecha_expedicion . ' +1 day'));
 }
 $fecha_expedicion_display = formattedDate($fecha_expedicion);
-
 ?>
 
 <!doctype html>
@@ -93,6 +93,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
   $filename = $alumnocurso['N_Accion'] . '_' . $alumnocurso['N_Grupo'] . '_' . $filename;
   echo $filename;
 ?></title>
+
   <link href="css/bootstrap.min.css" rel="stylesheet"></link>
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/jquery.min.js"></script>
@@ -484,7 +485,7 @@ function MostrarDiploma(tipo, aditional = false){
     <label>Details:</label>
 
 
-    <input class="form-control" id="detailsfield" onchange="changefield('details')" 
+   <input class="form-control" id="detailsfield" onchange="changefield('details')" 
        value=" 
        <?php 
        if ($same_date) {
@@ -495,6 +496,7 @@ function MostrarDiploma(tipo, aditional = false){
        con una duración de <?php echo strtoupper($alumnocurso['N_Horas']); ?> horas en modalidad <?php echo $alumnocurso['Modalidad']; ?>" 
        type="text">
     </input>
+
     <?php 
       $fecha = $alumnocurso['Fecha_Fin'];
       $fecha = strtotime($fecha.' +2 days');

@@ -55,7 +55,7 @@
             'codigoPostal' => $_POST['codigoPostal'],
             'provincia' => $_POST['provincia'],
             'poblacion' => $_POST['poblacion'],
-            'sector' => $_POST['sector'],
+            'sector' => implode('|!!|',$_POST['sector']),
             'pais' => "ESP",
             'telefono' => $_POST['telefono'],
             'telefono2' => $_POST['telefono2'],
@@ -64,7 +64,8 @@
             'creditoGuardado' => $_POST['creditoGuardado'],
             'creditoCaducar' => $_POST['creditoCaducar'],
             'referencia'=>$_POST['referencia'],
-            'codigo'=>$_POST['codigo']
+            'codigo'=>$_POST['codigo'],
+            'pdte_bonificar'=>$_POST['pdte_bonificar']
             
         ];
 
@@ -90,6 +91,7 @@
             $estadoLlamada = $_POST['estadoLlamada'];
             $usuario_seguimiento = NULL;
             $operador = $_SESSION['codigoUsuario'];
+            $prioridad = "BAJO";
 
             if($_POST['estadoLlamada'] == "on" && !empty($_POST['nulos'])){
 
@@ -106,6 +108,7 @@
                 $estadoLlamada = "Pedir cita " . $nombre[0];
                 $anoPedirCita = $_POST['anoPedirCita'];
                 $mesPedirCita = $_POST['mesPedirCita'];
+                $prioridad = $_POST['prioridadCita'];
 
             }
 
@@ -157,7 +160,8 @@
                 'codigo_llamada' => $_POST['codigo_llamada'],
                 'fecha_seguimiento' => @$_POST['fecha_seguimiento'],
                 'tipo_seguimiento' => @$_POST['tipo_seguimiento'],
-                'usuario_seguimiento'=>$usuario_seguimiento
+                'usuario_seguimiento'=>$usuario_seguimiento,
+                'prioridad'=>$prioridad
             ];
 
             if(insertarNuevaLlamada($datosLlamada, $_GET['idEmpresa'])){
@@ -168,10 +172,9 @@
     
                 echo "<div class='alert alert-danger mb-0'> ERROR: No se pudo inserta la llamada </div>";
     
-            }
-
-            if($_POST['estadoLlamada'] == "cita"){
-
+            }   
+            
+            if(strtolower($_POST['estadoLlamada']) == "cita"){
                 $idNuevaLlamada = cogerIDNuevaLlamada();
 
                 $diaCita = strftime('%A', strtotime($fechaCita));
@@ -266,15 +269,15 @@
         if(isset($_GET['tipo']) && $_GET['tipo'] == "pendiente") {                                 
             header("Refresh: 1; URL=pendientes.php?{$params}");
         } else {
-
-            //header('Refresh: 1; URL=inicio.php');
-
+            if(!empty($_GET['redirect'])){
+                header("Refresh: 1; URL={$_GET['redirect']}");
+            }
         }
 
     };
     
     if($empresa = cargarEmpresa($_GET['idEmpresa'])){
-
+        $empresa['sector'] = explode('|!!|',$empresa['sector']);
     }
 
     if($listadoLlamadas = listadoLlamadas($_GET['idEmpresa'])){
@@ -324,65 +327,10 @@
     
     ?>
 
-    <nav class="navbar navbar-expand-lg justify-content-center border-bottom border-secondary" style="background-color:#e4e4e4;">
-
-        <div class="container-fluid">
-
-            <a class="navbar-brand" href="inicio.php"><img src="images/logo.gif" id="logo" class="img-fluid" style="width: 200px; heigth: 50px"></a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-center"  id="navbarSupportedContent">
-
-                <div class="navbar-nav nav-pills">
-
-                    <a class="nav-link active text-bg-secondary" href="inicio.php" aria-current="page"><b> Call Center </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin"){
-
-                    echo "<a class='nav-link' href='administracion.php'><b> Administracion </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link" href="comercial.php"><b> Comercial </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin" || $_SESSION['codigoUsuario'][0] == "3"){
-
-                    echo "<a class='nav-link' href='tutoria.php'><b> Tutoria </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link disabled me-5" href=""><b> Estadisticas </b></a>
-                    
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <b> <?php echo $_SESSION['usuario'] ?> </b>
-                        </a>
-
-                        <div class="dropdown-menu" style="background-color: #e4e4e4">
-                            <a class="dropdown-item " href="perfilUsuario.php"><b> Perfil </b></a>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item " href="funciones/cerrarSesion.php"><b> Cerrar sesion </b></a>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </nav>
+    <?php 
+        $menuaction = 'callcenter';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 
@@ -404,176 +352,7 @@
 
                             <input name="idEmpresa" value="<?php echo $_GET['idEmpresa'] ?>" hidden></input>
 
-                            <div class="row">
-                                <div class="col-md-8 col-12">
-                                    <label><b>Nombre empresa:</b></label>
-                                    <input class="form-control text-uppercase" name="nombreEmpresa" value="<?php echo $empresa['nombre'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>CIF:</b></label>
-                                    <input class="form-control" name="CIF" value="<?php echo $empresa['cif'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-2 col-12">
-                                    <label><b>Credito vigente:</b></label>
-                                    <input class="form-control" name="creditoVigente" type="text" value="<?php echo $empresa['credito'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-2 col-12">
-                                    <label><b>Credito año anterior:</b></label>
-                                    <input class="form-control" name="creditoAnhoAnterior" type="text" value="<?php echo $empresa['creditoAnhoAnterior'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-3 col-12">        
-                                    <label><b>Importe crédito hace dos años :</b></label>
-                                    <input class="form-control" name="creditoCaducar" type="text" value="<?php echo $empresa['creditoCaducar'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-3 col-12">
-                                    <label><b>Credito guardado:</b></label>
-                                    <select name="creditoGuardado" id="" class="form-control">
-                                        <option value=""> --- </option>
-                                        <option value="NO" <?php echo $empresa['creditoGuardado']=='NO'?'selected="true"':'' ?>>NO</option>
-                                        <option value="SI" <?php echo $empresa['creditoGuardado']=='SI'?'selected="true"':'' ?>>SI</option>
-                                    </select>
-                                    <input type="hidden" name="guardaCredito" value="">
-                                    <!--<label>Si:</label>
-                                    <input type="radio" id="guardaCredito" name="guardaCredito" checked>
-
-                                    <label>No:</label>
-                                    <input type="radio" id="guardaCreditoNo" name="guardaCredito" value="No">
-
-                                    <input class="form-control" id="cajaGuardaCredito" value="<?php echo $empresa['creditoGuardado'] ?>" name="creditoGuardado" type="text"></input>-->
-
-                                </div>
-
-                                
-
-                                <div class="col-md-2 col-12">        
-                                    <label><b>Nº Empleados:</b></label>
-                                    <input class="form-control" name="nEmpleados" value="<?php echo $empresa['numeroempleados'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-5 col-12">
-                                    <label><b>Calle:</b></label>
-                                    <input class="form-control text-uppercase" name="calle" value="<?php echo $empresa['calle'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-2 col-12">
-                                    <label><b>Provincia:</b></label> <br>
-                                        <select class="form-select" name="provincia" id="selectProvincia" required>
-                                            <option hidden="true" selected> <?php echo $empresa['provincia'] ?> </option>
-                                            <option value="Pontevedra">Pontevedra</option>
-                                            <option value="Orense">Orense</option>
-                                            <option value="Lugo">Lugo</option>
-                                            <option value="Coruña">Coruña</option>
-                                        </select>
-                                </div>
-
-                                <div class="col-md-3 col-12">
-                                    <label><b>Poblacion:</b></label> <br>
-                                        <select class="form-select" name="poblacion" id="selectPoblacion" required>
-                                            <option hidden="true" selected> <?php echo $empresa['poblacion'] ?> </option>
-                                        </select>
-                                </div>
-
-                                <div class="col-md-2 col-12">
-                                    <label><b>Codigo postal:</b></label>
-                                    <input class="form-control" name="codigoPostal" value="<?php echo $empresa['cp'] ?>" required></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 col-12">
-                                    <label><b>Telefono:</b></label>
-                                    <input class="form-control" name="telefono" value="<?php echo $empresa['telef1'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Telefono 2:</b></label>
-                                    <input class="form-control" name="telefono2" value="<?php echo $empresa['telef2'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Telefono 3:</b></label>
-                                    <input class="form-control" name="telefono3" value="<?php echo $empresa['telef3'] ?>" maxlength="9"></input>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 col-12">
-                                    <label><b>Email:</b></label>
-                                    <input class="form-control" name="email" value="<?php echo $empresa['email'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Email 2:</b></label>
-                                    <input class="form-control" name="email2" value="<?php echo $empresa['email2'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Horario:</b></label>
-                                    <input class="form-control" name="horario" value="<?php echo $empresa['horario'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 col-12">
-                                    <label><b>Persona de contacto:</b></label>
-                                    <input class="form-control" name="personaContacto" value="<?php echo $empresa['personacontacto'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Cargo persona de contacto:</b></label>
-                                    <input class="form-control" name="cargoPersonaContacto" value="<?php echo $empresa['cargo'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Referencia:</b></label>
-                                    <input class="form-control" name="referencia" value="<?php echo $empresa['referencia'] ?>" list="referencias"></input>
-                                    <datalist id="referencias">
-                                        <?php foreach(getReferencias() as $ref): ?>
-                                            <option value="<?php echo $ref ?>" />
-                                        <?php endforeach ?>
-                                    </datalist>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <label><b>Sector:</b></label>
-                                    <select class="form-select" name="sector" id="sectores">
-                                        <option hidden="true" selected> <?php echo $empresa['sector'] ?> </option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <label for=""><b>CLIENTE EN AÑO</b></label>
-                                    <input type="text" class="form-control" readonly value="<?php echo implode(', ',getAnnosEmpresaCliente($_GET['idEmpresa'])) ?>">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <label><b>Código:</b></label>
-                                    <input id="codigo" class="form-control" name="codigo" value="<?php echo $empresa['codigo']?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <label><b>Observaciones:</b></label>
-                                    <textarea class="form-control" name="observacionesEmpresa" rows="10"><?php echo $empresa['observacionesempresa']?></textarea>
-                                </div>
-                            </div>
+                            <?php require_once './template-parts/components/empresaFormDatosBasicos.php' ?>
 
                             <div class="row">
                                 <div class="col-md-12 col-12">
@@ -650,77 +429,44 @@
                                         <textarea class="form-control mt-2 mb-2" name="observacionesOtros" hidden="true" id="areaNulos"></textarea>
                                     </div>
                                 </div>
-
+                            <div class='row d-flex justify-content-center mt-md-2'>
                             <?php
                                 //if(in_array($_SESSION['codigoUsuario'][0],[0,1,2])){
 
                                     $comerciales = cargarComerciales();
 
-                                    echo "<div class='row d-flex justify-content-center mt-md-2'>";
-                                        if(in_array($_SESSION['codigoUsuario'][0],[1,0])){
-                                        echo "<div class='col-md-5 col-12'>";
-                                            echo "<label><b>Pedir cita: </b></label>";
-                                            echo "<input type='radio' class='form-check-input ms-md-1' name='estadoLlamada' id='pasarCita'>";
-                                            echo "<select class='form-select' name='pedirCita' id='selectPedirCita' disabled>";
-
-                                        for($i=0; $i < count($comerciales); $i++){
-
-                                            if($comerciales[$i]['codigousuario'][0] == "2"){
-
-                                                echo "<option value='" . $comerciales[$i]['codigousuario'] . "'>" . $comerciales[$i]['nombre'] . "</option>";
-
-                                            }
-
-                                        }
-                                            echo "</select>";
-                                            echo '<input type="number" class="form-control" name="anoPedirCita" id="anoPedirCita" value="'.Date("Y").'" disabled></input>';
-                                            echo '
-                                            <select name="mesPedirCita" id="mesPedirCita" class="form-control" disabled>
-                                                <option value="1"> enero </option>
-                                                <option value="2"> febrero </option>
-                                                <option value="3"> marzo </option>
-                                                <option value="4"> abril </option>
-                                                <option value="5"> mayo </option>
-                                                <option value="6"> junio </option>
-                                                <option value="7"> julio </option>
-                                                <option value="8"> agosto </option>
-                                                <option value="9"> septiembre </option>
-                                                <option value="10"> octubre </option>
-                                                <option value="11"> noviembre </option>
-                                                <option value="12"> diciembre </option>
-                                            </select>
-                                            ';
-                                        echo "</div>";
-                                        }
+                                    require_once './template-parts/components/empresaPedirCitaForm.php';
 
                                         echo "<div class='col-md-5 col-12'>";
-                                            echo "<label><b>Hacer seguimiento: </b></label>";
-                                            echo "<input type='radio' class='form-check-input ms-md-1' name='estadoLlamada' id='hacerSeguiminento'>";
-                                            echo "<select class='form-select' name='seguimiento' id='selectHacerSeguimiento' disabled>";
+                                        echo "<label><b>Hacer seguimiento: </b></label>";
+                                        echo "<input type='radio' class='form-check-input ms-md-1' name='estadoLlamada' id='hacerSeguiminento'>";
+                                        echo "<select class='form-select' name='seguimiento' id='selectHacerSeguimiento' disabled>";
 
-                                        for($i=0; $i < count($comerciales); $i++){
+                                    for($i=0; $i < count($comerciales); $i++){
 
-                                            //if(in_array($_SESSION['codigoUsuario'][0],[2]) || $comerciales[$i]['codigousuario'][0] == "2"){
+                                        if(
+                                            $comerciales[$i]['codigousuario']!=$_SESSION['codigoUsuario']
+                                        ){
 
-                                                echo "<option hidden='true'></option>";
-                                                echo "<option value='" . $comerciales[$i]['codigousuario'] . "'>" . $comerciales[$i]['nombre'] . "</option>";
-                                                
-                                            //}
-
+                                            echo "<option hidden='true'></option>";
+                                            echo "<option value='" . $comerciales[$i]['codigousuario'] . "'>" . $comerciales[$i]['nombre'] . "</option>";
+                                            
                                         }
-                                            echo "</select>"; ?>
-                                            <label><b>Fecha de Seguimiento: </b></label>
-                                            <input type="date" name="fecha_seguimiento" class="form-control" disabled>
-                                            <label><b>Tipo de llamada: </b></label>
-                                            <input type="text" name="tipo_seguimiento" class="form-control" disabled>
-                                        </div>
-                                        <?php 
-                                    echo "</div>";
+
+                                    }
+                                        echo "</select>"; ?>
+                                        <label><b>Fecha de Seguimiento: </b></label>
+                                        <input type="date" name="fecha_seguimiento" class="form-control" disabled>
+                                        <label><b>Tipo de llamada: </b></label>
+                                        <input type="text" name="tipo_seguimiento" class="form-control" disabled>
+                                    </div>
+                                    <?php 
+                                echo "</div>";
 
                                 //}
 
                             ?>
-
+                            </div>
                             </div>
 
                             <div class="row">
@@ -757,197 +503,48 @@
                                     </div>
 
                                 </div>
+                                <div id="cursosSections">
+                                <?php foreach(getTiposCursos() as $index=>$tipoCurso): ?>
+                                    <div class="row cursoSection">
 
-                                <div class="row">
+                                        <div class="col-md-1 col-1">
+                                            <input type="radio" name="cursos" id="radio<?php echo $tipoCurso['codigo'] ?>" <?php echo $index==0?'checked':''?> ></input>
+                                        </div>
 
-                                    <div class="col-md-1 col-1">
-                                         <input type="radio" name="cursos" id="radioTPM" checked ></input>
-                                    </div>
+                                        <div class="col-md-2 col-4">
+                                            <input type="text" readonly="true" class="form-control readonly text-center" id="<?php echo $tipoCurso['codigo'] ?>f" value="<?php echo $tipoCurso['nombre'] ?>" <?php echo $index>0?'disabled':''?>>
+                                            <input type="text" class="form-control readonly text-center d-none" name="tipoCurso" id="<?php echo $tipoCurso['codigo'] ?>" value="<?php echo $tipoCurso['codigo'] ?>" <?php echo $index>0?'disabled':''?>>
+                                        </div>
+                                    
+                                        <div class="col-md-2 col-3">
+                                            <input type="text" class="form-control text-center" name="horasCurso" id="horas<?php echo $tipoCurso['codigo'] ?>" <?php echo $index>0?'disabled':''?>>
+                                        </div>
 
-                                    <div class="col-md-2 col-4">
-                                        <input class="form-control readonly text-center" name="tipoCurso" id="TPM" value="TPM">
-                                    </div>
-                                 
-                                    <div class="col-md-2 col-3">
-                                        <input class="form-control text-center" name="horasCurso" id="horasTPM">
-                                    </div>
-
-                                    <div class="col-md-7 col-4">
-                                        <select class="form-select mb-2" name="nombreCurso" id="selectTPM">
-                                        <option hidden="true" selected></option>
-                                            <?php 
-                                            
-                                            for($i=0; $i < count($listaCursos); $i++) {
+                                        <div class="col-md-7 col-4">
+                                            <select class="form-select mb-2" name="nombreCurso" id="select<?php echo $tipoCurso['codigo'] ?>" <?php echo $index>0?'disabled':''?>>
+                                            <option hidden="true" selected></option>
+                                                <?php 
                                                 
-                                                if($listaCursos[$i]['tipoCurso'] == "TPM"){
+                                                for($i=0; $i < count($listaCursos); $i++) {
+                                                    
+                                                    if($listaCursos[$i]['tipoCurso'] == $tipoCurso['codigo']){
 
-                                                    echo "<option>";
-                                                    echo $listaCursos[$i]['nombreCurso'];
-                                                    echo "</option>";
+                                                        echo "<option>";
+                                                        echo $listaCursos[$i]['nombreCurso'];
+                                                        echo "</option>";
 
+                                                    }
+                                                    
                                                 }
-                                                
-                                            }
 
-                                            ?>
- 
-                                        </select>
+                                                ?>
+    
+                                            </select>
+                                        </div>
+
                                     </div>
-
+                                    <?php endforeach ?>
                                 </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-1 col-1">
-                                         <input type="radio" name="cursos" value="TPC" id="radioTPC"></input>
-                                    </div>
-
-                                    <div class="col-md-2 col-4">
-                                        <input class="form-control readonly text-center" name="tipoCurso" id="TPC" value="TPC" disabled>
-                                    </div>
-
-                                    <div class="col-md-2 col-3">
-                                        <input class="form-control text-center" name="horasCurso" id="horasTPC" disabled>
-                                    </div>
-
-                                    <div class="col-md-7 col-4">
-                                        <select class="form-select mb-2" name="nombreCurso" id="selectTPC" disabled>
-                                        <option hidden="true" selected></option>
-                                            <?php 
-                                            
-                                            for($i=0; $i < count($listaCursos); $i++) {
-                                                
-                                                if($listaCursos[$i]['tipoCurso'] == "TPC"){
-
-                                                    echo "<option>";
-                                                    echo $listaCursos[$i]['nombreCurso'];
-                                                    echo "</option>";
-
-                                                }
-                                                
-                                            }
-
-                                            ?>
- 
-                                        </select>
-                                    </div>
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-1 col-1">
-                                         <input type="radio" name="cursos" id="radioTPCMADERA"></input>
-                                    </div>
-
-                                    <div class="col-md-2 col-4">
-                                        <input class="form-control readonly text-center" name="tipoCurso" value="TPC MADERA" id="TPCMADERA" disabled>
-                                    </div>
-
-                                    <div class="col-md-2 col-3">
-                                        <input class="form-control text-center" name="horasCurso" id="horasTPCMADERA" disabled>
-                                    </div>
-
-                                    <div class="col-md-7 col-4">
-                                        <select class="form-select  mb-2" name="nombreCurso" id="selectTPCMADERA" disabled>
-                                        <option hidden="true" selected></option>
-                                            <?php 
-                                            
-                                            for($i=0; $i < count($listaCursos); $i++) {
-                                                
-                                                if($listaCursos[$i]['tipoCurso'] == "TPCMADERA"){
-
-                                                    echo "<option>";
-                                                    echo $listaCursos[$i]['nombreCurso'];
-                                                    echo "</option>";
-
-                                                }
-                                                
-                                            }
-
-                                            ?>
- 
-                                        </select>
-                                    </div>
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-1 col-1">
-                                         <input type="radio" name="cursos" id="radioTPCVIDREO"></input>
-                                    </div>
-
-                                    <div class="col-md-2 col-4">
-                                        <input class="form-control readonly text-center" name="tipoCurso" value="TPC VIDREO" id="TPCVIDREO" disabled>
-                                    </div>
-
-                                    <div class="col-md-2 col-3">
-                                        <input class="form-control text-center" name="horasCurso" id="horasTPCVIDREO" disabled>
-                                    </div>
-
-                                    <div class="col-md-7 col-4">
-                                        <select class="form-select  mb-2" name="nombreCurso" id="selectTPCVIDREO" disabled>
-                                        <option hidden="true" selected></option>
-                                            <?php 
-                                            
-                                            for($i=0; $i < count($listaCursos); $i++) {
-                                                
-                                                if($listaCursos[$i]['tipoCurso'] == "TPCVIDREO"){
-
-                                                    echo "<option>";
-                                                    echo $listaCursos[$i]['nombreCurso'];
-                                                    echo "</option>";
-
-                                                }
-                                                
-                                            }
-
-                                            ?>
- 
-                                        </select>
-                                    </div>
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-1 col-1">
-                                         <input type="radio" name="cursos" id="radioOTROS"></input>
-                                    </div>
-
-                                    <div class="col-md-2 col-4">
-                                        <input class="form-control readonly text-center" name="tipoCurso" value="OTROS" id="OTROS" disabled>
-                                    </div>
-
-                                    <div class="col-md-2 col-3">
-                                        <input class="form-control text-center" name="horasCurso" id="horasOTROS" disabled>
-                                    </div>
-
-                                    <div class="col-md-7 col-4">
-                                        <select class="form-select mb-2" name="nombreCurso" id="selectOTROS" disabled>
-                                        <option hidden="true" selected></option>
-                                            <?php 
-                                            
-                                            for($i=0; $i < count($listaCursos); $i++) {
-                                                
-                                                if($listaCursos[$i]['tipoCurso'] == "OTROS"){
-
-                                                    echo "<option>";
-                                                    echo $listaCursos[$i]['nombreCurso'];
-                                                    echo "</option>";
-
-                                                }
-                                                
-                                            }
-
-                                            ?>
- 
-                                        </select>
-                                    </div>
-
-                                </div>
-
 
                             </div>
 
@@ -1056,6 +653,10 @@
                                     ?>
                                 </div>
                             </div>
+
+                            <?php if(!empty($_GET['redirect'])): ?>
+                                <input type="hidden" name="redirect" value="<?php echo $_POST['redirect'] ?>">
+                            <?php endif ?>
 
                         </form>
 

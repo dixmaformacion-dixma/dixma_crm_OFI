@@ -222,7 +222,7 @@ function editarAlumno($datosAlumno, $idAlumno){
     }
     function eliminarAlumno($idAlumno) {
   
-        $conexionPDO = realizarConexion();
+        $conexionPDO = realizarConexion($idAlumno);
         $sql = "DELETE FROM `alumnos` WHERE `idAlumno` = '$idAlumno'";
        
         $stmt= $conexionPDO->prepare($sql);

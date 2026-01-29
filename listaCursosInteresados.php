@@ -39,65 +39,10 @@ include "funciones/funcionesCursos.php";
 
     <!-- Menu cabecera -->
 
-    <nav class="navbar navbar-expand-lg justify-content-center border-bottom border-secondary" style="background-color:#e4e4e4;">
-
-        <div class="container-fluid">
-
-            <a class="navbar-brand" href="inicio.php"><img src="images/logo.gif" id="logo" class="img-fluid" style="width: 200px; heigth: 50px"></a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-
-                <div class="navbar-nav nav-pills">
-
-                    <a class="nav-link active text-bg-secondary" href="inicio.php" aria-current="page"><b> Call Center </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin"){
-
-                    echo "<a class='nav-link' href='administracion.php'><b> Administracion </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link" href="comercial.php"><b> Comercial </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin" || $_SESSION['codigoUsuario'][0] == "3"){
-
-                    echo "<a class='nav-link' href='tutoria.php'><b> Tutoria </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link disabled me-5" href=""><b> Estadisticas </b></a>
-                    
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <b> <?php echo $_SESSION['usuario'] ?> </b>
-                        </a>
-
-                        <div class="dropdown-menu" style="background-color: #e4e4e4">
-                            <a class="dropdown-item " href="perfilUsuario.php"><b> Perfil </b></a>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item " href="funciones/cerrarSesion.php"><b> Cerrar sesion </b></a>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </nav>
+    <?php 
+        $menuaction = 'callcenter';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 
@@ -148,7 +93,16 @@ include "funciones/funcionesCursos.php";
                         echo "<td>" . $cursos[$i]['tipodeCurso'] . "</td>";
                         echo "<td>" . $cursos[$i]['tipodeCurso'] . "</td>";
                         echo "<td>" . $cursos[$i]['horasCurso'] . "</td>";
-                        echo "<td> <button type='button' class='btn' style='background-color: #1e989e;' onclick='enviarConsulta(" . $cursos[$i]['idempresa'] . ")'>Consultar <img src='images/iconos/info-circle.svg' class='ml-5'> </button> </td>";
+                        $redirectTo = '/listaCursosInteresados.php?curso='.$_GET['curso'];
+                        echo "<td> 
+                            <form action='consultarEmpresa.php'>
+                                <input type='hidden' name='idEmpresa' value='{$cursos[$i]['idempresa']}'>
+                                <input type='hidden' name='idLlamada' value='pendiente'>
+                                <input type='hidden' name='tipo' value=''>
+                                <input type='hidden' name='redirect' value='{$redirectTo}'>
+                                <button type='submit' class='btn' style='background-color: #1e989e;'>Consultar <img src='images/iconos/info-circle.svg' class='ml-5'> </button>
+                            </form>
+                        </td>";
                         echo "<td> <button type='button' class='btn btn-danger' onclick='desinteresado(" . $cursos[$i]['idempresa'] . ", " . $cursos[$i]['Codigo'] . ")'>Eliminar <img src='images/iconos/x-circle.svg' class='ml-5'> </button> </td>";
 
                         echo "</tr>";

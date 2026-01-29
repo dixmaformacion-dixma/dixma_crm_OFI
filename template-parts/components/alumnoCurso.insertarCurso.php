@@ -11,7 +11,7 @@
         $header_style = "background-color: #F7CA36;";
         $background_style = "background-color: #f7f7bbff;";
     }
-?>
+?> 
 <div class="card shadow-sm mb-3">
     <div class="card-header fw-bold" style="<?php echo $header_style; ?>">
         <img src="images/iconos/book.svg" class="me-2">

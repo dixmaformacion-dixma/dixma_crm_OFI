@@ -21,7 +21,7 @@ date_default_timezone_set("Europe/Madrid");
 setlocale(LC_ALL, "spanish");
 
 $empresa = cargarEmpresa($_GET['idEmpresa']);
-
+ 
 ?>
 
 <!doctype html>

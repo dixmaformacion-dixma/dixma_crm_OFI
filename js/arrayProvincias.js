@@ -333,7 +333,7 @@ $(document).ready(function() {
 
         $('#selectPoblacion').empty();
 
-            $('#selectPoblacion').append('<option value="todas">Todas</option>');
+            $('#selectPoblacion').append('<option value="Todas">Todas</option>');
 
             if($('#selectProvincia').val() == 'Lugo'){
 

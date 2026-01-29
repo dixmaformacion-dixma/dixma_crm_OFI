@@ -10,7 +10,7 @@
     } elseif (empty($curso['Fecha_Inicio']) || $curso['Fecha_Inicio'] === '0000-00-00' || $curso['Fecha_Inicio'] === '1970-01-01') {
         $header_style = "background-color: #F7CA36;";
         $background_style = "background-color: #f7f7bbff;";
-    }
+    } 
 ?>
 <div class="card shadow-sm mb-3">
     <div class="card-header fw-bold" style="<?php echo $header_style; ?>">

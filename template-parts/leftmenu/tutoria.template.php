@@ -11,7 +11,7 @@ $file = basename($_SERVER['PHP_SELF']);
         href="tutoria_buscarEmpresa.php">
             <img class="ms-3" src="images/iconos/person-plus.svg">
             <b> Insertar alumnos </b>
-        </a>
+        </a> 
         <a class="nav-link <?php
         if($file == 'tutoria_listadoAlumno.php' or $file == 'tutoria_editarAlumno.php'){
             echo 'active text-bg-secondary';
@@ -25,11 +25,13 @@ $file = basename($_SERVER['PHP_SELF']);
             <img class="ms-3" src="images/iconos/book.svg">
             <b> Insertar curso </b>
         </a>
-        <a class="nav-link <?php if($file == 'tutoria_asignacion_multiple.php'){echo 'active text-bg-secondary';}; ?>"
+		
+		<a class="nav-link <?php if($file == 'tutoria_asignacion_multiple.php'){echo 'active text-bg-secondary';}; ?>"
         href="tutoria_asignacion_multiple.php">
             <img class="ms-3" src="images/iconos/book.svg">
-            <b> Insertar múltiples cursos </b>
+            <b> Insertar cursos </b>
         </a>
+		
         <a class="nav-link <?php if($file == 'tutoria_llamada.php'){echo 'active text-bg-secondary';}; ?>"
         href="tutoria_llamada.php">
             <img class="ms-3" src="images/iconos/telephone.svg">
@@ -40,7 +42,7 @@ $file = basename($_SERVER['PHP_SELF']);
             <img class="ms-3" src="images/iconos/list.svg">
             <b> Listado cursos </b>
         </a>
-        <a class="nav-link <?php if($file == 'tutoria_listadoCursosActivos.php'){echo 'active text-bg-secondary';}; ?>"
+		<a class="nav-link <?php if($file == 'tutoria_listadoCursosActivos.php'){echo 'active text-bg-secondary';}; ?>"
         href="tutoria_listadoCursosActivos.php">
             <img class="ms-3" src="images/iconos/play-circle.svg">
             <b> Activos </b>
@@ -60,7 +62,7 @@ $file = basename($_SERVER['PHP_SELF']);
             <img class="ms-3" src="images/iconos/list-ul.svg">
             <b> Contenido curso </b>
         </a>
-        <a class="nav-link <?php if($file == 'tutoria_buscarAlumno.php'){echo 'active text-bg-secondary';}; ?>"
+		<a class="nav-link <?php if($file == 'tutoria_buscarAlumno.php'){echo 'active text-bg-secondary';}; ?>"
         href="tutoria_buscarAlumno.php">
             <img class="ms-3" src="images/iconos/file-earmark-person.svg">
             <b> Buscar alumno </b>

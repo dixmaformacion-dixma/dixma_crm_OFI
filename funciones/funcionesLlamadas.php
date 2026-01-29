@@ -1,9 +1,34 @@
 <?php
-
+    session_start();
     function insertarNuevaLlamada($datosLlamada, $id){
             $conexionPDO = realizarConexion();
-            $sql = "INSERT INTO llamadas (idempresa, interlocutor, observacionesinterlocutor, fecha, hora, fechacita, horacita, estadollamada, fechapendiente, horapendiente, otrosnul, observacionesOtros, recibidopor, piloto, curso, nombrecurso, diacita, anoPedirCita, mesPedirCita,codigo_llamada,fecha_seguimiento,tipo_seguimiento,usuario_seguimiento) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO llamadas (idempresa,
+                interlocutor,
+                observacionesinterlocutor,
+                fecha,
+                hora,
+                fechacita,
+                horacita,
+                estadollamada,
+                fechapendiente,
+                horapendiente,
+                otrosnul,
+                observacionesOtros,
+                recibidopor,
+                piloto,
+                curso,
+                nombrecurso,
+                diacita,
+                anoPedirCita,
+                mesPedirCita,
+                codigo_llamada,
+                fecha_seguimiento,
+                tipo_seguimiento,
+                usuario_seguimiento,
+                prioridad,
+                usuario_asignador
+            )
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conexionPDO->prepare($sql);
 
             if($stmt){
@@ -34,6 +59,8 @@
                 $stmt->bindValue(21, $datosLlamada['fecha_seguimiento'], PDO::PARAM_STR);
                 $stmt->bindValue(22, $datosLlamada['tipo_seguimiento'], PDO::PARAM_STR);
                 $stmt->bindValue(23, $datosLlamada['usuario_seguimiento'], PDO::PARAM_STR);
+                $stmt->bindValue(24, $datosLlamada['prioridad'], PDO::PARAM_STR);
+                $stmt->bindValue(25, $_SESSION['usuario'], PDO::PARAM_STR);
 
 
                 $stmt->execute();
@@ -427,12 +454,18 @@
     }
 
     function hacerSeguimientoCallCenter() {
-
+        
         $idempresas = [];
 
         $conexionPDO = realizarConexion();
         //$sql = "SELECT * FROM llamadas WHERE observacionesOtros = 'seguimiento'";
-        $sql = "SELECT * FROM llamadas WHERE llamadas.idllamada IN (SELECT MAX(idllamada) as id FROM llamadas GROUP BY idempresa) AND observacionesOtros = 'seguimiento'";
+        $sql = "SELECT * FROM llamadas 
+            WHERE llamadas.idllamada IN (SELECT MAX(idllamada) as id FROM llamadas GROUP BY idempresa) AND 
+                  observacionesOtros LIKE '%seguimiento%' AND 
+                  DATE(str_to_date(fechapendiente,'%d-%m-%Y'))<=DATE(NOW()) AND
+                  usuario_seguimiento = '{$_SESSION['codigoUsuario']}'
+            ORDER BY DATE(str_to_date(fechapendiente,'%d-%m-%Y')) ASC
+        ";
         $stmt = $conexionPDO->query($sql);
 
         while($idempresa = $stmt->fetch()){
@@ -524,6 +557,12 @@
 
         }
 
+        if($_SESSION['codigoUsuario'] == "200"){
+
+            $sql.= " AND usuario_asignador = '".$_SESSION['usuario']."'";
+
+        }
+
         $stmt = $conexionPDO->query($sql);
 
         while($idempresa = $stmt->fetch()){
@@ -576,11 +615,11 @@
 
                 $id = $idllamadas[$i][0];
 
-                $sql = "SELECT llamadas.idempresa, llamadas.idllamada, empresas.nombre, empresas.codigo, empresas.horario, llamadas.horapendiente, empresas.provincia, empresas.poblacion, llamadas.codigo_llamada FROM llamadas INNER JOIN empresas ON llamadas.idllamada = '$id' AND llamadas.idempresa = empresas.idempresa AND STR_TO_DATE(fechapendiente, '%d-%m-%Y') BETWEEN STR_TO_DATE('$fechaInicio', '%d-%m-%Y') AND STR_TO_DATE('$fechaFin', '%d-%m-%Y') AND recibidopor = $operador";
+                $sql = "SELECT llamadas.idempresa, llamadas.idllamada, empresas.nombre, empresas.codigo, empresas.horario, llamadas.horapendiente, empresas.provincia, empresas.poblacion, llamadas.codigo_llamada,llamadas.tipo_seguimiento FROM llamadas INNER JOIN empresas ON llamadas.idllamada = '$id' AND llamadas.idempresa = empresas.idempresa AND STR_TO_DATE(fechapendiente, '%d-%m-%Y') BETWEEN STR_TO_DATE('$fechaInicio', '%d-%m-%Y') AND STR_TO_DATE('$fechaFin', '%d-%m-%Y') AND recibidopor = $operador";
 
                 if($_SESSION['rol'] == "admin"){
     
-                    $sql = "SELECT llamadas.idempresa, llamadas.idllamada, empresas.nombre, empresas.codigo, empresas.horario, llamadas.horapendiente, empresas.provincia, empresas.poblacion, llamadas.codigo_llamada  FROM llamadas INNER JOIN empresas ON llamadas.idllamada = '$id' AND llamadas.idempresa = empresas.idempresa AND STR_TO_DATE(fechapendiente, '%d-%m-%Y') BETWEEN STR_TO_DATE('$fechaInicio', '%d-%m-%Y') AND STR_TO_DATE('$fechaFin', '%d-%m-%Y')";
+                    $sql = "SELECT llamadas.idempresa, llamadas.idllamada, empresas.nombre, empresas.codigo, empresas.horario, llamadas.horapendiente, empresas.provincia, empresas.poblacion, llamadas.codigo_llamada,llamadas.tipo_seguimiento  FROM llamadas INNER JOIN empresas ON llamadas.idllamada = '$id' AND llamadas.idempresa = empresas.idempresa AND STR_TO_DATE(fechapendiente, '%d-%m-%Y') BETWEEN STR_TO_DATE('$fechaInicio', '%d-%m-%Y') AND STR_TO_DATE('$fechaFin', '%d-%m-%Y')";
 
                 }
 
@@ -684,9 +723,13 @@
         return $empresas;
 
     }
-    function busquedaAnoMesPoblacion($palabra, $ano, $mes, $poblacion, $limite, $offset) {
+    function busquedaAnoMesPoblacion($palabra, $ano, $mes, $poblacion,$provincia, $prioridad, $limite, $offset) {
 
         $filter = 'WHERE llamadas.estadoLlamada LIKE "Pedir cita%"';
+
+        if($provincia != "Todas" and $provincia != "todas"){
+            $filter = $filter . ' AND empresas.provincia LIKE "'.$provincia.'"';
+        }
 
         if($poblacion != "Todas" and $poblacion != "todas"){
             $filter = $filter . ' AND empresas.poblacion LIKE "'.$poblacion.'"';
@@ -697,6 +740,9 @@
         }
         if($mes != "Todas" and $mes != "todas"){
             $filter = $filter . ' AND llamadas.mesPedirCita = "'.$mes.'"';
+        }
+        if($prioridad != "Todas"){
+            $filter = $filter . ' AND llamadas.prioridad = "'.$prioridad.'"';
         }
 
         if($palabra != "Todas" and $palabra != "todas" && $palabra != ""){
@@ -729,10 +775,11 @@
         llamadas.observacionesinterlocutor,
         empresas.nombre,
         empresas.poblacion,
-        llamadas.estadoLlamada
+        llamadas.estadoLlamada,
+        llamadas.prioridad
         FROM ('.$getLatestLlamadaSQL.') as llamadas
         INNER JOIN empresas ON llamadas.idempresa = empresas.idempresa
-        '.$filter.' order by maxEmpresaFecha desc LIMIT '.$limite.' OFFSET '.$offset;
+        '.$filter.' order by anoPedirCita ASC LIMIT '.$limite.' OFFSET '.$offset;
 
         //echo $sql;
         //echo "<hr>";
@@ -741,7 +788,7 @@
 
         $empresa = $stmt->fetchAll();
         
-        $result = $conexionPDO->query('SELECT COUNT(*) as amount FROM ('.$getLatestLlamadaSQL.') as llamadas '.$filter.'');
+        $result = $conexionPDO->query('SELECT COUNT(*) as amount FROM ('.$getLatestLlamadaSQL.') as llamadas INNER JOIN empresas ON llamadas.idempresa = empresas.idempresa '.$filter.'');
         $amount = $result->fetch()['amount'];
         if($amount != 0){
             $empresa[0]['full_count'] = $amount;
@@ -759,20 +806,22 @@
         if(
             empty($post['mesPedirCita']) ||
             empty($post['anoPedirCita']) ||
-            empty($post['idllamada'])
+            empty($post['idllamada']) ||
+            empty($post['prioridad'])
         ){
             echo json_encode(['success'=>false]);
             die;
         }
         $conexionPDO = realizarConexion();
-        $sql = "UPDATE llamadas SET mesPedirCita = ?,anoPedirCita = ? WHERE idllamada = ?";
+        $sql = "UPDATE llamadas SET mesPedirCita = ?,anoPedirCita = ?, prioridad=? WHERE idllamada = ?";
         $stmt = $conexionPDO->prepare($sql);
 
         if($stmt){
 
             $stmt->bindValue(1, $post['mesPedirCita'], PDO::PARAM_STR);
             $stmt->bindValue(2, $post['anoPedirCita'], PDO::PARAM_STR);
-            $stmt->bindValue(3, $post['idllamada'], PDO::PARAM_STR);
+            $stmt->bindValue(3, $post['prioridad'], PDO::PARAM_STR);
+            $stmt->bindValue(4, $post['idllamada'], PDO::PARAM_STR);
             $stmt->execute();
         }
 

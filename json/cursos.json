@@ -1,1 +1,872 @@
-[{"idCurso":1,"0":1,"nombreCurso":"C1: Actividades CNAE 24","1":"C1: Actividades CNAE 24","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":2,"0":2,"nombreCurso":"C2: Actividades CNAE 30.1 Y 33.15","1":"C2: Actividades CNAE 30.1 Y 33.15","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":3,"0":3,"nombreCurso":"C3: Operarios de trabajos en forja","1":"C3: Operarios de trabajos en forja","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":4,"0":4,"nombreCurso":"C4: Operarios en trabajos de soldadura y oxicorte","1":"C4: Operarios en trabajos de soldadura y oxicorte","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":5,"0":5,"nombreCurso":"C5: Operarios de m\u00e1quinas de mecanizado por arranque de viruta","1":"C5: Operarios de m\u00e1quinas de mecanizado por arranque de viruta","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":6,"0":6,"nombreCurso":"C6: Operarios de m\u00e1quinas de mecanizado por abrasi\u00f3n","1":"C6: Operarios de m\u00e1quinas de mecanizado por abrasi\u00f3n","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":7,"0":7,"nombreCurso":"C7: Operarios de m\u00e1quinas de mecanizado por deformaci\u00f3n y corte del metal","1":"C7: Operarios de m\u00e1quinas de mecanizado por deformaci\u00f3n y corte del metal","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":8,"0":8,"nombreCurso":"C8: Operarios en actividades de tratamientos superficiales de las piezas de metal","1":"C8: Operarios en actividades de tratamientos superficiales de las piezas de metal","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":9,"0":9,"nombreCurso":"C9: Operarios en actividades de premontaje, montaje, cambio de formato y ensamblaje en fabricas","1":"C9: Operarios en actividades de premontaje, montaje, cambio de formato y ensamblaje en fabricas","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":10,"0":10,"nombreCurso":"C10: Trabajos de carpinter\u00eda met\u00e1lica","1":"C10: Trabajos de carpinter\u00eda met\u00e1lica","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":11,"0":11,"nombreCurso":"C11: Operarios en trabajos de joyer\u00eda","1":"C11: Operarios en trabajos de joyer\u00eda","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":12,"0":12,"nombreCurso":"C12: Trabajos de mec\u00e1nica, mantenimiento y reparaci\u00f3n de m\u00e1quinas, equipos industriales y\/o equipos electromec\u00e1nicos (industria aeroespacial\u2026.)","1":"C12: Trabajos de mec\u00e1nica, mantenimiento y reparaci\u00f3n de m\u00e1quinas, equipos industriales y\/o equipos electromec\u00e1nicos (industria aeroespacial\u2026.)","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":13,"0":13,"nombreCurso":"C13: Trabajos en talleres de reparaci\u00f3n de veh\u00edculos","1":"C13: Trabajos en talleres de reparaci\u00f3n de veh\u00edculos","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":14,"0":14,"nombreCurso":"C14: Trabajos en instalaci\u00f3n, mantenimiento y reparaci\u00f3n de equipos inform\u00e1ticos, automatismos y su programaci\u00f3n, ordenadores y sus perif\u00e9ricos o dispositivos auxiliares: equipos y tecnolog\u00edas de telecomunicaciones y de la informaci\u00f3n de redes de informaci\u00f3n y datos (TICs)","1":"C14: Trabajos en instalaci\u00f3n, mantenimiento y reparaci\u00f3n de equipos inform\u00e1ticos, automatismos y su programaci\u00f3n, ordenadores y sus perif\u00e9ricos o dispositivos auxiliares: equipos y tecnolog\u00edas de telecomunicaciones y de la informaci\u00f3n de redes de informaci\u00f3n y datos (TICs)","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":15,"0":15,"nombreCurso":"C15: Instaladores y reparadores de l\u00edneas y equipos el\u00e9ctricos","1":"C15: Instaladores y reparadores de l\u00edneas y equipos el\u00e9ctricos","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":16,"0":16,"nombreCurso":"C16: Trabajos de fontaner\u00eda, instalaciones de calefacci\u00f3n- climatizaci\u00f3n, instalaciones de agua caliente sanitaria e instalaciones solares t\u00e9rmicas","1":"C16: Trabajos de fontaner\u00eda, instalaciones de calefacci\u00f3n- climatizaci\u00f3n, instalaciones de agua caliente sanitaria e instalaciones solares t\u00e9rmicas","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":17,"0":17,"nombreCurso":"C17: Trabajos de mantenimiento, reparaci\u00f3n e instalaci\u00f3n de ascensores","1":"C17: Trabajos de mantenimiento, reparaci\u00f3n e instalaci\u00f3n de ascensores","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":18,"0":18,"nombreCurso":"C18: Trabajos de aislamiento e impermeabilizaci\u00f3n","1":"C18: Trabajos de aislamiento e impermeabilizaci\u00f3n","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":19,"0":19,"nombreCurso":"C19: Trabajos de montaje de estructuras tubulares","1":"C19: Trabajos de montaje de estructuras tubulares","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":20,"0":20,"nombreCurso":"C20: Trabajos de construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas","1":"C20: Trabajos de construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":21,"0":21,"nombreCurso":"C21: Trabajos de instalaciones, mantenimiento y reparaci\u00f3n de infraestructuras de telecomunicaciones (TIC y digitalizaci\u00f3n)","1":"C21: Trabajos de instalaciones, mantenimiento y reparaci\u00f3n de infraestructuras de telecomunicaciones (TIC y digitalizaci\u00f3n)","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":22,"0":22,"nombreCurso":"C22: Trabajos en gaseoductos y redes de distribuci\u00f3n de gases combustibles","1":"C22: Trabajos en gaseoductos y redes de distribuci\u00f3n de gases combustibles","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":23,"0":23,"nombreCurso":"C23: Trabajos de otro tipo de instalaciones tales como instalaciones solares fotovoltaicas o instalaciones e\u00f3licas","1":"C23: Trabajos de otro tipo de instalaciones tales como instalaciones solares fotovoltaicas o instalaciones e\u00f3licas","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":24,"0":24,"nombreCurso":"C24: Trabajos de recuperaci\u00f3n y reciclaje de materias primas secundarias met\u00e1licas","1":"C24: Trabajos de recuperaci\u00f3n y reciclaje de materias primas secundarias met\u00e1licas","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":25,"0":25,"nombreCurso":"C25: Trabajos de control de calidad, verificaci\u00f3n e inspecci\u00f3n de materias en curso y en productos terminados del sector","1":"C25: Trabajos de control de calidad, verificaci\u00f3n e inspecci\u00f3n de materias en curso y en productos terminados del sector","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":26,"0":26,"nombreCurso":"C26: Conductores o transportistas","1":"C26: Conductores o transportistas","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":27,"0":27,"nombreCurso":"C27: Conductores de carretillas elevadoras","1":"C27: Conductores de carretillas elevadoras","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":28,"0":28,"nombreCurso":"C28: Operadores de puente-gr\u00faa","1":"C28: Operadores de puente-gr\u00faa","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":29,"0":29,"nombreCurso":"C29: Operadores de plataformas elevadores","1":"C29: Operadores de plataformas elevadores","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":30,"0":30,"nombreCurso":"C30: Operarios de almac\u00e9n y log\u00edstica y aprovisionamiento en los procesos de fabricaci\u00f3n","1":"C30: Operarios de almac\u00e9n y log\u00edstica y aprovisionamiento en los procesos de fabricaci\u00f3n","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":31,"0":31,"nombreCurso":"C31: Conductores de gr\u00faas m\u00f3viles autopropulsadas","1":"C31: Conductores de gr\u00faas m\u00f3viles autopropulsadas","tipoCurso":"TPM","2":"TPM","horasCurso":"","3":""},{"idCurso":32,"0":32,"nombreCurso":"Formacion Inicial","1":"Formacion Inicial","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":33,"0":33,"nombreCurso":"Nivel b\u00e1sico de prevenci\u00f3n en la construcci\u00f3n","1":"Nivel b\u00e1sico de prevenci\u00f3n en la construcci\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":34,"0":34,"nombreCurso":"Administrativos","1":"Administrativos","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":35,"0":35,"nombreCurso":"Delegados de prevenci\u00f3n","1":"Delegados de prevenci\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":36,"0":36,"nombreCurso":"Mandos intermedios","1":"Mandos intermedios","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":37,"0":37,"nombreCurso":"Personal directivo de empresa","1":"Personal directivo de empresa","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":38,"0":38,"nombreCurso":"Responsables de obra y t\u00e9cnicos de ejecuci\u00f3n","1":"Responsables de obra y t\u00e9cnicos de ejecuci\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":39,"0":39,"nombreCurso":"Alba\u00f1iler\u00eda","1":"Alba\u00f1iler\u00eda","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":40,"0":40,"nombreCurso":"Cimentaciones especiales, sondeos y perforaciones","1":"Cimentaciones especiales, sondeos y perforaciones","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":41,"0":41,"nombreCurso":"Colocaci\u00f3n de materiales de cubrici\u00f3n","1":"Colocaci\u00f3n de materiales de cubrici\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":42,"0":42,"nombreCurso":"Construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas","1":"Construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":43,"0":43,"nombreCurso":"Electricidad, montaje y mantenimiento de instalaciones el\u00e9ctricas de alta y baja tensi\u00f3n","1":"Electricidad, montaje y mantenimiento de instalaciones el\u00e9ctricas de alta y baja tensi\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":44,"0":44,"nombreCurso":"Encofrados","1":"Encofrados","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":45,"0":45,"nombreCurso":"Ferrallado","1":"Ferrallado","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":46,"0":46,"nombreCurso":"Fontaner\u00eda e instalaciones de climatizaci\u00f3n","1":"Fontaner\u00eda e instalaciones de climatizaci\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":47,"0":47,"nombreCurso":"Mantenimiento de maquinaria y veh\u00edculos","1":"Mantenimiento de maquinaria y veh\u00edculos","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":48,"0":48,"nombreCurso":"Montador de escayola, placas de yeso laminado y asimilados","1":"Montador de escayola, placas de yeso laminado y asimilados","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":49,"0":49,"nombreCurso":"Montaje de estructuras tubulares","1":"Montaje de estructuras tubulares","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":50,"0":50,"nombreCurso":"Operadores de aparatos elevadores","1":"Operadores de aparatos elevadores","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":51,"0":51,"nombreCurso":"Operadores de equipos manuales","1":"Operadores de equipos manuales","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":52,"0":52,"nombreCurso":"Operadores de veh\u00edculos y maquinaria de movimiento de tierras","1":"Operadores de veh\u00edculos y maquinaria de movimiento de tierras","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":53,"0":53,"nombreCurso":"Operario de instalaciones temporales de obra y auxiliares: plantas de aglomerado, de hormig\u00f3n, de machaqueo y clasificaci\u00f3n de \u00e1ridos","1":"Operario de instalaciones temporales de obra y auxiliares: plantas de aglomerado, de hormig\u00f3n, de machaqueo y clasificaci\u00f3n de \u00e1ridos","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":54,"0":54,"nombreCurso":"Operario de taller de materiales: piedras industriales, tratamiento o transformaci\u00f3n de materiales, canteros y similares","1":"Operario de taller de materiales: piedras industriales, tratamiento o transformaci\u00f3n de materiales, canteros y similares","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":55,"0":55,"nombreCurso":"Pintura","1":"Pintura","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":56,"0":56,"nombreCurso":"Revestimientos de yeso","1":"Revestimientos de yeso","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":57,"0":57,"nombreCurso":"Revestimientos exteriores","1":"Revestimientos exteriores","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":58,"0":58,"nombreCurso":"Solados y alicatados","1":"Solados y alicatados","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":59,"0":59,"nombreCurso":"Trabajos de aislamiento e impermeabilizaci\u00f3n","1":"Trabajos de aislamiento e impermeabilizaci\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":60,"0":60,"nombreCurso":"Trabajos de conservaci\u00f3n y explotaci\u00f3n de carreteras","1":"Trabajos de conservaci\u00f3n y explotaci\u00f3n de carreteras","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":61,"0":61,"nombreCurso":"Trabajos de demolici\u00f3n y rehabilitaci\u00f3n","1":"Trabajos de demolici\u00f3n y rehabilitaci\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":62,"0":62,"nombreCurso":"Trabajos de estabilizaci\u00f3n de explanadas y extendido de firmes","1":"Trabajos de estabilizaci\u00f3n de explanadas y extendido de firmes","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":63,"0":63,"nombreCurso":"Trabajos de montaje de prefabricados de hormig\u00f3n en obra","1":"Trabajos de montaje de prefabricados de hormig\u00f3n en obra","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":64,"0":64,"nombreCurso":"Trabajos de redes de abastecimiento y saneamiento y pocer\u00eda","1":"Trabajos de redes de abastecimiento y saneamiento y pocer\u00eda","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":65,"0":65,"nombreCurso":"Trabajos de soldadura","1":"Trabajos de soldadura","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":66,"0":66,"nombreCurso":"Trabajos espec\u00edficos de ejecuci\u00f3n de t\u00faneles y sostenimiento de las excavaciones subterr\u00e1neas y de los taludes","1":"Trabajos espec\u00edficos de ejecuci\u00f3n de t\u00faneles y sostenimiento de las excavaciones subterr\u00e1neas y de los taludes","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":67,"0":67,"nombreCurso":"Trabajos mar\u00edtimos","1":"Trabajos mar\u00edtimos","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":68,"0":68,"nombreCurso":"Alba\u00f1iler\u00eda","1":"Alba\u00f1iler\u00eda","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":69,"0":69,"nombreCurso":"Cimentaciones especiales, sondeos y perforaciones","1":"Cimentaciones especiales, sondeos y perforaciones","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":70,"0":70,"nombreCurso":"Colocaci\u00f3n de materiales de cubrici\u00f3n","1":"Colocaci\u00f3n de materiales de cubrici\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":71,"0":71,"nombreCurso":"Construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas","1":"Construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":72,"0":72,"nombreCurso":"Electricidad, montaje y mantenimiento de instalaciones el\u00e9ctricas de alta y baja tensi\u00f3n","1":"Electricidad, montaje y mantenimiento de instalaciones el\u00e9ctricas de alta y baja tensi\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":73,"0":73,"nombreCurso":"Encofrados","1":"Encofrados","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":74,"0":74,"nombreCurso":"Ferrallado","1":"Ferrallado","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":75,"0":75,"nombreCurso":"Fontaner\u00eda e instalaciones de climatizaci\u00f3n","1":"Fontaner\u00eda e instalaciones de climatizaci\u00f3n","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":76,"0":76,"nombreCurso":"Mantenimiento de maquinaria y veh\u00edculos","1":"Mantenimiento de maquinaria y veh\u00edculos","tipoCurso":"TPC","2":"TPC","horasCurso":null,"3":null},{"idCurso":77,"0":77,"nombreCurso":"Formaci\u00f3n inicial","1":"Formaci\u00f3n inicial","tipoCurso":"TPCMADERA","2":"TPCMADERA","horasCurso":null,"3":null},{"idCurso":78,"0":78,"nombreCurso":"Delegados de prevenci\u00f3n","1":"Delegados de prevenci\u00f3n","tipoCurso":"TPCMADERA","2":"TPCMADERA","horasCurso":null,"3":null},{"idCurso":79,"0":79,"nombreCurso":"Directivos de las Empresas","1":"Directivos de las Empresas","tipoCurso":"TPCMADERA","2":"TPCMADERA","horasCurso":null,"3":null},{"idCurso":80,"0":80,"nombreCurso":"Mandos intermedios","1":"Mandos intermedios","tipoCurso":"TPCMADERA","2":"TPCMADERA","horasCurso":null,"3":null},{"idCurso":81,"0":81,"nombreCurso":"Responsables y t\u00e9cnicos de ejecuci\u00f3n de la actividad","1":"Responsables y t\u00e9cnicos de ejecuci\u00f3n de la actividad","tipoCurso":"TPCMADERA","2":"TPCMADERA","horasCurso":null,"3":null},{"idCurso":82,"0":82,"nombreCurso":"Instalador de elementos de carpinter\u00eda y mueble","1":"Instalador de elementos de carpinter\u00eda y mueble","tipoCurso":"TPCMADERA","2":"TPCMADERA","horasCurso":null,"3":null},{"idCurso":83,"0":83,"nombreCurso":"Montador de estructuras de madera","1":"Montador de estructuras de madera","tipoCurso":"TPCMADERA","2":"TPCMADERA","horasCurso":null,"3":null},{"idCurso":84,"0":84,"nombreCurso":"Instalador de elementos de carpinter\u00eda y mueble","1":"Instalador de elementos de carpinter\u00eda y mueble","tipoCurso":"TPCMADERA","2":"TPCMADERA","horasCurso":null,"3":null},{"idCurso":85,"0":85,"nombreCurso":"Directivos y gerentes de empresa","1":"Directivos y gerentes de empresa","tipoCurso":"TPCVIDREO","2":"TPCVIDREO","horasCurso":null,"3":null},{"idCurso":86,"0":86,"nombreCurso":"Instalador de r\u00f3tulos","1":"Instalador de r\u00f3tulos","tipoCurso":"TPCVIDREO","2":"TPCVIDREO","horasCurso":null,"3":null},{"idCurso":87,"0":87,"nombreCurso":"Instalador de ventanas y acristalamientos","1":"Instalador de ventanas y acristalamientos","tipoCurso":"TPCVIDREO","2":"TPCVIDREO","horasCurso":null,"3":null}]
+[
+    {
+        "0": 1,
+        "1": "C1: Actividades CNAE 24",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 1,
+        "nombreCurso": "C1: Actividades CNAE 24",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 2,
+        "1": "C2: Actividades CNAE 30.1 Y 33.15",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 2,
+        "nombreCurso": "C2: Actividades CNAE 30.1 Y 33.15",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 3,
+        "1": "C3: Operarios de trabajos en forja",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 3,
+        "nombreCurso": "C3: Operarios de trabajos en forja",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 4,
+        "1": "C4: Operarios en trabajos de soldadura y oxicorte",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 4,
+        "nombreCurso": "C4: Operarios en trabajos de soldadura y oxicorte",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 5,
+        "1": "C5: Operarios de m\u00e1quinas de mecanizado por arranque de viruta",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 5,
+        "nombreCurso": "C5: Operarios de m\u00e1quinas de mecanizado por arranque de viruta",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 6,
+        "1": "C6: Operarios de m\u00e1quinas de mecanizado por abrasi\u00f3n",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 6,
+        "nombreCurso": "C6: Operarios de m\u00e1quinas de mecanizado por abrasi\u00f3n",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 7,
+        "1": "C7: Operarios de m\u00e1quinas de mecanizado por deformaci\u00f3n y corte del metal",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 7,
+        "nombreCurso": "C7: Operarios de m\u00e1quinas de mecanizado por deformaci\u00f3n y corte del metal",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 8,
+        "1": "C8: Operarios en actividades de tratamientos superficiales de las piezas de metal",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 8,
+        "nombreCurso": "C8: Operarios en actividades de tratamientos superficiales de las piezas de metal",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 9,
+        "1": "C9: Operarios en actividades de premontaje, montaje, cambio de formato y ensamblaje en fabricas",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 9,
+        "nombreCurso": "C9: Operarios en actividades de premontaje, montaje, cambio de formato y ensamblaje en fabricas",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 10,
+        "1": "C10: Trabajos de carpinter\u00eda met\u00e1lica",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 10,
+        "nombreCurso": "C10: Trabajos de carpinter\u00eda met\u00e1lica",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 11,
+        "1": "C11: Operarios en trabajos de joyer\u00eda",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 11,
+        "nombreCurso": "C11: Operarios en trabajos de joyer\u00eda",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 12,
+        "1": "C12: Trabajos de mec\u00e1nica, mantenimiento y reparaci\u00f3n de m\u00e1quinas, equipos industriales y\/o equipos electromec\u00e1nicos (industria aeroespacial\u2026.)",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 12,
+        "nombreCurso": "C12: Trabajos de mec\u00e1nica, mantenimiento y reparaci\u00f3n de m\u00e1quinas, equipos industriales y\/o equipos electromec\u00e1nicos (industria aeroespacial\u2026.)",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 13,
+        "1": "C13: Trabajos en talleres de reparaci\u00f3n de veh\u00edculos",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 13,
+        "nombreCurso": "C13: Trabajos en talleres de reparaci\u00f3n de veh\u00edculos",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 14,
+        "1": "C14: Trabajos en instalaci\u00f3n, mantenimiento y reparaci\u00f3n de equipos inform\u00e1ticos, automatismos y su programaci\u00f3n, ordenadores y sus perif\u00e9ricos o dispositivos auxiliares: equipos y tecnolog\u00edas de telecomunicaciones y de la informaci\u00f3n de redes de informaci\u00f3n y datos (TICs)",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 14,
+        "nombreCurso": "C14: Trabajos en instalaci\u00f3n, mantenimiento y reparaci\u00f3n de equipos inform\u00e1ticos, automatismos y su programaci\u00f3n, ordenadores y sus perif\u00e9ricos o dispositivos auxiliares: equipos y tecnolog\u00edas de telecomunicaciones y de la informaci\u00f3n de redes de informaci\u00f3n y datos (TICs)",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 15,
+        "1": "C15: Instaladores y reparadores de l\u00edneas y equipos el\u00e9ctricos",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 15,
+        "nombreCurso": "C15: Instaladores y reparadores de l\u00edneas y equipos el\u00e9ctricos",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 16,
+        "1": "C16: Trabajos de fontaner\u00eda, instalaciones de calefacci\u00f3n- climatizaci\u00f3n, instalaciones de agua caliente sanitaria e instalaciones solares t\u00e9rmicas",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 16,
+        "nombreCurso": "C16: Trabajos de fontaner\u00eda, instalaciones de calefacci\u00f3n- climatizaci\u00f3n, instalaciones de agua caliente sanitaria e instalaciones solares t\u00e9rmicas",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 17,
+        "1": "C17: Trabajos de mantenimiento, reparaci\u00f3n e instalaci\u00f3n de ascensores",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 17,
+        "nombreCurso": "C17: Trabajos de mantenimiento, reparaci\u00f3n e instalaci\u00f3n de ascensores",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 18,
+        "1": "C18: Trabajos de aislamiento e impermeabilizaci\u00f3n",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 18,
+        "nombreCurso": "C18: Trabajos de aislamiento e impermeabilizaci\u00f3n",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 19,
+        "1": "C19: Trabajos de montaje de estructuras tubulares",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 19,
+        "nombreCurso": "C19: Trabajos de montaje de estructuras tubulares",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 20,
+        "1": "C20: Trabajos de construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 20,
+        "nombreCurso": "C20: Trabajos de construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 21,
+        "1": "C21: Trabajos de instalaciones, mantenimiento y reparaci\u00f3n de infraestructuras de telecomunicaciones (TIC y digitalizaci\u00f3n)",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 21,
+        "nombreCurso": "C21: Trabajos de instalaciones, mantenimiento y reparaci\u00f3n de infraestructuras de telecomunicaciones (TIC y digitalizaci\u00f3n)",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 22,
+        "1": "C22: Trabajos en gaseoductos y redes de distribuci\u00f3n de gases combustibles",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 22,
+        "nombreCurso": "C22: Trabajos en gaseoductos y redes de distribuci\u00f3n de gases combustibles",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 23,
+        "1": "C23: Trabajos de otro tipo de instalaciones tales como instalaciones solares fotovoltaicas o instalaciones e\u00f3licas",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 23,
+        "nombreCurso": "C23: Trabajos de otro tipo de instalaciones tales como instalaciones solares fotovoltaicas o instalaciones e\u00f3licas",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 24,
+        "1": "C24: Trabajos de recuperaci\u00f3n y reciclaje de materias primas secundarias met\u00e1licas",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 24,
+        "nombreCurso": "C24: Trabajos de recuperaci\u00f3n y reciclaje de materias primas secundarias met\u00e1licas",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 25,
+        "1": "C25: Trabajos de control de calidad, verificaci\u00f3n e inspecci\u00f3n de materias en curso y en productos terminados del sector",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 25,
+        "nombreCurso": "C25: Trabajos de control de calidad, verificaci\u00f3n e inspecci\u00f3n de materias en curso y en productos terminados del sector",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 26,
+        "1": "C26: Conductores o transportistas",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 26,
+        "nombreCurso": "C26: Conductores o transportistas",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 27,
+        "1": "C27: Conductores de carretillas elevadoras",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 27,
+        "nombreCurso": "C27: Conductores de carretillas elevadoras",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 28,
+        "1": "C28: Operadores de puente-gr\u00faa",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 28,
+        "nombreCurso": "C28: Operadores de puente-gr\u00faa",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 29,
+        "1": "C29: Operadores de plataformas elevadores",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 29,
+        "nombreCurso": "C29: Operadores de plataformas elevadores",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 30,
+        "1": "C30: Operarios de almac\u00e9n y log\u00edstica y aprovisionamiento en los procesos de fabricaci\u00f3n",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 30,
+        "nombreCurso": "C30: Operarios de almac\u00e9n y log\u00edstica y aprovisionamiento en los procesos de fabricaci\u00f3n",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 31,
+        "1": "C31: Conductores de gr\u00faas m\u00f3viles autopropulsadas",
+        "2": "TPM",
+        "3": "",
+        "horasCurso": "",
+        "idCurso": 31,
+        "nombreCurso": "C31: Conductores de gr\u00faas m\u00f3viles autopropulsadas",
+        "tipoCurso": "TPM"
+    },
+    {
+        "0": 32,
+        "1": "Formacion Inicial",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 32,
+        "nombreCurso": "Formacion Inicial",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 33,
+        "1": "Nivel b\u00e1sico de prevenci\u00f3n en la construcci\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 33,
+        "nombreCurso": "Nivel b\u00e1sico de prevenci\u00f3n en la construcci\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 34,
+        "1": "Administrativos",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 34,
+        "nombreCurso": "Administrativos",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 35,
+        "1": "Delegados de prevenci\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 35,
+        "nombreCurso": "Delegados de prevenci\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 36,
+        "1": "Mandos intermedios",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 36,
+        "nombreCurso": "Mandos intermedios",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 37,
+        "1": "Personal directivo de empresa",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 37,
+        "nombreCurso": "Personal directivo de empresa",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 38,
+        "1": "Responsables de obra y t\u00e9cnicos de ejecuci\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 38,
+        "nombreCurso": "Responsables de obra y t\u00e9cnicos de ejecuci\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 39,
+        "1": "Alba\u00f1iler\u00eda",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 39,
+        "nombreCurso": "Alba\u00f1iler\u00eda",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 40,
+        "1": "Cimentaciones especiales, sondeos y perforaciones",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 40,
+        "nombreCurso": "Cimentaciones especiales, sondeos y perforaciones",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 41,
+        "1": "Colocaci\u00f3n de materiales de cubrici\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 41,
+        "nombreCurso": "Colocaci\u00f3n de materiales de cubrici\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 42,
+        "1": "Construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 42,
+        "nombreCurso": "Construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 43,
+        "1": "Electricidad, montaje y mantenimiento de instalaciones el\u00e9ctricas de alta y baja tensi\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 43,
+        "nombreCurso": "Electricidad, montaje y mantenimiento de instalaciones el\u00e9ctricas de alta y baja tensi\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 44,
+        "1": "Encofrados",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 44,
+        "nombreCurso": "Encofrados",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 45,
+        "1": "Ferrallado",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 45,
+        "nombreCurso": "Ferrallado",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 46,
+        "1": "Fontaner\u00eda e instalaciones de climatizaci\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 46,
+        "nombreCurso": "Fontaner\u00eda e instalaciones de climatizaci\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 47,
+        "1": "Mantenimiento de maquinaria y veh\u00edculos",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 47,
+        "nombreCurso": "Mantenimiento de maquinaria y veh\u00edculos",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 48,
+        "1": "Montador de escayola, placas de yeso laminado y asimilados",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 48,
+        "nombreCurso": "Montador de escayola, placas de yeso laminado y asimilados",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 49,
+        "1": "Montaje de estructuras tubulares",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 49,
+        "nombreCurso": "Montaje de estructuras tubulares",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 50,
+        "1": "Operadores de aparatos elevadores",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 50,
+        "nombreCurso": "Operadores de aparatos elevadores",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 51,
+        "1": "Operadores de equipos manuales",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 51,
+        "nombreCurso": "Operadores de equipos manuales",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 52,
+        "1": "Operadores de veh\u00edculos y maquinaria de movimiento de tierras",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 52,
+        "nombreCurso": "Operadores de veh\u00edculos y maquinaria de movimiento de tierras",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 53,
+        "1": "Operario de instalaciones temporales de obra y auxiliares: plantas de aglomerado, de hormig\u00f3n, de machaqueo y clasificaci\u00f3n de \u00e1ridos",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 53,
+        "nombreCurso": "Operario de instalaciones temporales de obra y auxiliares: plantas de aglomerado, de hormig\u00f3n, de machaqueo y clasificaci\u00f3n de \u00e1ridos",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 54,
+        "1": "Operario de taller de materiales: piedras industriales, tratamiento o transformaci\u00f3n de materiales, canteros y similares",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 54,
+        "nombreCurso": "Operario de taller de materiales: piedras industriales, tratamiento o transformaci\u00f3n de materiales, canteros y similares",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 55,
+        "1": "Pintura",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 55,
+        "nombreCurso": "Pintura",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 56,
+        "1": "Revestimientos de yeso",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 56,
+        "nombreCurso": "Revestimientos de yeso",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 57,
+        "1": "Revestimientos exteriores",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 57,
+        "nombreCurso": "Revestimientos exteriores",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 58,
+        "1": "Solados y alicatados",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 58,
+        "nombreCurso": "Solados y alicatados",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 59,
+        "1": "Trabajos de aislamiento e impermeabilizaci\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 59,
+        "nombreCurso": "Trabajos de aislamiento e impermeabilizaci\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 60,
+        "1": "Trabajos de conservaci\u00f3n y explotaci\u00f3n de carreteras",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 60,
+        "nombreCurso": "Trabajos de conservaci\u00f3n y explotaci\u00f3n de carreteras",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 61,
+        "1": "Trabajos de demolici\u00f3n y rehabilitaci\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 61,
+        "nombreCurso": "Trabajos de demolici\u00f3n y rehabilitaci\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 62,
+        "1": "Trabajos de estabilizaci\u00f3n de explanadas y extendido de firmes",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 62,
+        "nombreCurso": "Trabajos de estabilizaci\u00f3n de explanadas y extendido de firmes",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 63,
+        "1": "Trabajos de montaje de prefabricados de hormig\u00f3n en obra",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 63,
+        "nombreCurso": "Trabajos de montaje de prefabricados de hormig\u00f3n en obra",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 64,
+        "1": "Trabajos de redes de abastecimiento y saneamiento y pocer\u00eda",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 64,
+        "nombreCurso": "Trabajos de redes de abastecimiento y saneamiento y pocer\u00eda",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 65,
+        "1": "Trabajos de soldadura",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 65,
+        "nombreCurso": "Trabajos de soldadura",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 66,
+        "1": "Trabajos espec\u00edficos de ejecuci\u00f3n de t\u00faneles y sostenimiento de las excavaciones subterr\u00e1neas y de los taludes",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 66,
+        "nombreCurso": "Trabajos espec\u00edficos de ejecuci\u00f3n de t\u00faneles y sostenimiento de las excavaciones subterr\u00e1neas y de los taludes",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 67,
+        "1": "Trabajos mar\u00edtimos",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 67,
+        "nombreCurso": "Trabajos mar\u00edtimos",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 68,
+        "1": "Alba\u00f1iler\u00eda",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 68,
+        "nombreCurso": "Alba\u00f1iler\u00eda",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 69,
+        "1": "Cimentaciones especiales, sondeos y perforaciones",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 69,
+        "nombreCurso": "Cimentaciones especiales, sondeos y perforaciones",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 70,
+        "1": "Colocaci\u00f3n de materiales de cubrici\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 70,
+        "nombreCurso": "Colocaci\u00f3n de materiales de cubrici\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 71,
+        "1": "Construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 71,
+        "nombreCurso": "Construcci\u00f3n y mantenimiento de v\u00edas f\u00e9rreas",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 72,
+        "1": "Electricidad, montaje y mantenimiento de instalaciones el\u00e9ctricas de alta y baja tensi\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 72,
+        "nombreCurso": "Electricidad, montaje y mantenimiento de instalaciones el\u00e9ctricas de alta y baja tensi\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 73,
+        "1": "Encofrados",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 73,
+        "nombreCurso": "Encofrados",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 74,
+        "1": "Ferrallado",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 74,
+        "nombreCurso": "Ferrallado",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 75,
+        "1": "Fontaner\u00eda e instalaciones de climatizaci\u00f3n",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 75,
+        "nombreCurso": "Fontaner\u00eda e instalaciones de climatizaci\u00f3n",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 76,
+        "1": "Mantenimiento de maquinaria y veh\u00edculos",
+        "2": "TPC",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 76,
+        "nombreCurso": "Mantenimiento de maquinaria y veh\u00edculos",
+        "tipoCurso": "TPC"
+    },
+    {
+        "0": 77,
+        "1": "Formaci\u00f3n inicial",
+        "2": "TPCMADERA",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 77,
+        "nombreCurso": "Formaci\u00f3n inicial",
+        "tipoCurso": "TPCMADERA"
+    },
+    {
+        "0": 78,
+        "1": "Delegados de prevenci\u00f3n",
+        "2": "TPCMADERA",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 78,
+        "nombreCurso": "Delegados de prevenci\u00f3n",
+        "tipoCurso": "TPCMADERA"
+    },
+    {
+        "0": 79,
+        "1": "Directivos de las Empresas",
+        "2": "TPCMADERA",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 79,
+        "nombreCurso": "Directivos de las Empresas",
+        "tipoCurso": "TPCMADERA"
+    },
+    {
+        "0": 80,
+        "1": "Mandos intermedios",
+        "2": "TPCMADERA",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 80,
+        "nombreCurso": "Mandos intermedios",
+        "tipoCurso": "TPCMADERA"
+    },
+    {
+        "0": 81,
+        "1": "Responsables y t\u00e9cnicos de ejecuci\u00f3n de la actividad",
+        "2": "TPCMADERA",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 81,
+        "nombreCurso": "Responsables y t\u00e9cnicos de ejecuci\u00f3n de la actividad",
+        "tipoCurso": "TPCMADERA"
+    },
+    {
+        "0": 82,
+        "1": "Instalador de elementos de carpinter\u00eda y mueble",
+        "2": "TPCMADERA",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 82,
+        "nombreCurso": "Instalador de elementos de carpinter\u00eda y mueble",
+        "tipoCurso": "TPCMADERA"
+    },
+    {
+        "0": 83,
+        "1": "Montador de estructuras de madera",
+        "2": "TPCMADERA",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 83,
+        "nombreCurso": "Montador de estructuras de madera",
+        "tipoCurso": "TPCMADERA"
+    },
+    {
+        "0": 84,
+        "1": "Instalador de elementos de carpinter\u00eda y mueble",
+        "2": "TPCMADERA",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 84,
+        "nombreCurso": "Instalador de elementos de carpinter\u00eda y mueble",
+        "tipoCurso": "TPCMADERA"
+    },
+    {
+        "0": 85,
+        "1": "Directivos y gerentes de empresa",
+        "2": "TPCVIDREO",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 85,
+        "nombreCurso": "Directivos y gerentes de empresa",
+        "tipoCurso": "TPCVIDREO"
+    },
+    {
+        "0": 86,
+        "1": "Instalador de r\u00f3tulos",
+        "2": "TPCVIDREO",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 86,
+        "nombreCurso": "Instalador de r\u00f3tulos",
+        "tipoCurso": "TPCVIDREO"
+    },
+    {
+        "0": 87,
+        "1": "Instalador de ventanas y acristalamientos",
+        "2": "TPCVIDREO",
+        "3": null,
+        "horasCurso": null,
+        "idCurso": 87,
+        "nombreCurso": "Instalador de ventanas y acristalamientos",
+        "tipoCurso": "TPCVIDREO"
+    }
+]

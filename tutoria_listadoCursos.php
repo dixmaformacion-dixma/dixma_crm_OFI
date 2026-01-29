@@ -13,6 +13,8 @@
 
     }
 
+	$empresasConPendientes = obtenerEmpresasConCursosPendientes();
+
     date_default_timezone_set("Europe/Madrid");
     setlocale(LC_ALL, "spanish");
 
@@ -20,8 +22,7 @@
     include "tutoria_insertar_commentario_function.php";
     include "tutoria_editar_seguimentos_function.php";
 
-    // Manejo de eliminación de un curso asignado al alumno
-    if (isset($_GET['eliminarCurso']) && is_numeric($_GET['eliminarCurso'])) {
+	if (isset($_GET['eliminarCurso']) && is_numeric($_GET['eliminarCurso'])) {
         $idToDelete = (int) $_GET['eliminarCurso'];
         if (eliminarAlumnoCurso($idToDelete)) {
             $deleteMessage = "Inscripción de curso eliminada correctamente.";
@@ -61,7 +62,10 @@
 </head>
 <body style="background-color:#f3f6f4;">
 
-    <?php require_once("template-parts/header/header.template.php"); ?>
+    <?php 
+        $menuaction = 'tutoria';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 
@@ -104,37 +108,11 @@
                             </div>
                         </form>
                         <?php 
-                            $page_from = 'tutoria_listadoCursos.php' . "?" . $_SERVER['QUERY_STRING'];
-                            $limit = 20; // Número de resultados por página
-                            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-                            if ($page < 1) $page = 1;
-                            $offset = ($page - 1) * $limit;
-
-                            // Obtener IDs de empresas con cursos pendientes
-                            $empresasConPendientes = obtenerEmpresasConCursosPendientes();
-
-                            $result = cargarAlumnoCursos($year, $Tipo_Venta_Display, $limit, $offset);
-                            
-                            if ($result) {
-                                $cursos = $result['cursos'];
-                                $total_cursos = $result['total'];
-                                $total_pages = ceil($total_cursos / $limit);
-
-                                require("template-parts/components/cursolist.listadoCursos.php");
-
-                                // --- Controles de Paginación ---
-                                echo '<div class="d-flex justify-content-center mt-4">';
-                                if ($page > 1) {
-                                    $prev_page_query = http_build_query(array_merge($_GET, ['page' => $page - 1]));
-                                    echo '<a href="?' . $prev_page_query . '" class="btn btn-primary me-2" style="background-color:#1e989e;">&laquo; Anterior</a>';
-                                }
-                                if ($page < $total_pages) {
-                                    $next_page_query = http_build_query(array_merge($_GET, ['page' => $page + 1]));
-                                    echo '<a href="?' . $next_page_query . '" class="btn btn-primary" style="background-color:#1e989e;">Siguiente &raquo;</a>';
-                                }
-                                echo '</div>';
-                                if ($total_pages > 0) echo '<div class="text-center mt-2">Página ' . $page . ' de ' . $total_pages . '</div>';
+                        $page_from = "tutoria_listadoCursos.php";
+                        if($cursos = cargarAlumnoCursos($year, $Tipo_Venta_Display)){
+                            require("template-parts/components/cursolist.listadoCursos.php");
                         }
+						
                         ?>
                         <div class="text-center">
                             <a href="tutoria_diplomaPDF_all.php" id="printAll" target="_blank" class="btn btn-info">
@@ -166,27 +144,6 @@
                 href+=`?ids=${selectables.join(',')}`
                 $('#printAll').attr('href',href);
             })
-
-            // Toggle custom PDF menus (no Bootstrap)
-            document.addEventListener('click', function(e) {
-                    var btn = e.target.closest('.print-pdf-btn');
-                    if (btn) {
-                            var container = btn.closest('.print-pdf-dropdown');
-                            var menu = container.querySelector('.print-pdf-menu');
-                            // close others
-                            document.querySelectorAll('.print-pdf-menu.show').forEach(function(m) {
-                                    if (m !== menu) m.classList.remove('show');
-                            });
-                            menu.classList.toggle('show');
-                            return;
-                    }
-                    // close if click outside any dropdown
-                    if (!e.target.closest('.print-pdf-dropdown')) {
-                            document.querySelectorAll('.print-pdf-menu.show').forEach(function(m) {
-                                    m.classList.remove('show');
-                            });
-                    }
-            });
     </script>
 </body>
 </html>

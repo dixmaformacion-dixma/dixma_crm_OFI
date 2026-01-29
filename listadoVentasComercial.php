@@ -18,10 +18,11 @@
 
     if(isset($_GET['consultar']) && $_SERVER['REQUEST_METHOD'] == 'GET'){
 
-            $fechaInicio = date('d-m-Y', strtotime($_GET['fechaInicio']));
-            $fechaFin = date('d-m-Y', strtotime($_GET['fechaFin']));
+            $fechaInicio = !empty($_GET['fechaInicio'])?date('d-m-Y', strtotime($_GET['fechaInicio'])):'';
+            $fechaFin = !empty($_GET['fechaFin'])?date('d-m-Y', strtotime($_GET['fechaFin'])):'';
+            $empresa = $_GET['empresa'];
 
-            if($listadoVentas = listadoVentasEmpresas($fechaInicio, $fechaFin)){
+            if($listadoVentas = listadoVentasEmpresasComercial($fechaInicio, $fechaFin, $empresa)){
 
 
             } else {
@@ -51,65 +52,10 @@
 
     <!-- Menu cabecera -->
 
-    <nav class="navbar navbar-expand-lg justify-content-center border-bottom border-secondary" style="background-color:#e4e4e4;">
-
-        <div class="container-fluid">
-
-            <a class="navbar-brand" href="inicio.php"><img src="images/logo.gif" id="logo" class="img-fluid" style="width: 200px; heigth: 50px"></a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-
-                <div class="navbar-nav nav-pills">
-
-                    <a class="nav-link" href="inicio.php" aria-current="page"><b> Call Center </b></a>
-
-                    <?php
-
-                        if($_SESSION['rol'] == "admin"){
-
-                            echo "<a class='nav-link' href='administracion.php'><b> Administracion </b></a>";
-
-                        }
-
-                    ?>
-
-                    <a class="nav-link active text-bg-secondary" href="comercial.php"><b> Comercial </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin" || $_SESSION['codigoUsuario'][0] == "3"){
-
-                    echo "<a class='nav-link' href='tutoria.php'><b> Tutoria </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link disabled me-5" href=""><b> Estadisticas </b></a>
-                    
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <b> <?php echo $_SESSION['usuario'] ?> </b>
-                        </a>
-
-                        <div class="dropdown-menu" style="background-color: #e4e4e4">
-                            <a class="dropdown-item " href="perfilUsuario.php"><b> Perfil </b></a>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item " href="funciones/cerrarSesion.php"><b> Cerrar sesion </b></a>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </nav>
+    <?php 
+        $menuaction = 'comercial';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 
@@ -132,20 +78,28 @@
                     <div class="container-fluid">
 
                         <div class="row d-flex justify-content-center">
+                            <div class="form-group col-8">
+                                
+                                <label class="form-label"><b>ID Empresa / Nombre</b></label>
+                                <input type="text" name="empresa" value="<?php echo @$_GET['empresa'] ?>" class="form-control"></input>
+
+                            </div>
+                            <div class="col-12"></div>
 
                             <div class="form-group col-12 col-md-4 text-center">
                                 
                                 <label class="form-label"><b>Fecha inicio:</b></label>
-                                <input type="date" name="fechaInicio" value="<?php echo $fechaHoy ?>" class="form-control"></input>
+                                <input type="date" name="fechaInicio" value="<?php echo @$_GET['fechaInicio'] ?>" class="form-control"></input>
 
                             </div>
 
                             <div class="form-group col-12 col-md-4 text-center">
                                 
                                 <label class="form-label"><b>Fecha fin:</b></label>
-                                <input type="date" name="fechaFin" value="<?php echo $fechaHoy ?>" class="form-control"></input>
+                                <input type="date" name="fechaFin" value="<?php echo @$_GET['fechaFin'] ?>" class="form-control"></input>
 
                             </div>
+
                             
                             <div class="row d-flex justify-content-center">
 

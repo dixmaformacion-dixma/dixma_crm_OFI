@@ -20,6 +20,15 @@
     $fechaHoy = date('d-m-Y');
     $horaActual = date('H:i');
 
+    if(isset($_GET['idEmpresa'])) {    
+        $fechaInicio = @$_GET['fechaInicio'];
+        $fechaFin = @$_GET['fechaFin'];
+        $provincia = @$_GET['provincia'];
+        $poblacion = @$_GET['poblacion'];
+        $idempresa = $_GET['idEmpresa'];
+        $params = "idEmpresa=".$idempresa."&fechaInicio=" . $fechaInicio . "&provincia=" . $provincia . "&fechaFin=" . $fechaFin . "&poblacion=" . $poblacion . "&consultar=Buscar";
+    }
+
     if(isset($_POST['insertar']) && $_SERVER['REQUEST_METHOD'] == 'POST'){
 
         if(isset($_POST['guardaCredito'])){
@@ -46,7 +55,7 @@
             'codigoPostal' => $_POST['codigoPostal'],
             'provincia' => $_POST['provincia'],
             'poblacion' => $_POST['poblacion'],
-            'sector' => $_POST['sector'],
+            'sector' => implode('|!!|',$_POST['sector']),
             'pais' => "ESP",
             'telefono' => $_POST['telefono'],
             'telefono2' => $_POST['telefono2'],
@@ -55,7 +64,8 @@
             'creditoGuardado' => $_POST['creditoGuardado'],
             'creditoCaducar' => $_POST['creditoCaducar'],
             'referencia'=>$_POST['referencia'],
-            'codigo'=>$_POST['codigo']
+            'codigo'=>$_POST['codigo'],
+            'pdte_bonificar'=>$_POST['pdte_bonificar']
         ];
 
         if(actualizarEmpresa($datosEmpresa, $_GET['idEmpresa'])){
@@ -83,6 +93,7 @@
             $usuario_seguimiento = NULL;
             $operador = $_SESSION['codigoUsuario'];
             $estadoLlamada = $_POST['estadoLlamada'];
+            $prioridad = "BAJO";
 
             
             if(isset($_POST['pedirCita'])){
@@ -92,6 +103,7 @@
                 $estadoLlamada = "Pedir cita " . $nombre[0];
                 $anoPedirCita = $_POST['anoPedirCita'];
                 $mesPedirCita = $_POST['mesPedirCita'];
+                $prioridad = $_POST['prioridadCita'];
 
             }
 
@@ -143,7 +155,8 @@
                 'codigo_llamada' => $_POST['codigo_llamada'],
                 'fecha_seguimiento' => @$_POST['fecha_seguimiento'],
                 'tipo_seguimiento' => @$_POST['tipo_seguimiento'],
-                'usuario_seguimiento'=>$usuario_seguimiento
+                'usuario_seguimiento'=>$usuario_seguimiento,
+                'prioridad'=>$prioridad
             ];
 
             if(insertarNuevaLlamada($datosLlamada, $_GET['idEmpresa'])){
@@ -155,7 +168,7 @@
                 echo "<div class='alert alert-danger mb-0'> ERROR: No se pudo inserta la llamada </div>";
     
             }
-            if($_POST['estadoLlamada'] == "cita"){
+            if(strtolower($_POST['estadoLlamada']) == "cita"){
 
                 $idNuevaLlamada = cogerIDNuevaLlamada();
 
@@ -226,11 +239,12 @@
 
         }
 
-        if($_POST['tipoCurso'] != '--- Seleccione ---'){
+        if(!empty($_POST['nombreCurso'])){
 
             $datoCurso = [
                 'tipoCurso' => $_POST['tipoCurso'],
-                'curso' => $_POST['curso'],
+                'curso' => $_POST['nombreCurso'],
+                'horasCurso' => $_POST['horasCurso'],
             ];
 
             if(insertarNuevoCurso($datoCurso, $_GET['idEmpresa'])){
@@ -242,6 +256,8 @@
                 echo "<div class='alert alert-danger mb-0'> ERROR: No se pudo inserta la llamada </div>";
 
             }
+
+ 
 
         }
         if(isset($_POST['estadoLlamada']) || $_POST['tipoCurso'] != '--- Seleccione ---'){
@@ -256,15 +272,27 @@
             }
         }
 
-        header('Refresh: 1; URL=inicio.php');
+        $redirect = "inicio.php";
+
+        if(!empty($_GET['redirect'])){
+            $redirect = $_GET['redirect'];
+        }
+        header("Refresh: 1; URL={$redirect}");
 
     };
     
     if($empresa = cargarEmpresa($_GET['idEmpresa'])){
-
+        $empresa['sector'] = explode('|!!|',$empresa['sector']);
     }
 
     if($listadoLlamadas = listadoLlamadas($_GET['idEmpresa'])){
+
+    }
+    if($listaCursos = listadoCursos()){
+
+    }
+
+    if($cursosInteresados = cursosInteresados($_GET['idEmpresa'])){
 
     }
 
@@ -284,6 +312,7 @@
     <script src="js/arraySector.js"></script>
     <script src="js/nulosOtros.js"></script>
     <script src="js/arrayCursos.js"></script>
+    <script src="js/selectCursos.js"></script>
     <link rel="icon" href="images/favicon.ico">
 
 </head>
@@ -291,65 +320,10 @@
 
     <!-- Menu cabecera -->
 
-    <nav class="navbar navbar-expand-lg justify-content-center border-bottom border-secondary" style="background-color:#e4e4e4;">
-
-        <div class="container-fluid">
-
-            <a class="navbar-brand" href="inicio.php"><img src="images/logo.gif" id="logo" class="img-fluid" style="width: 200px; heigth: 50px"></a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-center"  id="navbarSupportedContent">
-
-                <div class="navbar-nav nav-pills">
-
-                    <a class="nav-link active text-bg-secondary" href="inicio.php" aria-current="page"><b> Call Center </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin"){
-
-                    echo "<a class='nav-link' href='administracion.php'><b> Administracion </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link" href="comercial.php"><b> Comercial </b></a>
-
-                <?php
-
-                    if($_SESSION['rol'] == "admin" || $_SESSION['codigoUsuario'][0] == "3"){
-
-                    echo "<a class='nav-link' href='tutoria.php'><b> Tutoria </b></a>";
-
-                    }
-
-                ?>
-
-                    <a class="nav-link disabled me-5" href=""><b> Estadisticas </b></a>
-
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <b> <?php echo $_SESSION['usuario'] ?> </b>
-                        </a>
-
-                        <div class="dropdown-menu" style="background-color: #e4e4e4">
-                            <a class="dropdown-item " href="perfilUsuario.php"><b> Perfil </b></a>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item " href="funciones/cerrarSesion.php"><b> Cerrar sesion </b></a>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </nav>
+    <?php 
+        $menuaction = 'callcenter';
+        require_once './template-parts/header/menu_top.php' 
+    ?>
 
     <!-- Menu lateral y formulario -->
 
@@ -357,39 +331,7 @@
 
         <div class="row">
 
-            <div class="col-md-2 col-12 align-items-start text-justify" style="background-color:#e4e4e4;">
-                <nav class="navbar-nav nav-pills flex-column mt-2 mb-2">
-                    <a class="nav-link active text-bg-secondary" href="buscarEmpresa.php"> <img class="ms-3" src="images/iconos/search.svg"> <b> Insertar / Buscar </b></a>
-                    <a class="nav-link" href="pendientes.php"> <img class="ms-3" src="images/iconos/exclamation-triangle.svg"> <b> Pendientes </b></a>
-                    <a class="nav-link" href="listado.php"> <img class="ms-3" src="images/iconos/list.svg"> <b> Listado </b></a>
-                    <a class="nav-link" href="sectores.php"> <img class="ms-3" src="images/iconos/briefcase.svg"> <b> Sectores </b></a>
-                    <a class="nav-link" href="control_llamadas.php"> <img class="ms-3" src="images/iconos/telephone.svg"> <b> Control de llamadas </b></a>
-                    <a class="nav-link" href="citas.php"> <img class="ms-3" src="images/iconos/calendar-day.svg"> <b> Citas </b></a>
-                    <a class="nav-link" href="listadoCitas.php"> <img class="ms-3" src="images/iconos/calendar-date.svg"> <b> Listado de Citas </b></a>
-                    <a class="nav-link" href="cursosInteresados.php"> <img class="ms-3" src="images/iconos/book.svg"> <b> Cursos interesados </b></a>
-
-                <?php 
-                    
-                    if($_SESSION['codigoUsuario'][0] == "2"){
-
-                        echo "<hr class='border border-dark'>";
-                        echo "<a class='nav-link' href='pedirCita.php'> <img class='ms-3' src='images/iconos/calendar-plus.svg'> <b> Pedir Cita </b></a>";
-                        echo "<a class='nav-link' href='hacerSeguimiento.php'> <img class='ms-3' src='images/iconos/box-arrow-in-right.svg'> <b> Hacer seguimiento </b></a>";
-
-                    }
-
-                    if($_SESSION['codigoUsuario'][0] == "1"){
-
-                        echo "<hr class='border border-dark'>";
-                        echo "<a class='nav-link' href='Callcenter_crearCurso.php'> <img class='ms-3' src='images/iconos/book.svg'> <b> Crear curso </b></a>";
-
-                    }
-
-                ?>
-
-                </nav> 
-            </div>
-
+            <?php require_once './template-parts/leftmenu/callcenter.template.php'; ?>
             <div class="col-md-10 col-12" id="datosEmpresa">
 
                 <h2 class="text-center mt-2 pt-2 pb-3 mb-md-2 mb-3 border border-5 rounded" style="background-color: #b0d588; letter-spacing: 7px;">DATOS DE LA EMPRESA</h2>
@@ -404,161 +346,7 @@
 
                             <input name="idEmpresa" value="<?php echo $_GET['idEmpresa'] ?>" hidden></input>
 
-                            <div class="row">
-                                <div class="col-md-8 col-12">
-                                    <label><b>Nombre empresa:</b></label>
-                                    <input class="form-control" name="nombreEmpresa" value="<?php echo $empresa['nombre'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>CIF:</b></label>
-                                    <input class="form-control" name="CIF" value="<?php echo $empresa['cif'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-2 col-12">
-                                    <label><b>Credito vigente:</b></label>
-                                    <input class="form-control" name="creditoVigente" type="number" value="<?php echo $empresa['credito'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-2 col-12">
-                                    <label><b>Credito año anterior:</b></label>
-                                    <input class="form-control" name="creditoAnhoAnterior" type="number" value="<?php echo $empresa['credito'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-3 col-12">
-                                    <label><b>Credito guardado:</b></label>
-
-                                    <label>Si:</label>
-                                    <input type="radio" id="guardaCredito" name="guardaCredito" checked>
-
-                                    <label>No:</label>
-                                    <input type="radio" id="guardaCreditoNo" name="guardaCredito" value="No">
-
-                                    <input class="form-control" id="cajaGuardaCredito" value="<?php echo $empresa['creditoGuardado'] ?>" name="creditoGuardado" type="text"></input>
-                                </div>
-
-                                <div class="col-md-3 col-12">        
-                                    <label><b>Importe credito a caducar:</b></label>
-                                    <input class="form-control" name="creditoCaducar" type="text" value="<?php echo $empresa['creditoCaducar'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-2 col-12">        
-                                    <label><b>Nº Empleados:</b></label>
-                                    <input class="form-control" name="nEmpleados" type="number" value="<?php echo $empresa['numeroempleados'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-5 col-12">
-                                    <label><b>Calle:</b></label>
-                                    <input class="form-control text-uppercase" name="calle" value="<?php echo $empresa['calle'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-2 col-12">
-                                    <label><b>Provincia:</b></label> <br>
-                                        <select class="form-select" name="provincia" id="selectProvincia" required>
-                                            <option hidden="true" selected> <?php echo $empresa['provincia'] ?> </option>
-                                            <option value="Pontevedra">Pontevedra</option>
-                                            <option value="Orense">Orense</option>
-                                            <option value="Lugo">Lugo</option>
-                                            <option value="Coruña">Coruña</option>
-                                        </select>
-                                </div>
-
-                                <div class="col-md-3 col-12">
-                                    <label><b>Poblacion:</b></label> <br>
-                                        <select class="form-select" name="poblacion" id="selectPoblacion" required>
-                                            <option hidden="true" selected> <?php echo $empresa['poblacion'] ?> </option>
-                                        </select>
-                                </div>
-
-                                <div class="col-md-2 col-12">
-                                    <label><b>Codigo postal:</b></label>
-                                    <input class="form-control" name="codigoPostal" value="<?php echo $empresa['cp'] ?>" required></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 col-12">
-                                    <label><b>Telefono:</b></label>
-                                    <input class="form-control" name="telefono" value="<?php echo $empresa['telef1'] ?>" required></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Telefono 2:</b></label>
-                                    <input class="form-control" name="telefono2" value="<?php echo $empresa['telef2'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Telefono 3:</b></label>
-                                    <input class="form-control" name="telefono3" value="<?php echo $empresa['telef3'] ?>" maxlength="9"></input>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 col-12">
-                                    <label><b>Email:</b></label>
-                                    <input class="form-control" name="email" value="<?php echo $empresa['email'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Email 2:</b></label>
-                                    <input class="form-control" name="email2" value="<?php echo $empresa['email2'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Horario:</b></label>
-                                    <input class="form-control" name="horario" value="<?php echo $empresa['horario'] ?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 col-12">
-                                    <label><b>Persona de contacto:</b></label>
-                                    <input class="form-control" name="personaContacto" value="<?php echo $empresa['personacontacto'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Cargo persona de contacto:</b></label>
-                                    <input class="form-control" name="cargoPersonaContacto" value="<?php echo $empresa['cargo'] ?>"></input>
-                                </div>
-
-                                <div class="col-md-4 col-12">
-                                    <label><b>Referencia:</b></label>
-                                    <input class="form-control" name="referencia" value="<?php echo $empresa['referencia'] ?>" list="referencias"></input>
-                                    <datalist id="referencias">
-                                        <?php foreach(getReferencias() as $ref): ?>
-                                            <option value="<?php echo $ref ?>" />
-                                        <?php endforeach ?>
-                                    </datalist>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <label><b>Sector:</b></label>
-                                    <select class="form-select" name="sector" id="sectores">
-                                        <option hidden="true" selected> <?php echo $empresa['sector'] ?> </option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <label><b>Código:</b></label>
-                                    <input id="codigo" class="form-control" name="codigo" value="<?php echo $empresa['codigo']?>"></input>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <label><b>Observaciones:</b></label>
-                                    <textarea class="form-control" name="observacionesEmpresa"><?php echo $empresa['observacionesempresa']?></textarea>
-                                </div>
-                            </div>
+                            <?php require_once './template-parts/components/empresaFormDatosBasicos.php' ?>
 
                             <div class="row">
                                 <div class="col-md-12 col-12">
@@ -639,45 +427,7 @@
                             <?php
                                 $comerciales = cargarComerciales();
                                 echo "<div class='row d-flex justify-content-center mt-md-2'>";
-                                if($_SESSION['codigoUsuario'] == "103"){
-                                        echo "<div class='col-md-5 col-12'>";
-                                            echo "<label><b>Pedir cita:</b></label>";
-                                            echo "<input type='radio' class='form-check-input ms-md-1' name='estadoLlamada' id='pasarCita'>";
-                                            echo "<select class='form-select' name='pedirCita' id='selectPedirCita' disabled>";
-
-                                        for($i=0; $i < count($comerciales); $i++){
-
-                                            if($comerciales[$i]['codigousuario'][0] == "2"){
-
-                                                echo "<option hidden='true'></option>";
-                                                echo "<option value='" . $comerciales[$i]['codigousuario'] . "'>" . $comerciales[$i]['nombre'] . "</option>";
-
-                                            }
-
-                                        }
-                                            echo "</select>";
-                                        echo "</div>";
-
-                                        echo "<div class='col-md-5 col-12'>";
-                                            echo "<label><b>Hacer seguimiento:</b></label>";
-                                            echo "<input type='radio' class='form-check-input ms-md-1' name='estadoLlamada' id='hacerSeguiminento'>";
-                                            echo "<select class='form-select' name='seguimiento' id='selectHacerSeguimiento' disabled>";
-
-                                        for($i=0; $i < count($comerciales); $i++){
-
-                                            if($comerciales[$i]['codigousuario'][0] == "2"){
-
-                                                echo "<option hidden='true'></option>";
-                                                echo "<option value='" . $comerciales[$i]['codigousuario'] . "'>" . $comerciales[$i]['nombre'] . "</option>";
-                                                
-                                            }
-
-                                        }
-                                            echo "</select>";
-                                        echo "</div>";
-                                        
-                                        
-                                    }
+                                require_once './template-parts/components/empresaPedirCitaForm.php';
 
                                 echo "<div class='col-md-5 col-12'>";
                                         echo "<label><b>Hacer seguimiento: </b></label>";
@@ -686,7 +436,9 @@
 
                                     for($i=0; $i < count($comerciales); $i++){
 
-                                        if(in_array($_SESSION['codigoUsuario'][0],[2]) || $comerciales[$i]['codigousuario'][0] == "2"){
+                                        if(
+                                            $comerciales[$i]['codigousuario']!=$_SESSION['codigoUsuario']
+                                        ){
 
                                             echo "<option hidden='true'></option>";
                                             echo "<option value='" . $comerciales[$i]['codigousuario'] . "'>" . $comerciales[$i]['nombre'] . "</option>";
@@ -722,26 +474,66 @@
 
                             <div id="formNuevoCurso" hidden="true">
 
+                            
                                 <div class="row">
-                                    <div class="col-md-12 col-12">
-                                        <label class="form-label"><b>Tipo de curso:</b></label>
-                                            <select class="form-select" name="tipoCurso" id="selectTipoCurso">
-                                                <option hidden="true" selected>--- Seleccione ---</option>
-                                                <option value="tpm">TPM</option>
-                                                <option value="tpc">TPC</option>
-                                                <option value="tpcMadera">TPC MADERA Y MUEBLE</option>
-                                                <option value="tpcVidreo">TPC VIDREO Y ROTULACIÓN</option>
-                                            </select>
-                                    </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-12 col-12">
-                                        <label class="form-label"><b>Curso:</b></label>
-                                            <select class="form-select" name="curso" id="selectCurso">
-                                                <option hidden="true" selected>--- Seleccione ---</option>
-                                            </select>
+                                    <div class="col-md-1 col-1">
                                     </div>
+
+                                    <div class="col-md-2 col-4 text-center">
+                                        <label class="form-label"><b>Tipo de curso:</b></label>
+                                    </div>
+
+                                    <div class="col-md-2 col-3 text-center">
+                                        <label class="form-label"><b>Alumnos / Duración:</b></label>
+                                    </div>
+
+                                    <div class="col-md-7 col-4">
+                                        <label class="form-label"><b>Curso:</b></label>
+                                    </div>
+
+                                </div>
+                                <div id="cursosSections">
+                                <?php foreach(getTiposCursos() as $index=>$tipoCurso): ?>
+                                    <div class="row cursoSection">
+
+                                        <div class="col-md-1 col-1">
+                                            <input type="radio" name="cursos" id="radio<?php echo $tipoCurso['codigo'] ?>" <?php echo $index==0?'checked':''?> ></input>
+                                        </div>
+
+                                        <div class="col-md-2 col-4">
+                                            <input type="text" readonly="true" class="form-control readonly text-center" id="<?php echo $tipoCurso['codigo'] ?>f" value="<?php echo $tipoCurso['nombre'] ?>" <?php echo $index>0?'disabled':''?>>
+                                            <input type="text" class="form-control readonly text-center d-none" name="tipoCurso" id="<?php echo $tipoCurso['codigo'] ?>" value="<?php echo $tipoCurso['codigo'] ?>" <?php echo $index>0?'disabled':''?>>
+                                        </div>
+                                    
+                                        <div class="col-md-2 col-3">
+                                            <input type="text" class="form-control text-center" name="horasCurso" id="horas<?php echo $tipoCurso['codigo'] ?>" <?php echo $index>0?'disabled':''?>>
+                                        </div>
+
+                                        <div class="col-md-7 col-4">
+                                            <select class="form-select mb-2" name="nombreCurso" id="select<?php echo $tipoCurso['codigo'] ?>" <?php echo $index>0?'disabled':''?>>
+                                            <option hidden="true" selected></option>
+                                                <?php 
+                                                
+                                                for($i=0; $i < count($listaCursos); $i++) {
+                                                    
+                                                    if($listaCursos[$i]['tipoCurso'] == $tipoCurso['codigo']){
+
+                                                        echo "<option>";
+                                                        echo $listaCursos[$i]['nombreCurso'];
+                                                        echo "</option>";
+
+                                                    }
+                                                    
+                                                }
+
+                                                ?>
+    
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <?php endforeach ?>
                                 </div>
 
                             </div>
@@ -749,6 +541,42 @@
                             <div class="row">
                                 <div class="col-md-12 col-12">
                                     <input class="btn btn-primary form-control mt-5 mb-5" type="submit" name="insertar" value="Insertar"></input>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 col-12">
+                                    <h5 class='text-center pt-2 pb-2 border border-5 rounded' style="background-color: #b0d588; letter-spacing: 7px;">LISTADO CURSOS: </h5>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 col-12">
+                                    <?php
+
+                                        if(!empty($cursosInteresados)){
+
+                                            echo "<div>";
+
+                                            for($i=0; $i < count($cursosInteresados); $i++){
+
+                                                echo "<div class='container-fluid border rounded mt-2 mb-3 border-5'>";
+
+                                                echo "<div class='row mt-2'>";
+                                                echo "<div class='col-12 col-md-2'> <a href='/consultarEmpresa.php?{$params}&borrarCurso=".$cursosInteresados[$i]['Codigo']."' class='text-danger' title='Borrar'>X</a> <b>Estado:</b> " . $cursosInteresados[$i]['estadoCurso'] . "</div>";
+                                                echo "<div class='col-12 col-md-5'><b>Alumnos / Duración: </b> " . $cursosInteresados[$i]['horasCurso'] . "</div>";
+                                                echo "<div class='col-12 col-md-5'><b>Curso interesado:</b> " . $cursosInteresados[$i]['Curso'] . "</div>";
+                                                echo "</div>";
+
+                                                echo "</div>";
+
+                                            }
+
+                                            echo "</div>";
+
+                                        }
+
+                                    ?>
                                 </div>
                             </div>
 
@@ -789,6 +617,9 @@
                                                 echo "<label class='col-12 col-md-3'> <b>Ano/Mes:</b> ";
                                                 if($listadoLlamadas[$i]['anoPedirCita'] != "" and $listadoLlamadas[$i]['mesPedirCita'] != ""){
                                                     echo " " . $listadoLlamadas[$i]['anoPedirCita'] . " " . ["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"][intval($listadoLlamadas[$i]['mesPedirCita']) - 1]; 
+                                                }
+                                                //Desactivado el boton de editar momentaneamente
+                                                if(1!=1 && $listadoLlamadas[$i]['anoPedirCita'] != "" and $listadoLlamadas[$i]['mesPedirCita'] != ""){
                                                     echo ' | <a href="javascript:editarFecha('.$listadoLlamadas[$i]['idllamada'].','.$listadoLlamadas[$i]['mesPedirCita'].','.$listadoLlamadas[$i]['anoPedirCita'].')">Editar</a>';
                                                 };
                                                 echo "</label>";
@@ -813,6 +644,9 @@
                                     ?>
                                 </div>
                             </div>
+                            <?php if(!empty($_REQUEST['redirect'])): ?>
+                                <input type="hidden" name="redirect" value="<?php echo $_REQUEST['redirect'] ?>">
+                            <?php endif ?>
 
                         </form>
 
@@ -865,6 +699,9 @@
                         <button type="button" class="btn btn-secondary" onclick="$('#editarFecha').modal('hide')">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </div>
+                    <?php if(!empty($_REQUEST['redirect'])): ?>
+                        <input type="hidden" name="redirect" value="<?php echo $_REQUEST['redirect'] ?>">
+                    <?php endif ?>
                 </form>
             </div>
         </div>
