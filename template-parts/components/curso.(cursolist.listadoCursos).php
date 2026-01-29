@@ -79,6 +79,10 @@ if (!isset($statusDiplomaColor)) {
                 </div>
                 <?php
                     $empresaStyle = '';
+                    // Inizializza se non esiste
+                    if (!isset($empresasConPendientes)) {
+                        $empresasConPendientes = [];
+                    }
                     if (isset($curso['idEmpresa']) && in_array($curso['idEmpresa'], $empresasConPendientes)) {
                         $empresaStyle = 'background-color: #ffcccc;'; // Fondo rojo claro
                     }
@@ -130,6 +134,10 @@ if (!isset($statusDiplomaColor)) {
                         <label class='col-md-6 col-12'>
                                 <b>Email Empresa:</b>
                                 <span><?php echo $empresa['email']; ?></span>
+                        </label>
+                        <label class='col-md-6 col-12'>
+                                <b>CIF:</b>
+                                <span><?php echo $empresa['cif']; ?></span>
                         </label>
                         <label class='col-md-6 col-12'>
                                 <b>telefono Empresa:</b>
