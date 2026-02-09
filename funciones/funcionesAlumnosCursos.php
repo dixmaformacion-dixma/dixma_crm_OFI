@@ -175,8 +175,8 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
                     `Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, 
                     `Fecha_Inicio`, `Fecha_Fin`, `tutor`, `idAlumno`, `idCurso`, `idEmpresa`, 
                     `Tipo_Venta`, `status_curso`, `seguimento0`, `seguimento1`, `seguimento2`, 
-                    `seguimento3`, `seguimento4`, `seguimento5`
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'en curso', ?, ?, ?, ?, ?, ?)";
+                    `seguimento3`, `seguimento4`, `seguimento5`, `firma_docente`
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'en curso', ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conexionPDO->prepare($sql);
 
         if (!$stmt) {
@@ -203,6 +203,7 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
             $stmt->bindValue(17, $datosCurso['seguimento3'], PDO::PARAM_STR);
             $stmt->bindValue(18, $datosCurso['seguimento4'], PDO::PARAM_STR);
             $stmt->bindValue(19, $datosCurso['seguimento5'], PDO::PARAM_STR);
+            $stmt->bindValue(20, $datosCurso['Firma_Docente'] ?? null, PDO::PARAM_STR);
 
             if (!$stmt->execute()) {
                 throw new Exception("Error al insertar el curso para el alumno ID: " . $idAlumno);
