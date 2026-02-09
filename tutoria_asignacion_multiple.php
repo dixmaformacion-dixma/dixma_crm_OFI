@@ -29,6 +29,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
     if (empty($alumnosSeleccionados)) {
         $mensaje = "<div class='alert alert-danger'>Error: Debes seleccionar al menos un alumno.</div>";
     } else {
+        // Gestión del archivo de firma docente
+        $firmaDocentePath = null;
+        if (!empty($_FILES['Firma_Docente']['name'])) {
+            $uploadDir = 'firmas/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $fileName = substr(md5($_FILES['Firma_Docente']['name']), 0, 8) . '_' . basename($_FILES['Firma_Docente']['name']);
+            $targetFile = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['Firma_Docente']['tmp_name'], $targetFile)) {
+                $firmaDocentePath = $fileName;
+            }
+        }
+
         $datosCurso = [
             'Denominacion' => $_POST['Denominacion'] ?? null,
             'N_Accion' => $_POST['N_Accion'] ?? null,
@@ -42,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
             'idCurso' => isset($_POST['selectFromCourseList']) ? $_POST['idCurso'] : null,
             'idEmpresa' => $idEmpresa,
             'Tipo_Venta' => $_POST['Tipo_Venta'],
+            'Firma_Docente' => $firmaDocentePath,
             'seguimento0' => !empty($_POST['seguimento0']) ? $_POST['seguimento0'] : null,
             'seguimento1' => !empty($_POST['seguimento1']) ? $_POST['seguimento1'] : null,
             'seguimento2' => !empty($_POST['seguimento2']) ? $_POST['seguimento2'] : null,
@@ -69,6 +85,8 @@ if (isset($_GET['idEmpresa'])) {
     $empresa = cargarEmpresa($idEmpresa);
     if ($empresa) {
         $alumnos = todoAlumnoPorEmpresa($idEmpresa);
+        // Verificar que $alumnos sea un array antes de ordenar
+        if (is_array($alumnos) && !empty($alumnos)) {
             // Ordenar la lista de alumnos por nombre y, en caso de empate, por apellidos
             usort($alumnos, function($a, $b) {
                 $nameA = $a['nombre'] ?? '';
@@ -81,6 +99,10 @@ if (isset($_GET['idEmpresa'])) {
                 }
                 return $cmp;
             });
+        } else {
+            // Si no es un array o está vacío, inicializar como array vacío
+            $alumnos = [];
+        }
     }
 }
 
@@ -168,7 +190,7 @@ if (isset($_GET['idEmpresa'])) {
                     <!-- Paso 3: Rellenar Datos del Curso -->
                     <div class="card mb-4">
                         <div class="card-header fw-bold">Paso 3: Rellenar Datos del Curso</div>
-                        <form method="POST" action="tutoria_asignacion_multiple.php?idEmpresa=<?php echo $idEmpresa; ?>">
+                        <form method="POST" action="tutoria_asignacion_multiple.php?idEmpresa=<?php echo $idEmpresa; ?>" enctype="multipart/form-data">
                             <input type="hidden" name="idEmpresa" value="<?php echo $empresa['idempresa']; ?>">
                             <?php foreach ($alumnos_seleccionados_ids as $id_alumno) : ?>
                                 <input type="hidden" name="alumnos[]" value="<?php echo htmlspecialchars($id_alumno); ?>">
@@ -226,6 +248,16 @@ if (isset($_GET['idEmpresa'])) {
                                             <div class="col-md-4"><label class="form-label">SEGUIMIENTO 3:</label><input name="seguimento3" class="form-control form-control-sm seguimento3" type="date"></div>
                                             <div class="col-md-4"><label class="form-label">SEGUIMIENTO 4:</label><input name="seguimento4" class="form-control form-control-sm seguimento4" type="date"></div>
                                             <div class="col-md-4"><label class="form-label">SEGUIMIENTO 5:</label><input name="seguimento5" class="form-control form-control-sm seguimento5" type="date"></div>
+                                        </div>
+
+                                        <hr>
+                                        <h5 class="text-center text-muted">Firma Docente</h5>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <label class="form-label fw-bold">Subir Firma Docente:</label>
+                                                <input type="file" name="Firma_Docente" class="form-control" accept="image/*,.pdf">
+                                                <small class="text-muted">Formatos permitidos: Imágenes (JPG, PNG, GIF, BMP, WebP, etc.) o PDF</small>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- Fin del nuevo formulario -->
