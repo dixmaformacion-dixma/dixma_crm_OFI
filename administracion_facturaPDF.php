@@ -372,12 +372,27 @@ function changeFormaDePago(){
   }
 }
 function changePrice(){
-  price = $('#mainprice').get(0).value * 1.0;
-  $('#mainprice').get(0).value = price.toFixed(2);
-  $('#importe').get(0).value = price.toFixed(2);
-  $('#costes_directos').get(0).value = (price/1.1).toFixed(2);
-  $('#costes_organizacion').get(0).value = (price/1.1*0.1).toFixed(2);
-  $('#total').get(0).value = price.toFixed(2);
+  // Get the value of the mainprice input
+  let priceInput = $('#mainprice').get(0).value;
+
+  // Replace comma with a dot for decimal compatibility
+  priceInput = priceInput.replace(',', '.');
+
+  // Parse the value as a float
+  const price = parseFloat(priceInput);
+
+  if (!isNaN(price)) {
+    // If valid, update all related fields
+    $('#mainprice').get(0).value = price.toFixed(2);
+    $('#importe').get(0).value = price.toFixed(2);
+    $('#costes_directos').get(0).value = (price / 1.1).toFixed(2);
+    $('#costes_organizacion').get(0).value = (price / 1.1 * 0.1).toFixed(2);
+    $('#total').get(0).value = price.toFixed(2);
+  } else {
+    // If invalid, reset the input value and alert the user
+    $('#mainprice').get(0).value = '';
+    alert('Inserisci un numero valido.');
+  }
 }
 
 changeFormaDePago();
