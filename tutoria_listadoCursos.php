@@ -104,6 +104,19 @@
                                 </div>
                                 <input class="form-control btn btn-primary" style="background-color:#1e989e" type="submit" value="Buscar"></input>
                                 <?php echo "RESULTADOS PARA LA FECHA: " . $year. " (Tipo venta: ".$Tipo_Venta_Display.")" ?>
+                                <br>
+                                Último número de acción:
+                                <?php
+                                $max_n_accion = 0;
+                                if ($cursos_temp = cargarAlumnoCursos($year, $Tipo_Venta_Display)) {
+                                    foreach ($cursos_temp as $curso_item) {
+                                        if (isset($curso_item['N_Accion']) && (int)$curso_item['N_Accion'] > $max_n_accion) {
+                                            $max_n_accion = (int)$curso_item['N_Accion'];
+                                        }
+                                    }
+                                }
+                                echo $max_n_accion > 0 ? htmlspecialchars($max_n_accion) : 'N/A';
+                                ?>
                                 
                             </div>
                         </form>
