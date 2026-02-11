@@ -19,6 +19,7 @@ $student_ids_str = $_GET['ids'] ?? '';
 
 $course_data = null;
 $students_list = [];
+$sesiones = [];
 
 if ($n_accion && $n_grupo && !empty($student_ids_str)) {
     // Obtener la información del primer curso/alumno para los detalles generales
@@ -33,6 +34,19 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
             'Fecha_Fin' => $first_course_info['Fecha_Fin'],
             'tutor' => $first_course_info['tutor']
         ];
+        
+        // Cargar sesiones desde seguimento0 a seguimento5
+        for ($i = 0; $i <= 5; $i++) {
+            $campo = "seguimento" . $i;
+            if (!empty($first_course_info[$campo])) {
+                $sesiones[] = $first_course_info[$campo];
+            }
+        }
+        
+        // Si no hay sesiones de seguimiento, usar la fecha de inicio como única sesión
+        if (empty($sesiones) && !empty($first_course_info['Fecha_Inicio'])) {
+            $sesiones[] = $first_course_info['Fecha_Inicio'];
+        }
     }
 
     // Obtener los detalles de los alumnos seleccionados
@@ -98,6 +112,30 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
             tr {
                 page-break-inside: avoid; /* Evita que las filas se corten entre páginas */
             }
+            
+            .sesion-container {
+                page-break-after: always;
+            }
+            
+            .sesion-container:last-child {
+                page-break-after: auto;
+            }
+        }
+        .observaciones {
+            border: 1px solid #003366;
+            color: #003366;
+            padding: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .sesion-container {
+            margin-bottom: 3rem;
+        }
+
+        @media print {
+            .observaciones { 
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
@@ -112,77 +150,91 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
             </div>
         </div>
 
-        <div class="printable-area p-4 border rounded bg-white">
-            <?php if (!$course_data || empty($students_list)) : ?>
-                <div class="alert alert-warning text-center">
-                    No se encontraron datos del curso o no se seleccionaron alumnos.
+        <?php if (!$course_data || empty($students_list)) : ?>
+            <div class="alert alert-warning text-center">
+                No se encontraron datos del curso o no se seleccionaron alumnos.
+            </div>
+        <?php elseif (empty($sesiones)) : ?>
+            <div class="alert alert-warning text-center">
+                No se encontraron sesiones de seguimiento para este curso.
+            </div>
+        <?php else : ?>
+            <?php 
+            $num_sesiones = count($sesiones);
+            foreach ($sesiones as $index => $fecha_sesion) : 
+                $num_sesion = $index + 1;
+                // Parsear fecha y hora del formato "YYYY-MM-DD HH:MM:SS"
+                $datetime = new DateTime($fecha_sesion);
+                $fecha = $datetime->format('d/m/Y');
+                $hora = $datetime->format('H:i');
+            ?>
+                <div class="printable-area p-4 border rounded bg-white sesion-container">
+                    <div class="content-body">
+                        <div class="col-5">
+                            <img src="images/logoWord.jpg" height="60" width="200">
+                        </div>
+                        <h2 class="text-center mb-4">Control de Asistencia - Sesión <?= $num_sesion ?> de <?= $num_sesiones ?></h2>
+                        <div class="mb-4 p-3" style="border: 1px solid #003366; color: #003366;">
+                            <div>
+                                <strong>DENOMINACIÓN DE LA ACCIÓN FORMATIVA:</strong> <?= htmlspecialchars(mb_strtoupper($course_data['Denominacion'])) ?>
+                            </div>
+                            <div class="mt-2">
+                                <span class="me-4"><strong>Nº AF:</strong> <?= htmlspecialchars($course_data['N_Accion']) ?></span>
+                                <span class="me-4 ms-4"><strong>FECHA DE INICIO:</strong> <?= formattedDate($course_data['Fecha_Inicio']) ?></span>
+                                <span><strong>FECHA FIN:</strong> <?= formattedDate($course_data['Fecha_Fin']) ?></span>
+                            </div>
+                            <div class="mt-2">
+                                <strong>FORMADOR/RESPONSABLE DE FORMACIÓN:</strong> <?= htmlspecialchars(mb_strtoupper($course_data['tutor'])) ?>
+                            </div>
+                            <div class="mt-2">
+                                <strong>SESIÓN Nº:</strong> <input type="text" class="editable-input" style="width: 45px;" value="<?= $num_sesion ?>" >
+                                <strong class="ms-2">FECHA:</strong> <input type="text" class="editable-input" style="width: 100px;" value="<?= $fecha ?>" >
+                                <strong class="ms-2">MAÑANA/TARDE:</strong> <input type="text" class="editable-input" style="width: 70px;">
+                                <strong class="ms-2">HORARIO:</strong> DE <input type="text" class="editable-input" style="width: 45px;" value="<?= $hora ?>"> A <input type="text" class="editable-input" style="width: 45px;">
+                            </div>
+                            <div class="mt-5">
+                                <strong>Firmado:</strong>
+                                <br>
+                                <strong>(Formador/Resp. Formación)</strong>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th colspan="3" class="text-center">DATOS DE LOS ASISTENTES</th>
+                                        <th rowspan="2" class="text-center align-middle" style="width: 15%;">FIRMAS</th>
+                                        <th rowspan="2" class="text-center align-middle" style="width: 15%;">OBS.</th>
+                                    </tr>
+                                    <tr>
+                                        <th>APELLIDOS</th>
+                                        <th>NOMBRE</th>
+                                        <th>NIF</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($students_list as $student) : ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($student['apellidos']) ?></td>
+                                            <td><?= htmlspecialchars($student['nombre']) ?></td>
+                                            <td><?= htmlspecialchars($student['NIF']) ?></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="observaciones">
+                        <strong>OBSERVACIONES GENERALES:</strong>
+                        <div style="height: 60px;">
+                            <!-- Espacio para escribir observaciones -->
+                        </div>
+                    </div>
                 </div>
-            <?php else : ?>
-
-                <div class="col-5">
-                    <img src="images/logoWord.jpg" height="60" width="200">
-                </div>
-                <h2 class="text-center mb-4">Control de Asistencia</h2>
-                <div class="mb-4 p-3" style="border: 1px solid #003366; color: #003366;">
-                    <div>
-                        <strong>DENOMINACIÓN DE LA ACCIÓN FORMATIVA:</strong> <?= htmlspecialchars($course_data['Denominacion']) ?>
-                    </div>
-                    <div class="mt-2">
-                        <span class="me-4"><strong>Nº AF:</strong> <?= htmlspecialchars($course_data['N_Accion']) ?></span>
-                        <span class="me-4 ms-4"><strong>FECHA DE INICIO:</strong> <?= formattedDate($course_data['Fecha_Inicio']) ?></span>
-                        <span><strong>FECHA FIN:</strong> <?= formattedDate($course_data['Fecha_Fin']) ?></span>
-                    </div>
-                    <div class="mt-2">
-                        <strong>FORMADOR/RESPONSABLE DE FORMACIÓN:</strong> <?= htmlspecialchars(mb_strtoupper($course_data['tutor'])) ?>
-                    </div>
-                    <div class="mt-2">
-                        <strong>SESIÓN Nº:</strong> <input type="text" class="editable-input" style="width: 45px;">
-                        <strong class="ms-2">FECHA:</strong> <input type="text" class="editable-input" style="width: 70px;">
-                        <strong class="ms-2">MAÑANA/TARDE:</strong> <input type="text" class="editable-input" style="width: 70px;">
-                        <strong class="ms-2">HORARIO:</strong> DE <input type="text" class="editable-input" style="width: 35px;"> A <input type="text" class="editable-input" style="width: 35px;">
-                    </div>
-                    <div class="mt-5">
-                        <strong>Firmado:</strong>
-                        <br>
-                        <strong>(Formador/Resp. Formación)</strong>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered">
-                        <thead class="thead-light">
-                            <tr>
-                                <th colspan="3" class="text-center">DATOS DE LOS ASISTENTES</th>
-                                <th rowspan="2" class="text-center align-middle" style="width: 15%;">FIRMAS</th>
-                                <th rowspan="2" class="text-center align-middle" style="width: 15%;">OBS.</th>
-                            </tr>
-                            <tr>
-                                <th>APELLIDOS</th>
-                                <th>NOMBRE</th>
-                                <th>NIF</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($students_list as $student) : ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($student['apellidos']) ?></td>
-                                    <td><?= htmlspecialchars($student['nombre']) ?></td>
-                                    <td><?= htmlspecialchars($student['NIF']) ?></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="mt-4 p-3" style="border: 1px solid #003366; color: #003366;">
-                    <strong>OBSERVACIONES GENERALES:</strong>
-                    <div style="height: 60px;">
-                        <!-- Espacio para escribir observaciones -->
-                    </div>
-                </div>
-            <?php endif; ?>
-        </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 
 </body>
