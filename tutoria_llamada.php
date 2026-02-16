@@ -44,6 +44,61 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/tutoria.js"></script>
     <link rel="icon" href="images/favicon.ico">
+    
+    <script>
+        function loginByCourse(numeroAccion, year, tipo) {
+            // Apri finestra subito per evitare blocco popup
+            var loginWindow = window.open('about:blank', '_blank');
+            if (loginWindow) {
+                loginWindow.document.write('<html><body style="font-family:Arial;text-align:center;padding:50px;"><h2>⏳ Generando acceso seguro...</h2></body></html>');
+            }
+            
+            showToast('⏳ Buscando credenciales...', 'info');
+            
+            fetch('ajax/generate_login_token_by_course.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    numero_accion: numeroAccion,
+                    year: parseInt(year),
+                    tipo: tipo
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    if (loginWindow && !loginWindow.closed) {
+                        loginWindow.location.href = data.url;
+                        showToast('✅ Acceso generado: ' + data.curso, 'success');
+                    }
+                } else {
+                    if (loginWindow) loginWindow.close();
+                    showToast('❌ ' + data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                if (loginWindow) loginWindow.close();
+                showToast('❌ Error: ' + error.message, 'danger');
+            });
+        }
+
+        function showToast(message, type) {
+            type = type || 'info';
+            var toastEl = document.getElementById('loginToast');
+            if (!toastEl) return;
+            
+            var colors = {
+                'success': 'bg-success',
+                'danger': 'bg-danger',
+                'info': 'bg-info'
+            };
+            
+            toastEl.className = 'toast align-items-center text-white border-0 ' + (colors[type] || 'bg-info');
+            document.getElementById('toastMessage').textContent = message;
+            
+            new bootstrap.Toast(toastEl).show();
+        }
+    </script>
 </head>
 <body style="background-color:#f3f6f4;">
 
@@ -126,6 +181,16 @@
             <p class="text-center mt-md-4" style='color: #8fd247;'> <b> © Dixma Formación 2022. | Ctra. Madrid 152, Vigo 36318 | info@dixmaformacion.com | Tlf: +34 604 067 035 </b> </p>
 
     </footer>
+
+    <!-- Toast Container -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+        <div id="loginToast" class="toast align-items-center text-white border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
