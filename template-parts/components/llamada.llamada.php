@@ -10,10 +10,17 @@ $completed = (
 ?>
 <div class="col-md-12 col-12 container mt-3 border border-4 rounded">
         <div class='row mx-auto my-2'>
-                <label class='col-md-6 col-12'>
+                <label class='col-md-3 col-12'>
                         <b>nombre:</b>
                         <?php echo $llamada['nombre']." ".$llamada['apellidos']; ?>
                 </label>
+                <div class='col-md-3 col-12'>
+                        <button class="btn btn-sm btn-success" 
+                                onclick="loginByCourse('<?php echo addslashes($llamada['N_Accion']); ?>', '<?php echo date('Y', strtotime($llamada['Fecha_Inicio'])); ?>', 'profesor')" 
+                                title="Acceso Campus">
+                                Acceso Campus
+                        </button>
+                </div>
                 <?php if(!$completed){?>
                         <b class='col-md-4 col-12'>Todas las llamadas ya fueron hechas</b>
                         <a 
