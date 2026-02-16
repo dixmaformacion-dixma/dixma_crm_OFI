@@ -53,5 +53,10 @@ $file = basename($_SERVER['PHP_SELF']);
             <img class="ms-3" src="images/iconos/file-earmark-person.svg">
             <b> Ficha empresa </b>
         </a>
+        <a class="nav-link <?php if($file == 'administracion_credenciales.php'){echo 'active text-bg-secondary';}; ?>"
+        href="administracion_credenciales_db.php">
+            <img class="ms-3" src="images/iconos/shield-lock.svg">
+            <b> Credenciales Dixma </b>
+        </a>
     </nav> 
 </div>

@@ -67,5 +67,9 @@ $file = basename($_SERVER['PHP_SELF']);
             <img class="ms-3" src="images/iconos/file-earmark-person.svg">
             <b> Buscar alumno </b>
         </a>
+         <a class="nav-link <?php if($file == 'administracion_credenciales_db.php' || $file == 'gestion_credenciales.php'){echo 'active text-bg-secondary';}; ?>" href="administracion_credenciales_db.php">
+            <img class="ms-3" src="images/iconos/key.svg">
+            <b> Credenciales </b>
+        </a>
     </nav>
 </div>
