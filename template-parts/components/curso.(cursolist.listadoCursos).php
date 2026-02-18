@@ -126,120 +126,183 @@ if (!isset($statusDiplomaColor)) {
 
         </div>
         <div class="collapse" id="infoCurso<?php echo $curso['StudentCursoID']; ?>">
-                <div class='row mx-auto my-2 container border border-5 m-2 text-uppercase' style="background-color:white">
+                <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:#e8f5e9; border-color:#88c743 !important;">
                         <label class='col-md-6 col-12'>
-                                <b>Empresa:</b>
+                                <b style="color:#2e7d32;" class="text-uppercase">Empresa:</b>
                                 <?php echo $empresa['nombre']; ?>
                         </label>
                         <label class='col-md-6 col-12'>
-                                <b>Email Empresa:</b>
-                                <span><?php echo $empresa['email']; ?></span>
+                                <b style="color:#2e7d32;" class="text-uppercase">Email Empresa:</b>
+                                <span style="text-transform:none;"><?php echo $empresa['email']; ?></span>
                         </label>
                         <label class='col-md-6 col-12'>
-                                <b>CIF:</b>
+                                <b style="color:#2e7d32;">CIF:</b>
                                 <span><?php echo $empresa['cif']; ?></span>
                         </label>
                         <label class='col-md-6 col-12'>
-                                <b>telefono Empresa:</b>
+                                <b style="color:#2e7d32;" class="text-uppercase">telefono Empresa:</b>
                                 <?php echo $empresa['telef1'] . " | " . $empresa['telef2']; ?>
                         </label>
                         <label class='col-md-6 col-12'>
-                                <b>Persona de contacto:</b>
+                                <b style="color:#2e7d32;" class="text-uppercase">Persona de contacto:</b>
                                 <?php echo $empresa['personacontacto']; ?>
                         </label>
                         <div class="text-center mt-2 mb-2">
                                 <a href="buscarVenta.php?valor=<?php echo urlencode($empresa['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-info">Información Empresa</a>
+                                <button class="btn" 
+                                        style="color:white; background-color:#2e7d32; border:none;"
+                                        onclick="loginByCourse('<?php echo addslashes($curso['N_Accion']); ?>', '<?php echo date('Y', strtotime($curso['Fecha_Inicio'])); ?>', 'profesor')" 
+                                        title="Acceso Campus">
+                                        ACCESO CAMPUS
+                                </button>
                         </div>
                 </div>
                 <div class='row mx-auto my-2'>
-                        <div class='row mx-auto my-2 container border border-5 m-2 text-uppercase' style="background-color:white">
+                        <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:#e8f5e9; border-color:#88c743 !important;">
                                 <label class='col-md-6 col-12'>
-                                        <b>telefono alumno:</b>
+                                        <b style="color:#2e7d32;" class="text-uppercase">Telefono Alumno:</b>
                                         <?php echo $curso['telefono']; ?>
                                 </label>
                                 <label class='col-md-6 col-12'>
-                                        <b>email alumno:</b>
-                                        <span><?php echo $curso['email']; ?></span>
+                                        <b style="color:#2e7d32;" class="text-uppercase">Email Alumno:</b>
+                                        <span style="text-transform:none;"><?php echo $curso['email']; ?></span>
                                 </label>
                                 <label class='col-md-6 col-12'>
-                                        <b>DNI/NIE:</b>
+                                        <b style="color:#2e7d32;">DNI/NIE:</b>
                                         <?php echo $curso['nif']; ?>
                                 </label>
                                 <label class='col-md-6 col-12'>
-                                        <b>Horario Laboral:</b>
+                                        <b style="color:#2e7d32;" class="text-uppercase">Horario Laboral:</b>
                                         <?php echo $curso['horarioLaboral']; ?>
                                 </label>
                         </div>
+         <?php
+                // Obtener cursos anteriores del alumno
+                if (isset($curso['idAlumno']) && isset($year)) {
+                    $cursosPrevios = obtenerCursosPreviosAlumno($curso['idAlumno'], $year, $curso['StudentCursoID']);
+                    
+                    if (!empty($cursosPrevios)) {
+                        echo '<div class="col-md-12 col-12 container mt-3 mb-2 border border-2 rounded" style="background-color:#fff3cd;">';
+                        echo '<div class="p-2">';
+                        echo '<h6 class="mb-2"><b>📚 CURSOS ANTERIORES (' . count($cursosPrevios) . ')</b></h6>';
+                        echo '<div class="table-responsive">';
+                        echo '<table class="table table-sm table-striped table-bordered">';
+                        echo '<thead style="background-color:#88c743;">';
+                        echo '<tr>';
+                        echo '<th>Año</th>';
+                        echo '<th>Denominación</th>';
+                        echo '<th>Fecha Inicio</th>';
+                        echo '<th>Fecha Fin</th>';
+                        echo '<th>Estado</th>';
+                        echo '<th>Estado Diploma</th>';
+                        echo '</tr>';
+                        echo '</thead>';
+                        echo '<tbody>';
+                        
+                        foreach ($cursosPrevios as $cp) {
+                            $yearCurso = date('Y', strtotime($cp['Fecha_Inicio']));
+                            $statusStyle = '';
+                            if ($cp['status_curso'] == 'finalizado' || $cp['status_curso'] == 'cerrado') {
+                                $statusStyle = 'background-color: lightblue;';
+                            } elseif ($cp['status_curso'] == 'baja') {
+                                $statusStyle = 'background-color: #ffcccc;';
+                            }
+                            
+                            // Estilo para estado diploma
+                            $diplomaStyle = '';
+                            $diplomaStatus = $cp['Diploma_Status'] ?? '';
+                            if ($diplomaStatus == 'Copia recibida' || $diplomaStatus == 'Entregado') {
+                                $diplomaStyle = 'background-color: #28D700; color: white;';
+                            }
+                            
+                            echo '<tr style="' . $statusStyle . '">';
+                            echo '<td>' . htmlspecialchars($yearCurso) . '</td>';
+                            echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Denominacion']) . '</small></td>';
+                            echo '<td>' . formattedDate($cp['Fecha_Inicio']) . '</td>';
+                            echo '<td>' . formattedDate($cp['Fecha_Fin']) . '</td>';
+                            echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['status_curso']) . '</small></td>';
+                            echo '<td class="text-uppercase" style="' . $diplomaStyle . '"><small>' . htmlspecialchars($diplomaStatus) . '</small></td>';
+                            echo '</tr>';
+                        }
+                        
+                        echo '</tbody>';
+                        echo '</table>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
+                    }
+                }
+                ?>
                 </div>
-                <div class="col-md-12 col-12 container mt-3 mb-2 border border-2 rounded" style="background-color:white">
+                <div class="col-md-12 col-12 container mt-3 mb-2 border border-2 rounded" style="background-color:#e8f5e9; border-color:#88c743 !important;">
                         <div class="text-uppercase">
                         <label class='col-md-12 col-12'>
-                                <b>Denominacion:</b>
+                                <b style="color:#2e7d32;">Denominacion:</b>
                                 <?php echo $curso['Denominacion']; ?>
                         </label>
                         <label class='col-md-3 col-12'>
-                                <b>№ Accion:</b>
+                                <b style="color:#2e7d32;">№ Accion:</b>
                                 <?php echo $curso['N_Accion']; ?>
                         </label>
                         <label class='col-md-4 col-12'>
-                                <b>№ Grupo:</b>
+                                <b style="color:#2e7d32;">№ Grupo:</b>
                                 <?php echo $curso['N_Grupo']; ?>
                         </label>
-                        <label class='col-md-4 col-12'>
-                                <b>№ Horas:</b>
-                                <?php echo $curso['N_Horas']; ?>
+                        <label class='col-md-4 col-12' style="background-color:#28D700; padding:8px; border-radius:5px; margin-top:5px; margin-bottom:5px;">
+                                <b style="color:white; font-size:16px;">№ Horas:</b>
+                                <span style="color:white; font-size:16px; font-weight:bold;"><?php echo $curso['N_Horas']; ?></span>
                         </label>
                         <label class='col-md-3 col-12'>
-                                <b>Modalidad:</b>
+                                <b style="color:#2e7d32;">Modalidad:</b>
                                 <?php echo $curso['Modalidad']; ?>
                         </label>
                         <label class='col-md-4 col-12'>
-                                <b>Tipo Venta:</b>
+                                <b style="color:#2e7d32;">Tipo Venta:</b>
                                 <?php echo $curso['Tipo_Venta']; ?>
                         </label>
                         <label class='col-md-4 col-12'>
-                                <b>Tutor:</b>
+                                <b style="color:#2e7d32;">Tutor:</b>
                                 <?php echo $curso['tutor']; ?>
                         </label>
                         <label class='col-md-12 col-12 mt-2'>
-                                <b>Empresa (en el momento del formacion):</b>
+                                <b style="color:#2e7d32;">Empresa (en el momento del formacion):</b>
                                 <?php $empresa = cargarEmpresa($curso['idEmpresa']);
                                 echo $empresa['nombre']; ?>
                                 [Tel: <b><?php echo $empresa['telef1']; ?></b>]
                         </label>
                         <div class="row">
                                 <label class='col-md-3 col-12'>
-                                        <b>A.P:</b>
+                                        <b style="color:#2e7d32;">A.P:</b>
                                         <?php echo $curso['AP']; ?>
                                 </label>
                                 <label class='col-md-4 col-12'>
-                                        <b>Recibi_Material:</b>
-                                        <input type="checkbox" <?php if ($curso['Recibi_Material'] == 1) {
+                                        <b style="color:#2e7d32;">Recibi_Material:</b>
+                                        <input type="checkbox" class="checkbox-green" <?php if ($curso['Recibi_Material'] == 1) {
                                                                         echo "checked";
                                                                 } ?> disabled>
                                 </label>
                                 <label class='col-md-2 col-12'>
-                                        <b>CC:</b>
-                                        <input type="checkbox" <?php if ($curso['CC'] == 1) {
+                                        <b style="color:#2e7d32;">CC:</b>
+                                        <input type="checkbox" class="checkbox-green" <?php if ($curso['CC'] == 1) {
                                                                         echo "checked";
                                                                 } ?> disabled>
                                 </label>
                                 <label class='col-md-2 col-12'>
-                                        <b>RLT:</b>
-                                        <input type="checkbox" <?php if ($curso['RLT'] == 1) {
+                                        <b style="color:#2e7d32;">RLT:</b>
+                                        <input type="checkbox" class="checkbox-green" <?php if ($curso['RLT'] == 1) {
                                                                         echo "checked";
                                                                 } ?> disabled>
                                 </label>
                         </div>
                         <div class="row">
                                 <label class='col-md-12 col-12'>
-                                        <b>Diploma:</b>
+                                        <b style="color:#2e7d32;">Diploma:</b>
                                         <?php echo $curso['Diploma_Status']; ?>
                                         <i>(la última vez que cambió el estado del diploma): <?php echo formattedDate($curso['Diploma_Status_Ultimo_Cambio']); ?></i>
                                 </label>
                         </div>
                         </div>
-                       <div style="background-color: white;">
+                       <div style="background-color: #e8f5e9; padding: 10px; border-radius: 5px; border: 2px solid #88c743;">
                         <?php
                         require("template-parts/components/seguimentosAndComments.(curso.listadoCursos).php");
                         ?>
