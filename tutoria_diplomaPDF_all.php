@@ -312,8 +312,10 @@ function MostrarDiploma(tipo, aditional = false){
   </div>
 </div>
 <?php 
-  foreach($diplomas as $alumnocurso){
+    foreach($diplomas as $alumnocurso){
  $contenido = cargarContenidoAccion($alumnocurso['N_Accion'], date('Y',strtotime($alumnocurso['Fecha_Inicio'])));
+ // Forza la denominazione in maiuscolo (supporta caratteri multibyte)
+ $denominacion_upper = mb_strtoupper(isset($alumnocurso['Denominacion']) ? $alumnocurso['Denominacion'] : '', 'UTF-8');
   $fecha = $alumnocurso['Fecha_Fin'];
   $fecha = strtotime($fecha.' +3 days');
   $fecha_emision = date("Y-m-d",$fecha);
@@ -367,7 +369,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
         <div class="inputrow" style="margin-top: 0.75cm">
           <div class="single-input">
             <div class="label">Ha superado con evaluación positiva la Acción Formativa</div>
-            <div class="dato" style="width:14.2cm;" contenteditable="true"><?php echo $alumnocurso['Denominacion'] ?></div>
+            <div class="dato" style="width:14.2cm;" contenteditable="true"><?php echo $denominacion_upper ?></div>
             <!--<input class="form-control" style="width:14.2cm;" value="<?php echo $alumnocurso['Denominacion'] ?>" type="text"></input>-->
           </div>
         </div>
@@ -476,7 +478,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
       </div>
       <div class="d-flex justify-content-center">
         <div id="Denominacion" style="text-align:center; font-weight:bold; font-size:9mm"  contenteditable="true">
-          <?php echo $alumnocurso['Denominacion']; ?>
+          <?php echo $denominacion_upper; ?>
         </div>
       </div>
       <div class="d-flex justify-content-center">
@@ -501,7 +503,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
       </div>
       <div class="firma_docente" style="position:absolute;bottom: 0mm;left: 159mm;">
 		    <?php if(!empty($alumnocurso['firma_docente'])): ?>
-		    <img src="/firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
+		    <img src="firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
         <?php endif ?>
       </div>
       <div class="fecha_privado" style="position:absolute; bottom:22mm;">
@@ -517,7 +519,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
     <label>DNI:</label>
     <input class="form-control" id="DNIfield" onchange="changefield('DNI')" value="<?php echo strtoupper($alumnocurso['nif']); ?>" type="text"></input>
     <label>Denominacion:</label>
-    <input class="form-control" id="Denominacionfield" onchange="changefield('Denominacion')" value="<?php echo $alumnocurso['Denominacion']; ?>" type="text"></input>
+    <input class="form-control" id="Denominacionfield" onchange="changefield('Denominacion')" value="<?php echo $denominacion_upper; ?>" type="text"></input>
     <label>Details:</label>
 
 
@@ -592,7 +594,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
     </div>
     <div class="d-flex justify-content-center estetica_info">
     <div id="est_Denominacion" style="text-align:center; font-weight:bold; font-size:8mm;  margin-top:0.50cm" contenteditable="true">
-      <?php echo $alumnocurso['Denominacion']; ?>
+      <?php echo $denominacion_upper; ?>
     </div>
     </div>
     <div class="d-flex justify-content-center estetica_info">
@@ -608,7 +610,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
     </div>
     <div style="position:absolute;bottom: 0mm;left: 156mm;">
       <?php if(!empty($alumnocurso['firma_docente'])): ?>
-      <img src="/firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
+      <img src="firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
       <?php endif ?>
     </div>
     <div class="estetica_info" style="position:absolute; bottom:17mm; left: 121mm">
@@ -624,7 +626,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
   <label>DNI:</label>
   <input class="form-control estetica_info" id="est_DNIfield" onchange="changefield('est_DNI')" value="<?php echo strtoupper($alumnocurso['nif']); ?>" type="text"></input>
   <label>Denominacion:</label>
-  <input class="form-control estetica_info" id="est_Denominacionfield" onchange="changefield('est_Denominacion')" value="<?php echo $alumnocurso['Denominacion']; ?>" type="text"></input>
+  <input class="form-control estetica_info" id="est_Denominacionfield" onchange="changefield('est_Denominacion')" value="<?php echo $denominacion_upper; ?>" type="text"></input>
   <label>Details:</label>
 
 
@@ -684,7 +686,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
   </div>
   <div class="d-flex justify-content-center soldadura_info">
   <div id="sold_Denominacion" style="text-align:center; font-weight:bold; font-size:8mm;  margin-top:0.30cm" contenteditable="true">
-    <?php echo $alumnocurso['Denominacion']; ?>
+    <?php echo $denominacion_upper; ?>
   </div>
   </div>
   <div class="d-flex justify-content-center soldadura_info">
@@ -700,7 +702,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
   </div>
   <div style="position:absolute;bottom: 53mm;left: 82mm;">
     <?php if(!empty($alumnocurso['firma_docente'])): ?>
-    <img src="/firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
+    <img src="firmas/<?php echo $alumnocurso['firma_docente'] ?>" style="height: 4.5cm">
     <?php endif ?>
   </div>
   <div class="soldadura_info" style="position:absolute; bottom:37mm; left: 160mm">
@@ -716,7 +718,7 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
   <label>DNI:</label>
   <input class="form-control soldadura_info" id="sold_DNIfield" onchange="changefield('sold_DNI')" value="<?php echo strtoupper($alumnocurso['nif']); ?>" type="text"></input>
   <label>Denominacion:</label>
-  <input class="form-control soldadura_info" id="sold_Denominacionfield" onchange="changefield('sold_Denominacion')" value="<?php echo $alumnocurso['Denominacion']; ?>" type="text"></input>
+  <input class="form-control soldadura_info" id="sold_Denominacionfield" onchange="changefield('sold_Denominacion')" value="<?php echo $denominacion_upper; ?>" type="text"></input>
   <label>Details:</label>
 
 

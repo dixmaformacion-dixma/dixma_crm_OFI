@@ -32,15 +32,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
         // Gestión del archivo de firma docente
         $firmaDocentePath = null;
         if (!empty($_FILES['Firma_Docente']['name'])) {
-            $uploadDir = 'firmas/';
-            if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-            $fileName = substr(md5($_FILES['Firma_Docente']['name']), 0, 8) . '_' . basename($_FILES['Firma_Docente']['name']);
-            $targetFile = $uploadDir . $fileName;
-            
-            if (move_uploaded_file($_FILES['Firma_Docente']['tmp_name'], $targetFile)) {
-                $firmaDocentePath = $fileName;
+
+            // verifica errori upload
+            if ($_FILES['Firma_Docente']['error'] !== UPLOAD_ERR_OK) {
+                $mensaje .= "<div class='alert alert-danger'>ERROR Upload: Código " . htmlspecialchars($_FILES['Firma_Docente']['error']) . "</div>";
+            } else {
+                $uploadDir = './firmas/';
+
+                // verifica che la cartella esista e sia scrivibile
+                if (!file_exists($uploadDir)) {
+                    $mensaje .= "<div class='alert alert-danger'>ERROR: La carpeta firmas/ no existe (path esperado: " . htmlspecialchars(realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'firmas') . ")</div>";
+                } else if (!is_writable($uploadDir)) {
+                    $mensaje .= "<div class='alert alert-danger'>ERROR: La carpeta firmas/ no tiene permisos de escritura</div>";
+                } else {
+                    $fileName = substr(md5($_FILES['Firma_Docente']['name']), 0, 8) . '_' . basename($_FILES['Firma_Docente']['name']);
+                    $targetFile = $uploadDir . $fileName;
+
+                    // Debug visibile: informazioni sul file (nome originale, tmp, destinazione)
+                    $mensaje .= "<div class='alert alert-info'>" .
+                        "<strong>Intento guardar firma:</strong><br>" .
+                        "- Nombre original: " . htmlspecialchars($_FILES['Firma_Docente']['name']) . "<br>" .
+                        "- Temp file: " . htmlspecialchars($_FILES['Firma_Docente']['tmp_name']) . "<br>" .
+                        "- Target: " . htmlspecialchars($targetFile) .
+                        "</div>";
+
+                    // prima verifica is_uploaded_file per maggiore sicurezza
+                    if (!is_uploaded_file($_FILES['Firma_Docente']['tmp_name'])) {
+                        $mensaje .= "<div class='alert alert-danger'>ERROR: El archivo no parece provenir de una subida HTTP válida (is_uploaded_file false)</div>";
+                    }
+
+                    if (move_uploaded_file($_FILES['Firma_Docente']['tmp_name'], $targetFile)) {
+                        $firmaDocentePath = $fileName;
+                        // conferma a schermo
+                        if (file_exists($targetFile)) {
+                            $mensaje .= "<div class='alert alert-success'>Firma guardada: " . htmlspecialchars($fileName) . " (" . filesize($targetFile) . " bytes)</div>";
+                        } else {
+                            $mensaje .= "<div class='alert alert-warning'>La firma fue movida pero no se encontró el archivo en el path esperado</div>";
+                        }
+                    } else {
+                        $mensaje .= "<div class='alert alert-danger'>ERROR: move_uploaded_file() falló. Tmp: " . htmlspecialchars($_FILES['Firma_Docente']['tmp_name']) . "</div>";
+                    }
+                }
             }
         }
 
@@ -67,9 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
         ];
 
         if (alumnoCursoAdjuntarMultiple($alumnosSeleccionados, $datosCurso)) {
-            $mensaje = "<div class='alert alert-success'>Curso asignado correctamente a " . count($alumnosSeleccionados) . " alumnos.</div>";
+            $mensaje .= "<div class='alert alert-success'>Curso asignado correctamente a " . count($alumnosSeleccionados) . " alumnos.</div>";
         } else {
-            $mensaje = "<div class='alert alert-danger'>Error: No se pudo completar la asignación de cursos. La operación ha sido revertida.</div>";
+            $mensaje .= "<div class='alert alert-danger'>Error: No se pudo completar la asignación de cursos. La operación ha sido revertida.</div>";
         }
     }
 }
