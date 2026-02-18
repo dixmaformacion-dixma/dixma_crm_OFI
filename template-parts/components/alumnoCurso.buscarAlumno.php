@@ -61,6 +61,35 @@
                 ?>
                 <span class="text-muted">(ID: <?php echo $curso['idEmpresa']; ?>)</span>
             </div>
+            
+            <!-- Pulsante per mostrare commenti -->
+            <div class="col-12 text-end">
+                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#commentsModal<?php echo $curso['StudentCursoID']; ?>">
+                    📝 Mostrar Comentarios
+                </button>
+            </div>
         </div>
     </div>
+</div>
+
+<!-- Modal per Comentarios -->
+<div class="modal fade" id="commentsModal<?php echo $curso['StudentCursoID']; ?>" tabindex="-1" aria-labelledby="commentsModalLabel<?php echo $curso['StudentCursoID']; ?>" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #b0d588;">
+        <h5 class="modal-title" id="commentsModalLabel<?php echo $curso['StudentCursoID']; ?>">
+            <b>COMENTARIOS - <?php echo htmlspecialchars($alumno['nombre'] . ' ' . $alumno['apellidos']); ?></b>
+            <br>
+            <small class="text-muted"><?php echo htmlspecialchars($curso['Denominacion']); ?></small>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <?php include("template-parts/components/commentSection.(seguimentosAndComments.(curso.listadoCursos)).php"); ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </div>
