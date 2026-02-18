@@ -481,4 +481,43 @@ function obtenerEmpresasConCursosPendientes()
     unset($conexionPDO);
     return $empresasIds ?: [];
 }
+
+function obtenerCursosPreviosAlumno($idAlumno, $yearExclude = null, $currentStudentCursoID = null) {
+    $conexionPDO = realizarConexion();
+    
+    $sql = "SELECT ac.*, e.nombre as nombreEmpresa 
+            FROM alumnocursos ac 
+            LEFT JOIN empresas e ON ac.idEmpresa = e.idempresa 
+            WHERE ac.idAlumno = ?";
+    
+    $params = [$idAlumno];
+    $types = [PDO::PARAM_INT];
+    
+    if ($yearExclude !== null) {
+        $sql .= " AND YEAR(ac.Fecha_Inicio) != ?";
+        $params[] = $yearExclude;
+        $types[] = PDO::PARAM_STR;
+    }
+    
+    if ($currentStudentCursoID !== null) {
+        $sql .= " AND ac.StudentCursoID != ?";
+        $params[] = $currentStudentCursoID;
+        $types[] = PDO::PARAM_INT;
+    }
+    
+    $sql .= " ORDER BY ac.Fecha_Inicio DESC";
+    
+    $stmt = $conexionPDO->prepare($sql);
+    
+    foreach ($params as $i => $param) {
+        $stmt->bindValue($i + 1, $param, $types[$i]);
+    }
+    
+    $stmt->execute();
+    
+    $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    unset($conexionPDO);
+    return $cursos ?: [];
+}
 ?>

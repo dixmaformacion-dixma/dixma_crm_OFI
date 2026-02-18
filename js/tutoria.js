@@ -206,3 +206,56 @@ function cargarDatos(sexo, categoriaProfesional, colectivo, grupoCotizacion, niv
 
 
 }
+
+function loginByCourse(numeroAccion, year, tipo) {
+    // Apri finestra subito per evitare blocco popup
+    var loginWindow = window.open('about:blank', '_blank');
+    if (loginWindow) {
+        loginWindow.document.write('<html><body style="font-family:Arial;text-align:center;padding:50px;"><h2>⏳ Generando acceso seguro...</h2></body></html>');
+    }
+    
+    showToast('⏳ Buscando credenciales...', 'info');
+    
+    fetch('ajax/generate_login_token_by_course.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            numero_accion: numeroAccion,
+            year: parseInt(year),
+            tipo: tipo
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            if (loginWindow && !loginWindow.closed) {
+                loginWindow.location.href = data.url;
+                showToast('✅ Acceso generado: ' + data.curso, 'success');
+            }
+        } else {
+            if (loginWindow) loginWindow.close();
+            showToast('❌ ' + data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        if (loginWindow) loginWindow.close();
+        showToast('❌ Error: ' + error.message, 'danger');
+    });
+}
+
+function showToast(message, type) {
+    type = type || 'info';
+    var toastEl = document.getElementById('loginToast');
+    if (!toastEl) return;
+    
+    var colors = {
+        'success': 'bg-success',
+        'danger': 'bg-danger',
+        'info': 'bg-info'
+    };
+    
+    toastEl.className = 'toast align-items-center text-white border-0 ' + (colors[type] || 'bg-info');
+    document.getElementById('toastMessage').textContent = message;
+    
+    new bootstrap.Toast(toastEl).show();
+}
