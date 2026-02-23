@@ -36,42 +36,103 @@ $editando = null;
 // CREAR nueva credencial
 if (isset($_POST['crear'])) {
     try {
-                $stmt = $pdo->prepare("
-            INSERT INTO credenciales_dixma 
-            (numero, numero_accion, nombre_curso, usuario_supervisor, password_supervisor, 
-             usuario_profesor, password_profesor, inicio_curso, url_campus, cv, guia, revision, revision_highlighted, tutor)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
+        $inicioCurso = $_POST['inicio_curso'] ?? null;
+        if (!$inicioCurso) throw new Exception("La fecha de inicio del curso es obligatoria");
+        $anioCurso = date('Y', strtotime($inicioCurso));
 
-        		$stmt->execute([
-        		    $_POST['numero'] ?: null,
-        		    $_POST['numero_accion'] ?: null,
-        		    $_POST['nombre_curso'],
-        		    $_POST['usuario_supervisor'],
-        		    $_POST['password_supervisor'],
-        		    $_POST['usuario_profesor'] ?: null,
-        		    $_POST['password_profesor'] ?: null,
-        		    $_POST['inicio_curso'] ?: null,
-        		    $_POST['url_campus'] ?: 'https://dixma.virtual-aula.com/',
-        		    $_POST['cv'] ?? 0,
-        		    $_POST['guia'] ?? 0,
-        		    $_POST['revision'] ?: null,
-        		    isset($_POST['revision_highlighted']) ? 1 : 0,
-        		    $_POST['tutor'] ?: null
-        		]);
-        
-        $mensajes[] = "✅ Credencial creada correctamente";
+        $default_cif = 'CIF: B92041839';
+        $default_razon = 'RAZÓN SOCIAL: INNOVACCIÓN Y CUALIFICACIÓN S.L';
+
+        $maxAttempts = 5;
+        $attempt = 0;
+        $inserted = false;
+
+        while (!$inserted && $attempt < $maxAttempts) {
+            $attempt++;
+
+            // calcola prossimo numero per quell'anno
+            $stmtMaxNum = $pdo->prepare(
+                "SELECT COALESCE(MAX(numero), 0) + 1 AS next_num FROM credenciales_dixma WHERE YEAR(inicio_curso) = ?"
+            );
+            $stmtMaxNum->execute([$anioCurso]);
+            $nextNumero = (int)$stmtMaxNum->fetchColumn();
+
+                try {
+                $stmt = $pdo->prepare("INSERT INTO credenciales_dixma 
+                    (numero, numero_accion, nombre_curso, usuario_supervisor, password_supervisor, 
+                     usuario_profesor, password_profesor, inicio_curso, url_campus, cif_campus, razon_social, cv, guia, revision, revision_highlighted, tutor)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+                $stmt->execute([
+                    $nextNumero,
+                    $_POST['numero_accion'] ?: null,
+                    $_POST['nombre_curso'],
+                    $_POST['usuario_supervisor'] ?: null,
+                    $_POST['password_supervisor'] ?: null,
+                    $_POST['usuario_profesor'] ?: null,
+                    $_POST['password_profesor'] ?: null,
+                    $inicioCurso,
+                    $_POST['url_campus'] ?: 'https://dixma.virtual-aula.com/',
+                    !empty($_POST['cif_campus']) ? $_POST['cif_campus'] : $default_cif,
+                    !empty($_POST['razon_social']) ? $_POST['razon_social'] : $default_razon,
+                    $_POST['cv'] ?? 0,
+                    $_POST['guia'] ?? 0,
+                    $_POST['revision'] ?: null,
+                    isset($_POST['revision_highlighted']) ? 1 : 0,
+                    $_POST['tutor'] ?: null
+                ]);
+
+                $inserted = true;
+                $mensajes[] = "✅ Credencial creada (N° $nextNumero - Año $anioCurso)";
+            } catch (PDOException $e) {
+                // Duplicate key (race condition) -> ritenta
+                if ($e->getCode() === '23000') {
+                    usleep(100000); // 100 ms
+                    continue;
+                }
+                throw $e;
+            }
+        }
+
+        if (!$inserted) {
+            $errores[] = "❌ No se pudo asignar un N° de curso (concurrencia). Intenta de nuevo.";
+        }
     } catch (PDOException $e) {
         $errores[] = "❌ Error al crear: " . $e->getMessage();
+    } catch (Exception $e) {
+        $errores[] = "❌ " . $e->getMessage();
     }
 }
 
 // EDITAR credencial
 if (isset($_POST['actualizar'])) {
     try {
-                $stmt = $pdo->prepare("
-            UPDATE credenciales_dixma SET
-                numero = ?,
+        // Obtener datos actuales para conservar 'numero' y comparar años
+        $stmtCurrent = $pdo->prepare("SELECT numero, inicio_curso FROM credenciales_dixma WHERE id = ?");
+        $stmtCurrent->execute([$_POST['id']]);
+        $datosActuales = $stmtCurrent->fetch(PDO::FETCH_ASSOC);
+        if (!$datosActuales) throw new Exception("Registro no encontrado");
+
+        $numeroActual = $datosActuales['numero'];
+        $anioActual = $datosActuales['inicio_curso'] ? date('Y', strtotime($datosActuales['inicio_curso'])) : null;
+
+        $nuevoInicioCurso = $_POST['inicio_curso'] ?: null;
+        if (!$nuevoInicioCurso) throw new Exception("La fecha de inicio del curso es obligatoria");
+        $nuevoAnio = date('Y', strtotime($nuevoInicioCurso));
+
+        // Si cambia el año, verificar que no exista conflicto con el mismo número
+        if ($anioActual != $nuevoAnio) {
+            $stmtCheck = $pdo->prepare(
+                "SELECT COUNT(*) FROM credenciales_dixma WHERE numero = ? AND YEAR(inicio_curso) = ? AND id != ?"
+            );
+            $stmtCheck->execute([$numeroActual, $nuevoAnio, $_POST['id']]);
+            if ($stmtCheck->fetchColumn() > 0) {
+                throw new Exception("Ya existe el N° Curso $numeroActual en el año $nuevoAnio. No se puede cambiar el año sin conflicto.");
+            }
+        }
+
+        // No actualizamos 'numero' para preservar la numeración asignada
+        $stmt = $pdo->prepare("UPDATE credenciales_dixma SET
                 numero_accion = ?,
                 nombre_curso = ?,
                 usuario_supervisor = ?,
@@ -80,35 +141,46 @@ if (isset($_POST['actualizar'])) {
                 password_profesor = ?,
                 inicio_curso = ?,
                 url_campus = ?,
+                cif_campus = ?,
+                razon_social = ?,
                 cv = ?,
                 guia = ?,
                 revision = ?,
                 revision_highlighted = ?,
                 tutor = ?
-            WHERE id = ?
-        ");
+            WHERE id = ?");
 
-                $stmt->execute([
-                    $_POST['numero'] ?: null,
-                    $_POST['numero_accion'] ?: null,
-                    $_POST['nombre_curso'],
-                    $_POST['usuario_supervisor'],
-                    $_POST['password_supervisor'],
-                    $_POST['usuario_profesor'] ?: null,
-                    $_POST['password_profesor'] ?: null,
-                    $_POST['inicio_curso'] ?: null,
-                    $_POST['url_campus'] ?: 'https://dixma.virtual-aula.com/',
-                    $_POST['cv'] ?? 0,
-                    $_POST['guia'] ?? 0,
-                    $_POST['revision'] ?: null,
-                    isset($_POST['revision_highlighted']) ? 1 : 0,
-                    $_POST['tutor'] ?: null,
-                    $_POST['id']
-                ]);
-        
-        $mensajes[] = "✅ Credencial actualizada correctamente";
+        $default_cif = 'CIF: B92041839';
+        $default_razon = 'RAZÓN SOCIAL: INNOVACCIÓN Y CUALIFICACIÓN S.L';
+
+        $stmt->execute([
+            $_POST['numero_accion'] ?: null,
+            $_POST['nombre_curso'],
+            $_POST['usuario_supervisor'],
+            $_POST['password_supervisor'],
+            $_POST['usuario_profesor'] ?: null,
+            $_POST['password_profesor'] ?: null,
+            $nuevoInicioCurso,
+            $_POST['url_campus'] ?: 'https://dixma.virtual-aula.com/',
+            !empty($_POST['cif_campus']) ? $_POST['cif_campus'] : $default_cif,
+            !empty($_POST['razon_social']) ? $_POST['razon_social'] : $default_razon,
+            $_POST['cv'] ?? 0,
+            $_POST['guia'] ?? 0,
+            $_POST['revision'] ?: null,
+            isset($_POST['revision_highlighted']) ? 1 : 0,
+            $_POST['tutor'] ?: null,
+            $_POST['id']
+        ]);
+
+        if ($anioActual != $nuevoAnio) {
+            $mensajes[] = "⚠️ Credencial actualizada. Se cambió el año de $anioActual a $nuevoAnio manteniendo N° Curso: $numeroActual";
+        } else {
+            $mensajes[] = "✅ Credencial actualizada correctamente";
+        }
     } catch (PDOException $e) {
         $errores[] = "❌ Error al actualizar: " . $e->getMessage();
+    } catch (Exception $e) {
+        $errores[] = "❌ " . $e->getMessage();
     }
 }
 
@@ -261,10 +333,12 @@ $total_general = $total_activos + $total_eliminados;
                 <?php endif; ?>
 
                 <div class="row">
+                    <?php if ($editando): ?>
                     <div class="col-md-2">
                         <label class="form-label">N° Curso</label>
-                        <input type="number" class="form-control" name="numero" 
-                               value="<?php echo $editando['numero'] ?? ''; ?>">
+                        <input type="text" class="form-control" value="<?php echo $editando['numero']; ?>" disabled>
+                        <input type="hidden" name="numero" value="<?php echo $editando['numero']; ?>">
+                        <small class="text-muted">Año: <?php echo $editando['inicio_curso'] ? date('Y', strtotime($editando['inicio_curso'])) : '-'; ?></small>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">N° Acción</label>
@@ -277,10 +351,27 @@ $total_general = $total_activos + $total_eliminados;
                                value="<?php echo htmlspecialchars($editando['nombre_curso'] ?? ''); ?>">
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Inicio Curso</label>
-                        <input type="date" class="form-control" name="inicio_curso" 
+                        <label class="form-label">Inicio Curso *</label>
+                        <input type="date" class="form-control" name="inicio_curso" required
                                value="<?php echo $editando['inicio_curso'] ?? ''; ?>">
                     </div>
+                    <?php else: ?>
+                    <div class="col-md-2">
+                        <label class="form-label">N° Acción</label>
+                        <input type="number" class="form-control" name="numero_accion" 
+                               value="<?php echo $editando['numero_accion'] ?? ''; ?>">
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Nombre del Curso *</label>
+                        <input type="text" class="form-control" name="nombre_curso" required
+                               value="<?php echo htmlspecialchars($editando['nombre_curso'] ?? ''); ?>">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Inicio Curso *</label>
+                        <input type="date" class="form-control" name="inicio_curso" required
+                               value="<?php echo $editando['inicio_curso'] ?? date('Y-m-d'); ?>">
+                    </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="row mt-3">
@@ -324,10 +415,20 @@ $total_general = $total_activos + $total_eliminados;
                 </div>
 
                 <div class="row mt-3">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label class="form-label">URL Campus</label>
                         <input type="text" class="form-control" name="url_campus" 
                                value="<?php echo htmlspecialchars($editando['url_campus'] ?? 'https://dixma.virtual-aula.com/'); ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">CIF Campus</label>
+                        <input type="text" class="form-control" name="cif_campus"
+                               value="<?php echo htmlspecialchars($editando['cif_campus'] ?? 'CIF: B92041839'); ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Razón Social</label>
+                        <input type="text" class="form-control" name="razon_social"
+                               value="<?php echo htmlspecialchars($editando['razon_social'] ?? 'RAZÓN SOCIAL: INNOVACCIÓN Y CUALIFICACIÓN S.L'); ?>">
                     </div>
                 </div>
 
