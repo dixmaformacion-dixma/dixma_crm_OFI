@@ -73,14 +73,22 @@ if(!isset($_GET['ids'])){
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?php
-    // Genera il nome del file: N_Accion_N_Grupo_varios
     if (!empty($diplomas)) {
         $primer_diploma = $diplomas[0];
-        $n_accion = isset($primer_diploma['N_Accion']) ? $primer_diploma['N_Accion'] : 'ACCION';
-        $n_grupo = isset($primer_diploma['N_Grupo']) ? $primer_diploma['N_Grupo'] : 'GRUPO';
-        echo $n_accion . '_' . $n_grupo . '_varios';
+        $n_accion     = isset($primer_diploma['N_Accion'])      ? $primer_diploma['N_Accion']     : 'ACCION';
+        $n_grupo      = isset($primer_diploma['N_Grupo'])       ? $primer_diploma['N_Grupo']       : 'GRUPO';
+        $denominacion = isset($primer_diploma['Denominacion'])  ? $primer_diploma['Denominacion']  : '';
+        $empresa      = isset($primer_diploma['nombreEmpresa']) ? $primer_diploma['nombreEmpresa'] : '';
+        $title = $n_accion . '_' . $n_grupo . '_VARIOS';
+        if (!empty($denominacion)) $title .= '_' . $denominacion;
+        if (!empty($empresa))      $title .= '_' . $empresa;
+        $title = mb_strtoupper($title, 'UTF-8');
+        $title = preg_replace('/[\/\\\\:*?"<>|,\.;]/', '', $title); // rimuove caratteri non validi nei nomi file
+        $title = preg_replace('/\s+/', '_', $title);                 // spazi → underscore
+        $title = preg_replace('/_+/', '_', $title);                  // underscore multipli → uno solo
+        echo $title;
     } else {
-        echo 'Diplomas_varios';
+        echo 'DIPLOMAS_VARIOS';
     }
     ?></title>
 
