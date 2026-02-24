@@ -74,6 +74,20 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' and $_POST['function'] == "editar_Alumn
             $datosAlumnoCurso['Diploma_Status_Ultimo_Cambio'] = date("Y-m-d");
         }
         if(alumnoCursoEditar($datosAlumnoCurso)){
+            if(isset($_POST['page_from'])){
+                $redirect = $_POST['page_from'];
+                $anchor = '#infoEdit' . $datosAlumnoCurso['StudentCursoID'];
+                // Se page_from ha già una query string (es. buscarCursos) non aggiungere altri params
+                if(strpos($redirect, '?') === false){
+                    $params = [];
+                    if(!empty($_POST['year'])) $params['year'] = $_POST['year'];
+                    if(!empty($_POST['Tipo_Venta_Display'])) $params['Tipo_Venta_Display'] = $_POST['Tipo_Venta_Display'];
+                    $query = http_build_query($params);
+                    $redirect .= $query ? ('?' . $query) : '';
+                }
+                header('Location: ' . $redirect . $anchor);
+                exit;
+            }
             echo "<div class='alert alert-success mb-0'> Curso editado con éxito </div>";
         } else {
             echo "<div class='alert alert-danger mb-0'> ERROR: El curso no se pudo editar por alguna razón </div>";

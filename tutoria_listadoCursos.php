@@ -35,12 +35,12 @@
 
     $date = date("Y-m-d");
     $year = date("Y");
-    if(isset($_GET['year']) && $_GET['year'] != ''){
-        $year = $_GET['year'];
+    if(isset($_REQUEST['year']) && $_REQUEST['year'] != ''){
+        $year = $_REQUEST['year'];
     }
     $Tipo_Venta_Display = "Bonificado";
-    if(isset($_GET['Tipo_Venta_Display']) && $_GET['Tipo_Venta_Display'] != ''){
-        $Tipo_Venta_Display = $_GET['Tipo_Venta_Display'];
+    if(isset($_REQUEST['Tipo_Venta_Display']) && $_REQUEST['Tipo_Venta_Display'] != ''){
+        $Tipo_Venta_Display = $_REQUEST['Tipo_Venta_Display'];
     }
 
 
@@ -167,6 +167,21 @@
                 href+=`?ids=${selectables.join(',')}`
                 $('#printAll').attr('href',href);
             })
+            // Se l'URL contiene un anchor #infoEdit apre il collapse, scrolla e poi rimuove l'anchor
+            $(document).ready(function(){
+                if(window.location.hash && window.location.hash.indexOf('#infoEdit')===0){
+                    var h = window.location.hash;
+                    try{
+                        $(h).collapse('show');
+                        setTimeout(function(){
+                            var el = document.querySelector(h);
+                            if(el) el.scrollIntoView({behavior:'auto', block:'center'});
+                            // Rimuove l'anchor dall'URL senza ricaricare la pagina
+                            history.replaceState(null, '', window.location.pathname + window.location.search);
+                        }, 100);
+                    }catch(e){}
+                }
+            });
     </script>
 </body>
 </html>
