@@ -22,8 +22,11 @@ if(!isset($tipoCursosArray)){
     <div class="row">
         <h3>Editar curso:</h3>
     </div>
-    <form method="post" action="<?php echo $page_from;?>" enctype="multipart/form-data">
+        <form method="post" action="<?php echo $page_from;?>" enctype="multipart/form-data">
         <input type="hidden" name="StudentCursoID" value="<?php echo $curso['StudentCursoID']; ?>">
+        <input type="hidden" name="page_from" value="<?php echo isset($page_from)?$page_from:''; ?>">
+        <input type="hidden" name="Tipo_Venta_Display" value="<?php echo isset($Tipo_Venta_Display)?htmlspecialchars($Tipo_Venta_Display):''; ?>">
+        <input type="hidden" name="year" value="<?php echo isset($year)?htmlspecialchars($year):''; ?>">
         <input type="hidden" name="function" value="editar_AlumnoCurso">
         <div class="row">
                 <div>
