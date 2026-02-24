@@ -82,25 +82,55 @@ function cargarAlumnoCursosPendientes(){
 }
 function buscarAlumnoCursos($filterName, $filterOperator, $filterValue){
     $conexionPDO = realizarConexion();
-    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE 1';
+    // JOIN con empresas per poter filtrare anche per nome azienda
+    $sql = 'SELECT alumnocursos.*, alumnos.nombre, alumnos.apellidos, alumnos.nif, alumnos.email, alumnos.telefono, alumnos.horarioLaboral, alumnos.idAlumno, empresas.nombre AS nombre_empresa
+            FROM `alumnocursos`
+            INNER JOIN alumnos ON alumnocursos.`idAlumno` = alumnos.idAlumno
+            LEFT JOIN empresas ON alumnocursos.idEmpresa = empresas.idempresa
+            WHERE 1';
+
+    // Colonne consentite per evitare SQL injection sui nomi colonna
+    $allowed_columns = ['Denominacion','Anno','N_Accion','N_Grupo','N_Horas','Modalidad',
+                        'DOC_AF','Fecha_Inicio','Fecha_Fin','tutor','idEmpresa',
+                        'Tipo_Venta','Diploma_Status','CC','RLT','Recibi_Material','status_curso'];
+    // Operatori consentiti
+    $allowed_operators = ['=','!=','LIKE','NOT LIKE','>','<','>=','<='];
+
+    $params = [];
+
+    // Riindiciamo gli array per sicurezza
+    $filterName     = array_values((array)$filterName);
+    $filterOperator = array_values((array)$filterOperator);
+    $filterValue    = array_values((array)$filterValue);
 
     for($i = 0; $i < count($filterName); $i++){
-        if(!in_array($filterName[$i],['Anno','idEmpresa'])){
-            $sql .= ' AND `'.$filterName[$i].'` '.$filterOperator[$i].' "'.$filterValue[$i].'"';
+        $name  = $filterName[$i];
+        $op    = isset($filterOperator[$i]) ? strtoupper(trim($filterOperator[$i])) : '=';
+        $value = isset($filterValue[$i])    ? $filterValue[$i] : '';
+
+        if($name === 'Anno'){
+            $sql .= ' AND (YEAR(`Fecha_Inicio`) = ?)';
+            $params[] = $value;
+        } elseif($name === 'idEmpresa'){
+            // Se il valore è numerico filtra per ID, altrimenti cerca per nome azienda
+            if(is_numeric($value)){
+                $sql .= ' AND alumnocursos.idEmpresa = ?';
+                $params[] = (int)$value;
+            } else {
+                $sql .= ' AND empresas.nombre LIKE ?';
+                $params[] = '%' . $value . '%';
+            }
+        } elseif(in_array($name, $allowed_columns) && in_array($op, $allowed_operators)){
+            $sql .= ' AND alumnocursos.`'.$name.'` '.$op.' ?';
+            $params[] = $value;
         }
-        if($filterName[$i]=='Anno'){
-            $sql .= ' AND (YEAR(`Fecha_Inicio`) = '.$filterValue[$i].')';
-        }
-        if($filterName[$i]=='idEmpresa'){
-            $sql .= ' AND alumnocursos.idEmpresa = '.$filterValue[$i];
-        }
+        // Se colonna o operatore non valido, il filtro viene ignorato
     }
 
     $sql .= ' ORDER BY `Fecha_Fin`,`N_Accion`,`N_Grupo`,`apellidos`,`nombre` ASC';
-    //echo "$sql";
 
     $stmt = $conexionPDO->prepare($sql);
-    $stmt->execute();
+    $stmt->execute($params);
 
     if($alumnocurso = $stmt->fetchAll()){
         unset($conexionPDO);
