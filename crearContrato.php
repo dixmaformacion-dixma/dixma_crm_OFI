@@ -176,7 +176,8 @@
             
             <label class="col-2">EMAIL: (Para factura de boniﬁcación):</label>
             <div class="col-5"  >
-              <input class="form-control form-control-sm" value="<?php echo $resultado = !empty($venta['emailfactura']) ? $venta['emailfactura'] : "" ?>" type="text"></input>
+              <input class="form-control form-control-sm" value="<?php echo !empty(
+                $venta['emailfactura']) ? $venta['emailfactura'] : (!empty($empresa['email']) ? $empresa['email'] : ''); ?>" type="text"></input>
             </div>
 
           </div>          
