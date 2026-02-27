@@ -183,5 +183,69 @@
                 }
             });
     </script>
+    <!-- Modal Ver Todos los Trabajadores del Grupo -->
+    <div class="modal fade" id="modalGrupoAlumnos" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#88c743;">
+                    <h5 class="modal-title fw-bold">Todos los trabajadores del curso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-2" id="modalGrupoAlumnosBody">
+                    <div class="text-center py-4"><div class="spinner-border text-success" role="status"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var _year             = '<?= htmlspecialchars($year) ?>';
+        var _tipoVentaDisplay = '<?= htmlspecialchars($Tipo_Venta_Display) ?>';
+
+        // Dopo Guardar dal modal: scrolla alla riga della lista che contiene il bottone del gruppo
+        $(document).ready(function(){
+            var urlParams = new URLSearchParams(window.location.search);
+            var openGrupo = urlParams.get('openGrupo');
+
+            if (openGrupo) {
+                // Pulisce openGrupo e hash dall'URL senza ricaricare
+                var cleanSearch = window.location.search
+                    .replace(/([&?])openGrupo=\d+/, function(m, sep){ return sep === '?' ? '?' : ''; })
+                    .replace(/\?$/, '');
+                history.replaceState(null, '', window.location.pathname + cleanSearch);
+
+                // Trova il bottone ver-todos-grupo con quell'ID e scrolla alla sua riga
+                var btn = document.querySelector('.ver-todos-grupo[data-id="' + openGrupo + '"]');
+                if (btn) {
+                    btn.closest('.container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
+        $(document).on('click', '.ver-todos-grupo', function(){
+            var id = $(this).data('id');
+            $('#modalGrupoAlumnosBody').html('<div class="text-center py-4"><div class="spinner-border text-success" role="status"></div></div>');
+            var modal = new bootstrap.Modal(document.getElementById('modalGrupoAlumnos'));
+            modal.show();
+            var fetchUrl = 'fetch_grupo_alumnos.php?id=' + id
+                         + '&year=' + encodeURIComponent(_year)
+                         + '&Tipo_Venta_Display=' + encodeURIComponent(_tipoVentaDisplay);
+            $('#modalGrupoAlumnosBody').load(fetchUrl, function(){
+                // reinizializza i collapse Bootstrap dentro il modal
+                var collapseEls = document.querySelectorAll('#modalGrupoAlumnosBody [data-bs-toggle="collapse"]');
+                collapseEls.forEach(function(el){
+                    el.addEventListener('click', function(e){
+                        e.preventDefault();
+                        var target = document.querySelector(el.getAttribute('href'));
+                        if(target){
+                            var bsc = bootstrap.Collapse.getOrCreateInstance(target);
+                            bsc.toggle();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
 </body>
 </html>

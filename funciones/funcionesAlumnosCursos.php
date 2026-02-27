@@ -23,7 +23,21 @@ function cargarAlumnoCursos($year, $Tipo_Venta){
     }
 
     $conexionPDO = realizarConexion();
-    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?) ORDER BY `Fecha_Fin`,`N_Accion`,`N_Grupo`,`apellidos`,`nombre`';
+    // Se mostrar_solo_primero = 1 mostra solo il lavoratore con StudentCursoID minimo del gruppo
+    $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno
+            WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?)
+            AND (
+                alumnocursos.mostrar_solo_primero = 0
+                OR
+                alumnocursos.StudentCursoID = (
+                    SELECT MIN(ac2.StudentCursoID)
+                    FROM alumnocursos ac2
+                    WHERE ac2.N_Accion = alumnocursos.N_Accion
+                    AND ac2.N_Grupo = alumnocursos.N_Grupo
+                    AND ac2.idEmpresa = alumnocursos.idEmpresa
+                )
+            )
+            ORDER BY `Fecha_Fin`,`N_Accion`,`N_Grupo`,`apellidos`,`nombre`';
 
     $stmt = $conexionPDO->prepare($sql);
         
@@ -201,12 +215,14 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
     try {
         $conexionPDO->beginTransaction();
 
+        $mostrar_solo_primero = isset($datosCurso['mostrar_solo_primero']) ? (int)$datosCurso['mostrar_solo_primero'] : 0;
+
         $sql = "INSERT INTO `alumnocursos`(
                     `Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, 
                     `Fecha_Inicio`, `Fecha_Fin`, `tutor`, `idAlumno`, `idCurso`, `idEmpresa`, 
                     `Tipo_Venta`, `status_curso`, `seguimento0`, `seguimento1`, `seguimento2`, 
-                    `seguimento3`, `seguimento4`, `seguimento5`, `firma_docente`
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'en curso', ?, ?, ?, ?, ?, ?, ?)";
+                    `seguimento3`, `seguimento4`, `seguimento5`, `firma_docente`, `mostrar_solo_primero`
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'en curso', ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conexionPDO->prepare($sql);
 
         if (!$stmt) {
@@ -214,26 +230,27 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
         }
 
         foreach ($listaAlumnos as $idAlumno) {
-            $stmt->bindValue(1, $datosCurso['Denominacion'], PDO::PARAM_STR);
-            $stmt->bindValue(2, $datosCurso['N_Accion'], PDO::PARAM_STR);
-            $stmt->bindValue(3, $datosCurso['N_Grupo'], PDO::PARAM_STR);
-            $stmt->bindValue(4, $datosCurso['N_Horas'], PDO::PARAM_STR);
-            $stmt->bindValue(5, $datosCurso['Modalidad'], PDO::PARAM_STR);
-            $stmt->bindValue(6, $datosCurso['DOC_AF'], PDO::PARAM_STR);
-            $stmt->bindValue(7, $datosCurso['Fecha_Inicio'], PDO::PARAM_STR);
-            $stmt->bindValue(8, $datosCurso['Fecha_Fin'], PDO::PARAM_STR);
-            $stmt->bindValue(9, $datosCurso['tutor'], PDO::PARAM_STR);
-            $stmt->bindValue(10, $idAlumno, PDO::PARAM_INT);
-            $stmt->bindValue(11, $datosCurso['idCurso'], PDO::PARAM_INT);
-            $stmt->bindValue(12, $datosCurso['idEmpresa'], PDO::PARAM_INT);
-            $stmt->bindValue(13, $datosCurso['Tipo_Venta'], PDO::PARAM_STR);
-            $stmt->bindValue(14, $datosCurso['seguimento0'], PDO::PARAM_STR);
-            $stmt->bindValue(15, $datosCurso['seguimento1'], PDO::PARAM_STR);
-            $stmt->bindValue(16, $datosCurso['seguimento2'], PDO::PARAM_STR);
-            $stmt->bindValue(17, $datosCurso['seguimento3'], PDO::PARAM_STR);
-            $stmt->bindValue(18, $datosCurso['seguimento4'], PDO::PARAM_STR);
-            $stmt->bindValue(19, $datosCurso['seguimento5'], PDO::PARAM_STR);
+            $stmt->bindValue(1,  $datosCurso['Denominacion'], PDO::PARAM_STR);
+            $stmt->bindValue(2,  $datosCurso['N_Accion'],     PDO::PARAM_STR);
+            $stmt->bindValue(3,  $datosCurso['N_Grupo'],      PDO::PARAM_STR);
+            $stmt->bindValue(4,  $datosCurso['N_Horas'],      PDO::PARAM_STR);
+            $stmt->bindValue(5,  $datosCurso['Modalidad'],    PDO::PARAM_STR);
+            $stmt->bindValue(6,  $datosCurso['DOC_AF'],       PDO::PARAM_STR);
+            $stmt->bindValue(7,  $datosCurso['Fecha_Inicio'], PDO::PARAM_STR);
+            $stmt->bindValue(8,  $datosCurso['Fecha_Fin'],    PDO::PARAM_STR);
+            $stmt->bindValue(9,  $datosCurso['tutor'],        PDO::PARAM_STR);
+            $stmt->bindValue(10, $idAlumno,                   PDO::PARAM_INT);
+            $stmt->bindValue(11, $datosCurso['idCurso'],      PDO::PARAM_INT);
+            $stmt->bindValue(12, $datosCurso['idEmpresa'],    PDO::PARAM_INT);
+            $stmt->bindValue(13, $datosCurso['Tipo_Venta'],   PDO::PARAM_STR);
+            $stmt->bindValue(14, $datosCurso['seguimento0'],  PDO::PARAM_STR);
+            $stmt->bindValue(15, $datosCurso['seguimento1'],  PDO::PARAM_STR);
+            $stmt->bindValue(16, $datosCurso['seguimento2'],  PDO::PARAM_STR);
+            $stmt->bindValue(17, $datosCurso['seguimento3'],  PDO::PARAM_STR);
+            $stmt->bindValue(18, $datosCurso['seguimento4'],  PDO::PARAM_STR);
+            $stmt->bindValue(19, $datosCurso['seguimento5'],  PDO::PARAM_STR);
             $stmt->bindValue(20, $datosCurso['Firma_Docente'] ?? null, PDO::PARAM_STR);
+            $stmt->bindValue(21, $mostrar_solo_primero,       PDO::PARAM_INT);
 
             if (!$stmt->execute()) {
                 throw new Exception("Error al insertar el curso para el alumno ID: " . $idAlumno);

@@ -96,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
             'seguimento3' => !empty($_POST['seguimento3']) ? $_POST['seguimento3'] : null,
             'seguimento4' => !empty($_POST['seguimento4']) ? $_POST['seguimento4'] : null,
             'seguimento5' => !empty($_POST['seguimento5']) ? $_POST['seguimento5'] : null,
+            'mostrar_solo_primero' => !empty($_POST['mostrar_solo_primero']) ? 1 : 0,
         ];
 
         if (alumnoCursoAdjuntarMultiple($alumnosSeleccionados, $datosCurso)) {
@@ -295,10 +296,19 @@ if (isset($_GET['idEmpresa'])) {
                                     <!-- Fin del nuevo formulario -->
                                 </div>
                             </div>
-                            <div class="card-footer text-center">
-                                <button type="submit" name="asignar_curso" class="btn btn-success btn-lg">
-                                    Asignar Curso a Alumnos Seleccionados
-                                </button>
+                            <div class="card-footer">
+                                <div id="div_mostrar_solo_primero" class="form-check mb-3 p-2 border rounded" style="background-color:#fff3cd; display:none;">
+                                    <input class="form-check-input" type="checkbox" name="mostrar_solo_primero" id="mostrar_solo_primero" value="1">
+                                    <label class="form-check-label fw-bold" for="mostrar_solo_primero">
+                                        Mostrar solo el primer trabajador en el Listado de Cursos
+                                        <small class="text-muted d-block fw-normal">Los demás serán visibles mediante el botón "Ver todos" junto a la fila</small>
+                                    </label>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" name="asignar_curso" class="btn btn-success btn-lg">
+                                        Asignar Curso a Alumnos Seleccionados
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -351,6 +361,20 @@ if (isset($_GET['idEmpresa'])) {
             });
         });
         $(document).ready(function() {
+            // Mostra/nascondi checkbox mostrar_solo_primero in base a Tipo_Venta
+            $('input[name="Tipo_Venta"]').on('change', function() {
+                if ($(this).val() === 'Privado') {
+                    $('#div_mostrar_solo_primero').show();
+                } else {
+                    $('#div_mostrar_solo_primero').hide();
+                    $('#mostrar_solo_primero').prop('checked', false);
+                }
+            });
+            // Controllo stato iniziale (nel caso venga ricaricata la pagina)
+            if ($('input[name="Tipo_Venta"]:checked').val() === 'Privado') {
+                $('#div_mostrar_solo_primero').show();
+            }
+
             // Funcionalidad para el checkbox "Seleccionar Todos"
             $('#seleccionarTodos').on('click', function() {
                 $('.alumno-checkbox').prop('checked', $(this).prop('checked'));
