@@ -9,27 +9,31 @@ $completed = (
 );
 ?>
 <div class="col-md-12 col-12 container mt-3 border border-4 rounded">
-        <div class='row mx-auto my-2'>
-                <label class='col-md-3 col-12'>
-                        <b>nombre:</b>
-                        <?php echo $llamada['nombre']." ".$llamada['apellidos']; ?>
-                </label>
-                <div class='col-md-3 col-12'>
+        <div class='row mx-auto my-2 align-items-center'>
+                <div class='col'>
+                        <b>Nombre:</b>
+                        <span class="text-uppercase"><?php echo $llamada['nombre']." ".$llamada['apellidos']; ?></span>
+                </div>
+                <?php if(!$completed){?>
+                        <b class='col-auto'>Todas las llamadas ya fueron hechas</b>
+                        <a 
+                                class="btn btn-primary col-auto"
+                                data-bs-toggle="collapse"
+                                href="#infoLlamada<?php echo $llamada['StudentCursoID']; ?>">
+                                mas detalle
+                        </a>
+                <?php } ?>
+                <div class='col-auto ms-auto d-flex gap-2'>
+                        <?php $empresaHeader = cargarEmpresa($llamada['idEmpresa']); ?>
+                        <a href="buscarVenta.php?valor=<?php echo urlencode($empresaHeader['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-sm btn-info">
+                                Información Empresa
+                        </a>
                         <button class="btn btn-sm btn-success" 
                                 onclick="loginByCourse('<?php echo addslashes($llamada['N_Accion']); ?>', '<?php echo date('Y', strtotime($llamada['Fecha_Inicio'])); ?>', 'profesor')" 
                                 title="Acceso Campus">
                                 Acceso Campus
                         </button>
                 </div>
-                <?php if(!$completed){?>
-                        <b class='col-md-4 col-12'>Todas las llamadas ya fueron hechas</b>
-                        <a 
-                                class="btn btn-primary col-md-2 col-12"
-                                data-bs-toggle="collapse"
-                                href="#infoLlamada<?php echo $llamada['StudentCursoID']; ?>">
-                                mas detalle
-                        </a>
-                <?php } ?>
         </div>
         <div class="collapse <?php if($completed){ echo "show";} ?>" id="infoLlamada<?php echo $llamada['StudentCursoID']; ?>" >
                 <div class='row mx-auto my-2'>
@@ -53,15 +57,15 @@ $completed = (
                         </label>
                         <label class='col-md-4 col-12'>
                                 <b>N Accion:</b>
-                                <?php echo $llamada['N_Accion']; ?>
+                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:2px 8px; border-radius:4px;"><?php echo $llamada['N_Accion']; ?></span>
                         </label>
                         <label class='col-md-4 col-12'>
-                                <b>N_Grupo:</b>
-                                <?php echo $llamada['N_Grupo']; ?>
+                                <b>N Grupo:</b>
+                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:2px 8px; border-radius:4px;"><?php echo $llamada['N_Grupo']; ?></span>
                         </label>
                         <label class='col-md-4 col-12'>
-                                <b>N_Horas:</b>
-                                <?php echo $llamada['N_Horas']; ?>
+                                <b>N Horas:</b>
+                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:2px 8px; border-radius:4px;"><?php echo $llamada['N_Horas']; ?></span>
                         </label>
                         <label class='col-md-4 col-12'>
                                 <b>Modalidad:</b>
@@ -95,5 +99,56 @@ $completed = (
                                 require("template-parts/components/seguimentosAndComments.(curso.listadoCursos).php");
                         ?>
                 </div>
+                <?php
+                // Cursos anteriores del alumno
+                if (isset($llamada['idAlumno'])) {
+                    $cursosPrevios = obtenerCursosPreviosAlumno($llamada['idAlumno'], null, $llamada['StudentCursoID']);
+                    if (!empty($cursosPrevios)) {
+                        echo '<div class="col-md-12 col-12 container mt-3 mb-2 border border-2 rounded" style="background-color:#fff3cd;">';
+                        echo '<div class="p-2">';
+                        echo '<h6 class="mb-2"><b>📚 CURSOS ANTERIORES (' . count($cursosPrevios) . ')</b></h6>';
+                        echo '<div class="table-responsive">';
+                        echo '<table class="table table-sm table-striped table-bordered">';
+                        echo '<thead style="background-color:#88c743;">';
+                        echo '<tr>';
+                        echo '<th>Año</th>';
+                        echo '<th>Denominación</th>';
+                        echo '<th>Fecha Inicio</th>';
+                        echo '<th>Fecha Fin</th>';
+                        echo '<th>Tipo Venta</th>';
+                        echo '<th>Estado Diploma</th>';
+                        echo '</tr>';
+                        echo '</thead>';
+                        echo '<tbody>';
+                        foreach ($cursosPrevios as $cp) {
+                            $yearCurso = date('Y', strtotime($cp['Fecha_Inicio']));
+                            $statusStyle = '';
+                            if ($cp['status_curso'] == 'finalizado' || $cp['status_curso'] == 'cerrado') {
+                                $statusStyle = 'background-color: lightblue;';
+                            } elseif ($cp['status_curso'] == 'baja') {
+                                $statusStyle = 'background-color: #ffcccc;';
+                            }
+                            $diplomaStyle = '';
+                            $diplomaStatus = $cp['Diploma_Status'] ?? '';
+                            if ($diplomaStatus == 'Copia recibida' || $diplomaStatus == 'Entregado') {
+                                $diplomaStyle = 'background-color: #28D700; color: white;';
+                            }
+                            echo '<tr style="' . $statusStyle . '">';
+                            echo '<td>' . htmlspecialchars($yearCurso) . '</td>';
+                            echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Denominacion']) . '</small></td>';
+                            echo '<td>' . formattedDate($cp['Fecha_Inicio']) . '</td>';
+                            echo '<td>' . formattedDate($cp['Fecha_Fin']) . '</td>';
+                            echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Tipo_Venta']) . '</small></td>';
+                            echo '<td class="text-uppercase" style="' . $diplomaStyle . '"><small>' . htmlspecialchars($diplomaStatus) . '</small></td>';
+                            echo '</tr>';
+                        }
+                        echo '</tbody>';
+                        echo '</table>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
+                    }
+                }
+                ?>
         </div>
 </div>
