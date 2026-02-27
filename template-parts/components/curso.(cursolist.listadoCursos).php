@@ -121,6 +121,15 @@ if (!isset($statusDiplomaColor)) {
                                         <li><a class="dropdown-item" href="tutoria_guiaDidactica.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>" target="_blank">Guía</a></li>
                                 </ul>
                         </div>
+                        <?php if (!empty($curso['mostrar_solo_primero'])): ?>
+                        <a class="ver-todos-grupo"
+                                role="button"
+                                data-id="<?php echo $curso['StudentCursoID']; ?>"
+                                title="Ver todos los trabajadores de este curso"
+                                style="cursor:pointer;">
+                                <img src="images/iconos2/people-fill.svg" alt="Ver todos">
+                        </a>
+                        <?php endif; ?>
 
                 </div>
 
@@ -141,7 +150,7 @@ if (!isset($statusDiplomaColor)) {
                         </label>
                         <label class='col-md-6 col-12'>
                                 <b style="color:#2e7d32;" class="text-uppercase">telefono Empresa:</b>
-                                <?php echo $empresa['telef1'] . " | " . $empresa['telef2']; ?>
+                                <b><?php echo $empresa['telef1'] . " | " . $empresa['telef2']; ?></b>
                         </label>
                         <label class='col-md-6 col-12'>
                                 <b style="color:#2e7d32;" class="text-uppercase">Persona de contacto:</b>
@@ -149,9 +158,9 @@ if (!isset($statusDiplomaColor)) {
                         </label>
                         <div class="text-center mt-2 mb-2">
                                 <a href="buscarVenta.php?valor=<?php echo urlencode($empresa['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-info">Información Empresa</a>
-                                <button class="btn" 
+                                <button type="button" class="btn" 
                                         style="color:white; background-color:#2e7d32; border:none;"
-                                        onclick="loginByCourse('<?php echo addslashes($curso['N_Accion']); ?>', '<?php echo date('Y', strtotime($curso['Fecha_Inicio'])); ?>', 'profesor')" 
+                                        onclick="event.stopPropagation(); loginByCourse('<?php echo addslashes($curso['N_Accion']); ?>', '<?php echo date('Y', strtotime($curso['Fecha_Inicio'])); ?>', 'profesor')" 
                                         title="Acceso Campus">
                                         ACCESO CAMPUS
                                 </button>
@@ -161,7 +170,7 @@ if (!isset($statusDiplomaColor)) {
                         <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:#e8f5e9; border-color:#88c743 !important;">
                                 <label class='col-md-6 col-12'>
                                         <b style="color:#2e7d32;" class="text-uppercase">Telefono Alumno:</b>
-                                        <?php echo $curso['telefono']; ?>
+                                        <b><?php echo $curso['telefono']; ?></b>
                                 </label>
                                 <label class='col-md-6 col-12'>
                                         <b style="color:#2e7d32;" class="text-uppercase">Email Alumno:</b>
@@ -178,8 +187,9 @@ if (!isset($statusDiplomaColor)) {
                         </div>
          <?php
                 // Obtener cursos anteriores del alumno
-                if (isset($curso['idAlumno']) && isset($year)) {
-                    $cursosPrevios = obtenerCursosPreviosAlumno($curso['idAlumno'], $year, $curso['StudentCursoID']);
+                if (isset($curso['idAlumno'])) {
+                    $yearFilter = isset($year) ? $year : null;
+                    $cursosPrevios = obtenerCursosPreviosAlumno($curso['idAlumno'], $yearFilter, $curso['StudentCursoID']);
                     
                     if (!empty($cursosPrevios)) {
                         echo '<div class="col-md-12 col-12 container mt-3 mb-2 border border-2 rounded" style="background-color:#fff3cd;">';
@@ -193,7 +203,7 @@ if (!isset($statusDiplomaColor)) {
                         echo '<th>Denominación</th>';
                         echo '<th>Fecha Inicio</th>';
                         echo '<th>Fecha Fin</th>';
-                        echo '<th>Estado</th>';
+                        echo '<th>Tipo Venta</th>';
                         echo '<th>Estado Diploma</th>';
                         echo '</tr>';
                         echo '</thead>';
@@ -220,7 +230,7 @@ if (!isset($statusDiplomaColor)) {
                             echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Denominacion']) . '</small></td>';
                             echo '<td>' . formattedDate($cp['Fecha_Inicio']) . '</td>';
                             echo '<td>' . formattedDate($cp['Fecha_Fin']) . '</td>';
-                            echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['status_curso']) . '</small></td>';
+                            echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Tipo_Venta']) . '</small></td>';
                             echo '<td class="text-uppercase" style="' . $diplomaStyle . '"><small>' . htmlspecialchars($diplomaStatus) . '</small></td>';
                             echo '</tr>';
                         }
