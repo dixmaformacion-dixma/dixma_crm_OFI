@@ -16,9 +16,13 @@
     date_default_timezone_set("Europe/Madrid");
     setlocale(LC_ALL, "spanish");
 
+    $year = null;
+    $empresasConPendientes = obtenerEmpresasConCursosPendientes();
+
     include "tutoria_editar_AlumnoCurso_function.php";
     include "tutoria_insertar_commentario_function.php";
     include "tutoria_editar_seguimentos_function.php";
+    include "funciones/funcionesAccionesMasivas.php";
 
     //include "tutoria_editar_AlumnoCurso_function.php";
 ?>
@@ -35,6 +39,7 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/tutoria.js"></script>
     <script src="js/alumnocurso.js"></script>
+    <script src="js/accionesMasivas.js"></script>
     <link rel="icon" href="images/favicon.ico">
 </head>
 <body style="background-color:#f3f6f4;">
@@ -113,6 +118,8 @@
                                 echo '<a href="' . $baseUrl . '" id="controlAsistenciaBtn" class="btn btn-success">Control de Asistencia</a>';
                                 echo '<a href="tutoria_diplomaPDF_all.php" id="printAll" target="_blank" class="btn btn-danger ms-2">';
                                 echo '<i class="fa fa-print"></i> Imprimir Diplomas Seleccionados</a>';
+                                echo '<button type="button" class="btn btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#accionesMasivasModal" data-naccion="' . htmlspecialchars($n_accion) . '" data-ngrupo="' . htmlspecialchars($n_grupo) . '">';
+                                echo '<i class="fa fa-cogs"></i> Acciones</button>';
                                 echo '</div>';
                             }
 							
@@ -127,6 +134,50 @@
         </div>
 
     </div>
+
+<!-- Modal Acciones Masivas -->
+<div class="modal fade" id="accionesMasivasModal" tabindex="-1" aria-labelledby="accionesMasivasModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#b0d588;">
+        <h5 class="modal-title" id="accionesMasivasModalLabel">Acciones masivas &mdash; Acción <span id="am_naccion"></span> / Grupo <span id="am_ngrupo"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted small">Se actualizarán los <strong><span id="am_countLabel">0</span> registro(s) seleccionados</strong> con el checkbox. Deja <em>Sin cambio</em> en los campos que no quieras modificar.</p>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Diploma Status</label>
+          <select id="am_diploma_status" class="form-select">
+            <option value="no_change">— Sin cambio —</option>
+            <option value="No hecho">No hecho</option>
+            <option value="Hecho">Hecho</option>
+            <option value="Impreso">Impreso</option>
+            <option value="Entregado">Entregado</option>
+            <option value="Copia recibida">Copia recibida</option>
+            <option value="Enviado por Mail">Enviado por Mail</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Status Curso</label>
+          <select id="am_status_curso" class="form-select">
+            <option value="no_change">— Sin cambio —</option>
+            <option value="en curso">en curso</option>
+            <option value="finalizado">finalizado</option>
+            <option value="descargado">descargado</option>
+            <option value="cerrado">cerrado</option>
+            <option value="baja">baja</option>
+            <option value="problem">problem</option>
+          </select>
+        </div>
+        <div id="am_feedback" class="alert d-none" role="alert"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-warning" id="am_submitBtn">Aplicar a todos</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <footer class="border-top border-secondary" style="background-color:#e4e4e4; height: 75px;">
 
@@ -177,6 +228,22 @@
     });
 	
     const hoy = '<?= date("Y-m-d") ?>';
+
+    // Se l'URL contiene un anchor #infoEdit apre il collapse, scrolla e poi rimuove l'anchor
+    $(document).ready(function(){
+        if(window.location.hash && window.location.hash.indexOf('#infoEdit') === 0){
+            var h = window.location.hash;
+            try{
+                $(h).collapse('show');
+                setTimeout(function(){
+                    var el = document.querySelector(h);
+                    if(el) el.scrollIntoView({behavior:'auto', block:'center'});
+                    // Rimuove l'anchor dall'URL senza ricaricare la pagina
+                    history.replaceState(null, '', window.location.pathname + window.location.search);
+                }, 100);
+            }catch(e){}
+        }
+    });
 <?php
 	
 	if(isset($_REQUEST['filterName'])){
