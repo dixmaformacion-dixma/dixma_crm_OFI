@@ -1,3 +1,18 @@
+<?php
+// Carica prioridad dalla llamada esistente
+$prioridadActual = null; // Default: nessuna priorità
+if(isset($_GET['idLlamada']) && !empty($_GET['idLlamada'])){
+    $conexion = realizarConexion();
+    $sql = "SELECT prioridad FROM llamadas WHERE idllamada = ?";
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([$_GET['idLlamada']]);
+    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if($resultado && !empty($resultado['prioridad'])){
+        $prioridadActual = $resultado['prioridad'];
+    }
+}
+?>
 <div class='col-md-5 col-12'>
     <label><b>Pedir cita: </b></label>
     <input type='radio' class='form-check-input ms-md-1' name='estadoLlamada' value='pasarCita' id='pasarCita'>
@@ -24,8 +39,9 @@
         <option value="12"> diciembre </option>
     </select>
     <select name="prioridadCita" id="prioridadCita" class="form-control" disabled>
-        <option value="BAJO"> BAJO </option>
-        <option value="MEDIO"> MEDIO </option>
-        <option value="ALTO"> ALTO </option>
+        <option value="" <?php echo $prioridadActual === null ? 'selected' : ''; ?>>-- Prioridad no encontrada --</option>
+        <option value="BAJO" <?php echo $prioridadActual == 'BAJO' ? 'selected' : ''; ?>> BAJO </option>
+        <option value="MEDIO" <?php echo $prioridadActual == 'MEDIO' ? 'selected' : ''; ?>> MEDIO </option>
+        <option value="ALTO" <?php echo $prioridadActual == 'ALTO' ? 'selected' : ''; ?>> ALTO </option>
     </select>
 </div>
