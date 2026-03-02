@@ -57,15 +57,15 @@ $completed = (
                         </label>
                         <label class='col-md-4 col-12'>
                                 <b>N Accion:</b>
-                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:2px 8px; border-radius:4px;"><?php echo $llamada['N_Accion']; ?></span>
+                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:1px 6px; font-size:0.95rem; border:1px solid #000; border-radius:0;"><?php echo $llamada['N_Accion']; ?></span>
                         </label>
                         <label class='col-md-4 col-12'>
                                 <b>N Grupo:</b>
-                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:2px 8px; border-radius:4px;"><?php echo $llamada['N_Grupo']; ?></span>
+                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:1px 6px; font-size:0.95rem; border:1px solid #000; border-radius:0;"><?php echo $llamada['N_Grupo']; ?></span>
                         </label>
                         <label class='col-md-4 col-12'>
                                 <b>N Horas:</b>
-                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:2px 8px; border-radius:4px;"><?php echo $llamada['N_Horas']; ?></span>
+                                <span style="background-color:#ffc107; color:#212529; font-weight:bold; padding:1px 6px; font-size:0.95rem; border:1px solid #000; border-radius:0;"><?php echo $llamada['N_Horas']; ?></span>
                         </label>
                         <label class='col-md-4 col-12'>
                                 <b>Modalidad:</b>
