@@ -252,15 +252,15 @@ if (!isset($statusDiplomaColor)) {
                         </label>
                         <label class='col-md-3 col-12'>
                                 <b style="color:#2e7d32;">№ Accion:</b>
-                                <?php echo $curso['N_Accion']; ?>
+                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:1px 6px; font-size:0.95rem; border:1px solid #000; border-radius:0;"><?php echo $curso['N_Accion']; ?></span>
                         </label>
                         <label class='col-md-4 col-12'>
                                 <b style="color:#2e7d32;">№ Grupo:</b>
-                                <?php echo $curso['N_Grupo']; ?>
+                                <span style="background-color:#28D700; color:white; font-weight:bold; padding:1px 6px; font-size:0.95rem; border:1px solid #000; border-radius:0;"><?php echo $curso['N_Grupo']; ?></span>
                         </label>
-                        <label class='col-md-4 col-12' style="background-color:#28D700; padding:8px; border-radius:5px; margin-top:5px; margin-bottom:5px;">
-                                <b style="color:white; font-size:16px;">№ Horas:</b>
-                                <span style="color:white; font-size:16px; font-weight:bold;"><?php echo $curso['N_Horas']; ?></span>
+                        <label class='col-md-4 col-12'>
+                                <b style="color:#2e7d32; font-size:16px;">№ Horas:</b>
+                                <span style="background-color:#ffc107; color:#212529; font-weight:bold; padding:1px 6px; font-size:0.95rem; border:1px solid #000; border-radius:0;"><?php echo $curso['N_Horas']; ?></span>
                         </label>
                         <label class='col-md-3 col-12'>
                                 <b style="color:#2e7d32;">Modalidad:</b>
