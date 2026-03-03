@@ -28,7 +28,7 @@ $completed = (
                         <a href="buscarVenta.php?valor=<?php echo urlencode($empresaHeader['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-sm btn-info">
                                 Información Empresa
                         </a>
-                        <button class="btn btn-sm btn-success" 
+                        <button type="button" class="btn btn-sm btn-success" 
                                 onclick="loginByCourse('<?php echo addslashes($llamada['N_Accion']); ?>', '<?php echo date('Y', strtotime($llamada['Fecha_Inicio'])); ?>', 'profesor')" 
                                 title="Acceso Campus">
                                 Acceso Campus
