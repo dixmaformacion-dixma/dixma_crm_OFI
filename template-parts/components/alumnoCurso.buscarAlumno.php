@@ -64,6 +64,9 @@
             
             <!-- Pulsante per mostrare commenti -->
             <div class="col-12 text-end">
+                <a href="tutoria_diplomaPDF.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>" target="_blank" class="btn btn-sm btn-success me-2">
+                    🎓 Imprimir Diploma
+                </a>
                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#commentsModal<?php echo $curso['StudentCursoID']; ?>">
                     📝 Mostrar Comentarios
                 </button>
