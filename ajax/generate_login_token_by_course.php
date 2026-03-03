@@ -3,7 +3,7 @@ session_start();
 header('Content-Type: application/json');
 
 // Verifica autenticazione
-if (empty($_SESSION['rol']) || !in_array($_SESSION['rol'], ['admin', 'tutoria'])) {
+if (empty($_SESSION['rol']) || !in_array($_SESSION['rol'], ['admin', 'tutoria', 'callcenter'])) {
     echo json_encode(['success' => false, 'message' => 'No autorizado']);
     exit();
 }

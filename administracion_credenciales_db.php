@@ -8,11 +8,11 @@
 
 session_start();
 
-// Verifica autenticación: permite admin e tutoria
+// Verifica autenticación: permite admin, tutoria y callcenter
 if (empty($_SESSION)) {
     header("Location: index.php");
     die();
-} else if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], ['admin', 'tutoria'])) {
+} else if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], ['admin','tutoria', 'callcenter'])) {
     header("Location: inicio.php");
     die();
 }
@@ -200,14 +200,18 @@ foreach ($credentials as $cred) {
 <body>
     <!-- Menu cabecera -->
     <?php 
-        $menuaction = 'administracion';
+        $menuaction = $_SESSION['rol'] === 'admin' ? 'administracion' : 'tutoria';
         require_once './template-parts/header/menu_top.php' 
     ?>
 
     <div class="container-fluid mt-3">
         <div class="row">
-            <!-- Menu lateral Admin -->
-            <?php include "template-parts/leftmenu/administracion.template.php"; ?>
+            <!-- Menu lateral -->
+            <?php if ($_SESSION['rol'] === 'admin'): ?>
+                <?php include "template-parts/leftmenu/administracion.template.php"; ?>
+            <?php else: ?>
+                <?php include "template-parts/leftmenu/tutoria.template.php"; ?>
+            <?php endif; ?>
 
             <div class="col-md-10 col-12">
                 <!-- Header -->
