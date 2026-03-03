@@ -43,7 +43,7 @@ if (!$cursoRef) {
 
 /* -- 2) Todos los trabajadores del mismo grupo -- */
 $stmt2 = $conexionPDO->prepare(
-    "SELECT alumnos.nombre, alumnos.apellidos, alumnos.nif
+    "SELECT alumnocursos.StudentCursoID, alumnos.nombre, alumnos.apellidos, alumnos.nif
      FROM alumnocursos
      INNER JOIN alumnos ON alumnocursos.idAlumno = alumnos.idAlumno
      WHERE alumnocursos.N_Accion = ? AND alumnocursos.N_Grupo = ? AND alumnocursos.idEmpresa = ?
@@ -55,6 +55,14 @@ $stmt2->bindValue(2, $cursoRef['N_Grupo'],   PDO::PARAM_STR);
 $stmt2->bindValue(3, $cursoRef['idEmpresa'], PDO::PARAM_INT);
 $stmt2->execute();
 $trabajadores = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+/* -- Filtrar por IDs seleccionados (desde ver_todos_trabajadores) -- */
+if (!empty($_GET['ids'])) {
+    $selectedIds = array_map('intval', (array)$_GET['ids']);
+    $trabajadores = array_values(array_filter($trabajadores, function($t) use ($selectedIds) {
+        return in_array((int)$t['StudentCursoID'], $selectedIds);
+    }));
+}
 
 /* -- 3) Datos de la empresa -- */
 $stmt3 = $conexionPDO->prepare(
@@ -130,7 +138,7 @@ $direccionEmpresa = implode(', ', $partes);
       padding: 1.5cm 1.8cm 1.8cm 1.8cm;
       font-family: Arial, sans-serif;
       font-size: 9.5pt;
-      line-height: 1.5;
+      line-height: 2.5;
       color: #222;
       position: relative;
       -webkit-print-color-adjust: exact;
@@ -159,7 +167,7 @@ $direccionEmpresa = implode(', ', $partes);
       padding: 0;
       margin: 0 0 0.5cm 0.5cm;
     }
-    .lista-trabajadores li { margin-bottom: 0.1cm; }
+    .lista-trabajadores li { margin-bottom: 0.25cm; }
     .lista-trabajadores li::before {
       content: "o\00a0\00a0";
       font-size: 8pt;
@@ -189,7 +197,7 @@ $direccionEmpresa = implode(', ', $partes);
       align-items: flex-end;
       margin-top: 0.3cm;
     }
-    .sello img { height: 3cm; }
+    .sello img { height: 4.5cm; }
     .pagina-numero { font-size: 8pt; color: #888; font-style: italic; }
 
     /* ---- Campos editables ---- */
