@@ -38,8 +38,17 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
         // Cargar sesiones desde seguimento0 a seguimento5
         for ($i = 0; $i <= 5; $i++) {
             $campo = "seguimento" . $i;
-            if (!empty($first_course_info[$campo])) {
-                $sesiones[] = $first_course_info[$campo];
+            $valor = $first_course_info[$campo] ?? '';
+
+            // Excluir valores vacíos, fechas MySQL por defecto (0000-00-00) y fechas con timestamp negativo/inválido
+            if (
+                !empty($valor) &&
+                $valor !== '0000-00-00' &&
+                $valor !== '0000-00-00 00:00:00' &&
+                strtotime($valor) !== false &&
+                strtotime($valor) > 0
+            ) {
+                $sesiones[] = $valor;
             }
         }
         
