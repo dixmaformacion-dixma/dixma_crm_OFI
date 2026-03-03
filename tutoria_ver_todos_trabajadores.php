@@ -137,16 +137,14 @@ $statusDiplomaColor = [
                 / Grupo: <?php echo htmlspecialchars($corsoRef['N_Grupo']); ?>
                 &nbsp;&mdash;&nbsp; <?php echo count($cursos); ?> trabajadores
             </span>
-            <a href="tutoria_certificadoPDF.php?id=<?php echo $StudentCursoID; ?>"
-               target="_blank"
-               class="btn btn-sm btn-warning fw-bold">
+            <button type="button" class="btn btn-sm btn-warning fw-bold" id="btn-certificado">
                🖨️ Imprimir certificado
-            </a>
+            </button>
         </div>
 
         <div class="col-md-12 col-12 container border border-2" style="background-color:#88c743">
             <div class='row p-0'>
-                <div style="width:5%"><b>#</b></div>
+                <div style="width:5%"><input type="checkbox" class="selectable" value="all"> <b>#</b></div>
                 <div class='col-md-2 border-right'><b>Nombre</b></div>
                 <div style="width:9%"><b>Fecha_Inicio</b></div>
                 <div style="width:9%"><b>Fecha_Fin</b></div>
@@ -171,5 +169,24 @@ $statusDiplomaColor = [
         </div>
 
     </div><!-- /.page-body -->
+
+<script>
+    $(document).on('click', '.selectable', function () {
+        if ($(this).val() == 'all') {
+            $('.selectable').prop('checked', $(this).prop('checked'));
+        }
+    });
+    document.getElementById('btn-certificado').addEventListener('click', function () {
+        var checked = document.querySelectorAll('.selectable:checked');
+        var baseUrl = 'tutoria_certificadoPDF.php?id=<?php echo $StudentCursoID; ?>';
+        var ids = Array.from(checked)
+            .map(function (c) { return c.value; })
+            .filter(function (v) { return v !== 'all' && !isNaN(parseInt(v)); });
+        if (ids.length > 0) {
+            baseUrl += '&' + ids.map(function (v) { return 'ids[]=' + encodeURIComponent(v); }).join('&');
+        }
+        window.open(baseUrl, '_blank');
+    });
+</script>
 </body>
 </html>
