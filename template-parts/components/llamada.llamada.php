@@ -28,6 +28,9 @@ $completed = (
                         <a href="buscarVenta.php?valor=<?php echo urlencode($empresaHeader['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-sm btn-info">
                                 Información Empresa
                         </a>
+                        <a href="tutoria_buscarCursos.php?filterName[]=idEmpresa&filterOperator[]=LIKE&filterValue[]=<?php echo urlencode($empresaHeader['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-sm" style="background-color:#6f42c1; color:#fff; border-color:#6f42c1;">
+                                Cursos Empresa
+                        </a>
                         <button type="button" class="btn btn-sm btn-success" 
                                 onclick="loginByCourse('<?php echo addslashes($llamada['N_Accion']); ?>', '<?php echo date('Y', strtotime($llamada['Fecha_Inicio'])); ?>', 'profesor')" 
                                 title="Acceso Campus">
