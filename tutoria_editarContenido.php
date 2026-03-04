@@ -150,9 +150,10 @@
 <script src="https:////cdn.ckeditor.com/4.8.0/full-all/ckeditor.js"></script>
 <script>
 
-    CKEDITOR.replace("Contenido", {
+    var editor = CKEDITOR.replace("Contenido", {
         versionCheck: false,
         enterMode: CKEDITOR.ENTER_P,
+        height: 500,
         toolbar: [
             ['Bold', '-', 'NumberedList', 'BulletedList', '-', 'FontSize', 'TextColor', 'Styles']
         ],
@@ -166,6 +167,33 @@
             
         ],
         contentsCss: 'body { line-height: 0.8; }'
+    });
+
+    editor.on('instanceReady', function() {
+
+        function syncListFontSizes() {
+            var iframeDoc = editor.document.$;
+            var listItems = iframeDoc.querySelectorAll('li');
+            listItems.forEach(function(li) {
+                var spans = li.querySelectorAll('span');
+                var fontSize = null;
+                spans.forEach(function(s) {
+                    if (!fontSize && s.style.fontSize) {
+                        fontSize = s.style.fontSize;
+                    }
+                });
+                if (fontSize) {
+                    li.style.fontSize = fontSize;
+                } else {
+                    li.style.fontSize = '';
+                }
+            });
+        }
+
+        editor.on('change', function() {
+            setTimeout(syncListFontSizes, 0);
+        });
+
     });
 
     
