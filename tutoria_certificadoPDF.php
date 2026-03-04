@@ -195,7 +195,7 @@ $direccionEmpresa = implode(', ', $partes);
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      margin-top: 0.3cm;
+      margin-top: 1cm;
     }
     .sello img { height: 4.5cm; }
     .pagina-numero { font-size: 8pt; color: #888; font-style: italic; }
@@ -227,7 +227,22 @@ $direccionEmpresa = implode(', ', $partes);
     body { background: white; }
     .pagina { margin: 0 !important; box-shadow: none !important; }
     [contenteditable="true"] { border-bottom: none !important; background: transparent !important; }
-    @page { size: A4 portrait; margin: 0; }
+    /* Dar un margen superior mayor en las páginas DESPUÉS de la primera al imprimir.
+       Muchos navegadores soportan @page :first — establecemos un margen superior
+       mayor por defecto y lo restablecemos en la primera página para que ésta
+       mantenga el espaciado original. Los márgenes laterales se gestionan con el
+       padding de .pagina, por eso dejamos izquierda/derecha a 0 aquí. */
+    @page {
+      size: A4 portrait;
+      margin: 2.2cm 0 2.2cm 0; /* top, right, bottom, left */
+    }
+    @page :first {
+      margin-top: 0; /* mantener el espaciado de la primera página como antes */
+    }
+     /* Evitar que el footer se divida entre páginas y asegurar un espacio
+       superior cuando el footer cae en una nueva página */
+     .footer-firma { page-break-inside: avoid; margin-top: 1cm; }
+     .footer-block { page-break-inside: avoid; break-inside: avoid; }
   </style>
 </head>
 <body>
@@ -235,6 +250,7 @@ $direccionEmpresa = implode(', ', $partes);
 <!-- BARRA HERRAMIENTAS -->
 <div id="toolbar">
   <h6>Certificado &mdash; <?php echo htmlspecialchars($cursoRef['N_Accion']); ?> / <?php echo htmlspecialchars($cursoRef['N_Grupo']); ?></h6>
+  <button class="btn btn-dark btn-sm" onclick="downloadWord()">📄 Descargar Word</button>
   <button class="btn btn-dark btn-sm ms-auto" onclick="window.print()">
     🖨️ Imprimir / Guardar PDF
   </button>
@@ -280,16 +296,18 @@ $direccionEmpresa = implode(', ', $partes);
   </div>
 
   <!-- Pie -->
-  <div class="footer-text">
-    Y para que conste a los efectos oportunos, se expide el presente certificado en<br>
-    <span contenteditable="true">Vigo</span>, a&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($fecha_expedicion_display); ?></span>
-  </div>
-
-  <div class="footer-firma">
-    <div class="sello">
-      <img src="images/selloDixma.png" alt="Sello DIXMA">
+  <div class="footer-block">
+    <div class="footer-text">
+      Y para que conste a los efectos oportunos, se expide el presente certificado en<br>
+      <span contenteditable="true">Vigo</span>, a&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($fecha_expedicion_display); ?></span>
     </div>
-    <div class="pagina-numero">P á g i n a &nbsp; 1 | 1</div>
+
+    <div class="footer-firma">
+      <div class="sello">
+        <img src="images/selloDixma.png" alt="Sello DIXMA">
+      </div>
+      <div class="pagina-numero">P á g i n a &nbsp; 1 | 1</div>
+    </div>
   </div>
 
 </div><!-- /.pagina -->
@@ -313,6 +331,29 @@ $direccionEmpresa = implode(', ', $partes);
     document.getElementById('contenidos-area').style.fontSize = base + 'pt';
   };
 })();
+
+// Descargar como Word (.doc) generando un archivo HTML compatible con Word
+window.downloadWord = function(){
+  var head = document.getElementsByTagName('head')[0].innerHTML;
+  var cloned = document.querySelector('.pagina').cloneNode(true);
+  // eliminar atributos contenteditable para no incluirlos en el documento
+  cloned.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); });
+  // construir HTML completo
+  var html = '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head>'
+    + head + '</head><body>' + cloned.outerHTML + '</body></html>';
+  var blob = new Blob(["\uFEFF", html], { type: 'application/msword' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  // usar el título de la página para el nombre de archivo
+  var filename = (document.title || 'certificado') + '.doc';
+  // sanear el nombre de archivo
+  filename = filename.replace(/[^A-Za-z0-9_\.\-\s]/g, '_');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+};
 </script>
 
 </body>
