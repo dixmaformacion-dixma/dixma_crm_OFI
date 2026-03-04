@@ -229,18 +229,39 @@
 	
     const hoy = '<?= date("Y-m-d") ?>';
 
-    // Se l'URL contiene un anchor #infoEdit apre il collapse, scrolla e poi rimuove l'anchor
+    // Se l'URL contiene un anchor #infoEdit: apri il collapse, aspetta che sia mostrato,
+    // scorri al record, e poi richiudi il pannello; rimuovi infine l'anchor dall'URL.
     $(document).ready(function(){
         if(window.location.hash && window.location.hash.indexOf('#infoEdit') === 0){
             var h = window.location.hash;
             try{
-                $(h).collapse('show');
-                setTimeout(function(){
-                    var el = document.querySelector(h);
-                    if(el) el.scrollIntoView({behavior:'auto', block:'center'});
+                // Usa l'evento di bootstrap per essere sicuri che l'elemento sia visibile
+                $(h).one('shown.bs.collapse', function(){
+                    try{
+                        var el = document.querySelector(h);
+                        if(el){
+                            try{
+                                // Posiziona l'elemento non al centro ma più in alto (circa 18% dall'alto)
+                                var rect = el.getBoundingClientRect();
+                                var desiredTop = window.scrollY + rect.top - Math.round(window.innerHeight * 0.45);
+                                if(desiredTop < 0) desiredTop = 0;
+                                window.scrollTo({ top: desiredTop, behavior: 'auto' });
+                            }catch(e){
+                                // fallback
+                                el.scrollIntoView({behavior:'auto', block:'center'});
+                            }
+                        }
+                    }catch(e){}
+
+                    // Richiudi il pannello subito dopo lo scroll
+                    try{ $(h).collapse('hide'); }catch(e){}
+
                     // Rimuove l'anchor dall'URL senza ricaricare la pagina
-                    history.replaceState(null, '', window.location.pathname + window.location.search);
-                }, 100);
+                    try{ history.replaceState(null, '', window.location.pathname + window.location.search); }catch(e){}
+                });
+
+                // Innesca l'apertura (l'handler above eseguirà lo scroll e poi la chiusura)
+                try{ $(h).collapse('show'); }catch(e){}
             }catch(e){}
         }
     });
