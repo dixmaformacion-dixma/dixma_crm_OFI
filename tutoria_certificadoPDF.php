@@ -333,26 +333,60 @@ $direccionEmpresa = implode(', ', $partes);
 })();
 
 // Descargar como Word (.doc) generando un archivo HTML compatible con Word
-window.downloadWord = function(){
-  var head = document.getElementsByTagName('head')[0].innerHTML;
-  var cloned = document.querySelector('.pagina').cloneNode(true);
-  // eliminar atributos contenteditable para no incluirlos en el documento
-  cloned.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); });
-  // construir HTML completo
-  var html = '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head>'
-    + head + '</head><body>' + cloned.outerHTML + '</body></html>';
-  var blob = new Blob(["\uFEFF", html], { type: 'application/msword' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  // usar el título de la página para el nombre de archivo
-  var filename = (document.title || 'certificado') + '.doc';
-  // sanear el nombre de archivo
-  filename = filename.replace(/[^A-Za-z0-9_\.\-\s]/g, '_');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+window.downloadWord = async function(){
+  try {
+    // Clonar el head pero eliminar referencias externas (link, script)
+    var headClone = document.createElement('head');
+    // Copiar meta, title y style (incluye los <style> inline que necesitamos)
+    document.head.querySelectorAll('meta, title, style').forEach(function(node){ headClone.appendChild(node.cloneNode(true)); });
+
+    // Clonar la página principal y limpiar campos editables
+    var cloned = document.querySelector('.pagina').cloneNode(true);
+    cloned.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); });
+
+    // Inline images: convertir cada <img> a data URI para evitar richieste esterne
+    var imgs = Array.from(cloned.querySelectorAll('img'));
+    var toDataURL = function(blob){ return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onloadend = function(){ resolve(reader.result); };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    }); };
+
+    await Promise.all(imgs.map(async function(img){
+      var src = img.getAttribute('src');
+      if(!src || src.indexOf('data:') === 0) return;
+      try {
+        // intenta obtener la imagen relativa/absoluta desde el servidor
+        var resp = await fetch(src, {cache: 'no-store'});
+        if(!resp.ok) return; // salta si no se puede obtener
+        var blob = await resp.blob();
+        var dataUrl = await toDataURL(blob);
+        img.setAttribute('src', dataUrl);
+      } catch(e) {
+        // si falla, dejamos el src original (Word intentará buscarlo)
+        console.warn('No se pudo inlinear imagen', src, e);
+      }
+    }));
+
+    // Construir HTML final sin enlaces externos a CSS/JS
+    var html = '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+      + headClone.outerHTML + '<body>' + cloned.outerHTML + '</body></html>';
+
+    var blob = new Blob(["\uFEFF", html], { type: 'application/msword' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var filename = (document.title || 'certificado') + '.doc';
+    filename = filename.replace(/[^A-Za-z0-9_\.\-\s]/g, '_');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+  } catch(err) {
+    alert('Error al generar el archivo Word: ' + err.message);
+    console.error(err);
+  }
 };
 </script>
 
