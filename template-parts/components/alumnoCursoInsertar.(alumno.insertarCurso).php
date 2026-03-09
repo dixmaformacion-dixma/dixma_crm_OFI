@@ -78,7 +78,7 @@ if(!isset($tipoCursosArray)){
                     <input name="N_Horas" class="form-control form-control-sm text-uppercase" type="text"></input>
             </label>
             <label class='col-md-4 col-12'>
-                    <b>DOC A.F:</b>
+                    <b>Observaciones:</b> 
                     <input name="DOC_AF" class="form-control form-control-sm text-uppercase" type="text"></input>
             </label>
             <label class='col-md-4 col-12'>
