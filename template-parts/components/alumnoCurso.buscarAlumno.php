@@ -5,8 +5,8 @@
         $header_style = "background-color: #c30d0d; color: white;";
         $background_style = "background-color: #ffe5e5;";
     } elseif (isset($curso['status_curso']) && (isset($curso['Tipo_Venta']) && $curso['Tipo_Venta'] === 'Privado')) {
-        $header_style = "background-color: #F8A362;";
-        $background_style = "background-color: #f4e2acff;";
+        $header_style = "background-color: #9F7AE8; color: #ffffff;";
+        $background_style = "background-color: #e9ddff;";
     } elseif (empty($curso['Fecha_Inicio']) || $curso['Fecha_Inicio'] === '0000-00-00' || $curso['Fecha_Inicio'] === '1970-01-01') {
         $header_style = "background-color: #F7CA36;";
         $background_style = "background-color: #f7f7bbff;";
