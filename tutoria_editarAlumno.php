@@ -2,6 +2,33 @@
 
 include "funciones/conexionBD.php";
 include "funciones/funcionesAlumnos.php";
+include "funciones/funcionesEmpresa.php";
+
+if(isset($_GET['ajax']) && $_GET['ajax'] === 'buscarEmpresa'){
+    header('Content-Type: application/json; charset=UTF-8');
+
+    $busquedaEmpresa = trim($_GET['buscarEmpresa'] ?? '');
+    if($busquedaEmpresa === '' || mb_strlen($busquedaEmpresa) < 2){
+        echo json_encode([]);
+        exit;
+    }
+
+    $empresasEncontradas = buscarEmpresas($busquedaEmpresa);
+    $resultado = [];
+
+    if(!empty($empresasEncontradas)){
+        foreach(array_slice($empresasEncontradas, 0, 10) as $empresa){
+            $resultado[] = [
+                'idempresa' => $empresa['idempresa'],
+                'nombre' => $empresa['nombre'],
+                'cif' => $empresa['cif'] ?? ''
+            ];
+        }
+    }
+
+    echo json_encode($resultado);
+    exit;
+}
 
 session_start();
 
@@ -62,6 +89,11 @@ if(empty($_GET['idAlumno'])){
         echo "<div class='alert alert-danger' role='alert'>No se encuentra ningun alumno</div>";
         die();
     }
+}
+
+$empresaActual = false;
+if(!empty($alumno['idEmpresa'])){
+    $empresaActual = cargarEmpresa($alumno['idEmpresa']);
 }
 
 ?>
@@ -265,10 +297,19 @@ if(empty($_GET['idAlumno'])){
                     <label class="fw-bold">HORARIO LABORAL:</label>
                     <input name="horarioLaboral" type="text" class="form-control" value="<?php echo $alumno['horarioLaboral']; ?>"></input>
                 </div>
-                <div class="col-4">
+                <div class="col-md-3 col-12 mt-2 mt-md-0">
                     <label class="fw-bold">idEmpresa:</label>
-                    <input name="idEmpresa" class="form-control" value="<?php echo $alumno['idEmpresa'] ?>" type="text"></input>
-                </div> 
+                    <input id="idEmpresa" name="idEmpresa" class="form-control" value="<?php echo $alumno['idEmpresa'] ?>" type="text"></input>
+                </div>
+                <div class="col-md-5 col-12 mt-2 mt-md-0">
+                    <label class="fw-bold">Cambiar empresa:</label>
+                    <div class="border rounded p-2 bg-white">
+                        <input id="buscarEmpresa" class="form-control mb-2" type="text" placeholder="Escribe al menos 2 letras del nombre"></input>
+
+                        <input id="empresaSeleccionada" class="form-control form-control-sm mb-2" type="text" readonly value="<?php echo $empresaActual ? htmlspecialchars($empresaActual['nombre']) : ''; ?>" placeholder="Empresa seleccionada"></input>
+                        <div id="empresaResultados" class="border rounded p-2 d-none" style="max-height: 180px; overflow-y: auto;"></div>
+                    </div>
+                </div>
                 <input name="idAlumno" class="form-control" value="<?php echo $alumno['idAlumno'] ?>" type="text" hidden></input>
             </div>
 
@@ -293,4 +334,68 @@ if(empty($_GET['idAlumno'])){
 </footer>
 
 </body>
+<script>
+function seleccionarEmpresa(idEmpresa, nombreEmpresa) {
+    document.getElementById('idEmpresa').value = idEmpresa;
+    document.getElementById('empresaSeleccionada').value = nombreEmpresa;
+    document.getElementById('buscarEmpresa').value = nombreEmpresa;
+    ocultarResultadosEmpresa();
+}
+
+function ocultarResultadosEmpresa() {
+    const contenedor = document.getElementById('empresaResultados');
+    contenedor.innerHTML = '';
+    contenedor.classList.add('d-none');
+}
+
+function renderizarResultadosEmpresa(empresas) {
+    const contenedor = document.getElementById('empresaResultados');
+
+    if (!empresas.length) {
+        contenedor.innerHTML = '<div class="text-muted small">No se encontraron empresas.</div>';
+        contenedor.classList.remove('d-none');
+        return;
+    }
+
+    contenedor.innerHTML = empresas.map((empresa) => {
+        const cif = empresa.cif ? ` | CIF: ${empresa.cif}` : '';
+        const nombreSeguro = JSON.stringify(empresa.nombre);
+        return `
+            <button type="button" class="btn btn-link text-start text-decoration-none w-100 border-bottom rounded-0 py-2"
+                onclick='seleccionarEmpresa(${empresa.idempresa}, ${nombreSeguro})'>
+                <div><b>${empresa.nombre}</b></div>
+                <small>ID: ${empresa.idempresa}${cif}</small>
+            </button>
+        `;
+    }).join('');
+
+    contenedor.classList.remove('d-none');
+}
+
+let temporizadorBusquedaEmpresa = null;
+
+document.getElementById('buscarEmpresa').addEventListener('input', function() {
+    const valor = this.value.trim();
+
+    clearTimeout(temporizadorBusquedaEmpresa);
+
+    if (valor.length < 2) {
+        ocultarResultadosEmpresa();
+        return;
+    }
+
+    temporizadorBusquedaEmpresa = setTimeout(function() {
+        fetch(`tutoria_editarAlumno.php?idAlumno=<?php echo (int)$alumno['idAlumno']; ?>&ajax=buscarEmpresa&buscarEmpresa=${encodeURIComponent(valor)}`)
+            .then((response) => response.json())
+            .then((data) => renderizarResultadosEmpresa(data))
+            .catch(() => ocultarResultadosEmpresa());
+    }, 250);
+});
+
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('#empresaResultados') && !event.target.closest('#buscarEmpresa')) {
+        ocultarResultadosEmpresa();
+    }
+});
+</script>
 </html>
