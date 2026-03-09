@@ -50,6 +50,11 @@ $stmt2->bindValue(2, $corsoRef['N_Grupo'],   PDO::PARAM_STR);
 $stmt2->bindValue(3, $corsoRef['idEmpresa'], PDO::PARAM_INT);
 $stmt2->execute();
 $cursos = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+// Conserva il valore originale di mostrar_solo_primero (se presente) prima di forzarlo a 0 per il rendering
+$grupo_mostrar = 0;
+if (!empty($cursos) && isset($cursos[0]['mostrar_solo_primero'])) {
+    $grupo_mostrar = intval($cursos[0]['mostrar_solo_primero']);
+}
 unset($conexionPDO);
 
 if (empty($cursos)) {
@@ -57,7 +62,7 @@ if (empty($cursos)) {
     exit;
 }
 
-// Disabilita il pulsante "ver todos" per evitare loop infiniti
+// Disabilita il pulsante "ver todos" per evitare loop infiniti (manteniamo il flag originale in $grupo_mostrar)
 $cursos = array_map(function($c){ $c['mostrar_solo_primero'] = 0; return $c; }, $cursos);
 
 $date               = date("Y-m-d");
@@ -92,6 +97,75 @@ $statusDiplomaColor = [
     "Copia recibida" => "background-color: #28D700;",
     "Entregado"      => "background-color: #28D700;",
 ];
+
+// Gestione POST: aggiungi uno o più lavoratori al corso esistente
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_trabajadores'])) {
+    $listaAlumnos = isset($_POST['alumnos']) ? array_map('intval', (array)$_POST['alumnos']) : [];
+
+    if (!empty($listaAlumnos)) {
+        // Deriva Fecha_Inicio, Fecha_Fin e seguimientos dal primo lavoratore già presente nel corso, se esiste
+        if (!empty($cursos) && isset($cursos[0])) {
+            $ref = $cursos[0];
+            $datosCurso = [
+                'Denominacion'   => $corsoRef['Denominacion'],
+                'N_Accion'       => $corsoRef['N_Accion'],
+                'N_Grupo'        => $corsoRef['N_Grupo'],
+                'N_Horas'        => $ref['N_Horas'] ?? '',
+                'Modalidad'      => $ref['Modalidad'] ?? '',
+                'DOC_AF'         => $ref['DOC_AF'] ?? '',
+                'Fecha_Inicio'   => $ref['Fecha_Inicio'] ?? '',
+                'Fecha_Fin'      => $ref['Fecha_Fin'] ?? '',
+                'tutor'          => $ref['tutor'] ?? '',
+                'idCurso'        => isset($ref['idCurso']) ? intval($ref['idCurso']) : 0,
+                'idEmpresa'      => $corsoRef['idEmpresa'],
+                'Tipo_Venta'     => $ref['Tipo_Venta'] ?? $Tipo_Venta_Display,
+                'seguimento0'    => $ref['seguimento0'] ?? '',
+                'seguimento1'    => $ref['seguimento1'] ?? '',
+                'seguimento2'    => $ref['seguimento2'] ?? '',
+                'seguimento3'    => $ref['seguimento3'] ?? '',
+                'seguimento4'    => $ref['seguimento4'] ?? '',
+                'seguimento5'    => $ref['seguimento5'] ?? '',
+                'Firma_Docente'  => $ref['firma_docente'] ?? null,
+                'mostrar_solo_primero' => isset($grupo_mostrar) ? intval($grupo_mostrar) : 0,
+            ];
+        } else {
+            // Fallback: valori vuoti
+            $datosCurso = [
+                'Denominacion'   => $corsoRef['Denominacion'],
+                'N_Accion'       => $corsoRef['N_Accion'],
+                'N_Grupo'        => $corsoRef['N_Grupo'],
+                'N_Horas'        => '',
+                'Modalidad'      => '',
+                'DOC_AF'         => '',
+                'Fecha_Inicio'   => '',
+                'Fecha_Fin'      => '',
+                'tutor'          => '',
+                'idCurso'        => 0,
+                'idEmpresa'      => $corsoRef['idEmpresa'],
+                'Tipo_Venta'     => $Tipo_Venta_Display,
+                'seguimento0'    => '',
+                'seguimento1'    => '',
+                'seguimento2'    => '',
+                'seguimento3'    => '',
+                'seguimento4'    => '',
+                'seguimento5'    => '',
+                'Firma_Docente'  => null,
+                'mostrar_solo_primero' => 0,
+            ];
+        }
+
+        if (alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)) {
+            header('Location: ' . $page_from . '&msg=agregado');
+            exit;
+        } else {
+            $errorAgregar = true;
+        }
+    } else {
+        $errorAgregar = true;
+    }
+}
+
+// (Rimosso: gestione inserimento nuovo lavoratore qui — la pagina mantiene solo selezione/associazione)
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -124,6 +198,103 @@ $statusDiplomaColor = [
     </style>
 </head>
 <body>
+<?php
+// Prepara lista di lavoratori disponibili (stessa azienda, non già nel gruppo)
+$q = isset($_GET['q']) ? trim($_GET['q']) : '';
+$conexionDisponibles = realizarConexion();
+if ($q !== '') {
+    $sqlDispon = "SELECT idAlumno, nombre, apellidos, nif FROM alumnos WHERE idEmpresa = ? AND idAlumno NOT IN (SELECT idAlumno FROM alumnocursos WHERE N_Accion = ? AND N_Grupo = ? AND idEmpresa = ?) AND (apellidos LIKE ? OR nombre LIKE ? OR nif LIKE ?) ORDER BY apellidos ASC";
+    $stmtDispon = $conexionDisponibles->prepare($sqlDispon);
+    $like = '%' . $q . '%';
+    $stmtDispon->bindValue(1, $corsoRef['idEmpresa'], PDO::PARAM_INT);
+    $stmtDispon->bindValue(2, $corsoRef['N_Accion'], PDO::PARAM_STR);
+    $stmtDispon->bindValue(3, $corsoRef['N_Grupo'], PDO::PARAM_STR);
+    $stmtDispon->bindValue(4, $corsoRef['idEmpresa'], PDO::PARAM_INT);
+    $stmtDispon->bindValue(5, $like, PDO::PARAM_STR);
+    $stmtDispon->bindValue(6, $like, PDO::PARAM_STR);
+    $stmtDispon->bindValue(7, $like, PDO::PARAM_STR);
+    $stmtDispon->execute();
+} else {
+    $sqlDispon = "SELECT idAlumno, nombre, apellidos, nif FROM alumnos WHERE idEmpresa = ? AND idAlumno NOT IN (SELECT idAlumno FROM alumnocursos WHERE N_Accion = ? AND N_Grupo = ? AND idEmpresa = ?) ORDER BY apellidos ASC";
+    $stmtDispon = $conexionDisponibles->prepare($sqlDispon);
+    $stmtDispon->bindValue(1, $corsoRef['idEmpresa'], PDO::PARAM_INT);
+    $stmtDispon->bindValue(2, $corsoRef['N_Accion'], PDO::PARAM_STR);
+    $stmtDispon->bindValue(3, $corsoRef['N_Grupo'], PDO::PARAM_STR);
+    $stmtDispon->bindValue(4, $corsoRef['idEmpresa'], PDO::PARAM_INT);
+    $stmtDispon->execute();
+}
+$alumnosDisponibles = $stmtDispon->fetchAll(PDO::FETCH_ASSOC);
+unset($conexionDisponibles);
+?>
+
+<?php if (isset($_GET['msg']) && $_GET['msg'] === 'agregado'): ?>
+    <div class="alert alert-success">Trabajadores añadidos correctamente.</div>
+<?php endif; ?>
+<?php if (!empty($errorAgregar)): ?>
+    <div class="alert alert-danger">Error al añadir los trabajadores. Comprueba la selección y vuelve a intentarlo.</div>
+<?php endif; ?>
+
+<!-- Ricerca per nome / nif -->
+<div class="mb-2">
+    <form method="get" class="form-inline">
+        <input type="hidden" name="id" value="<?php echo intval($StudentCursoID); ?>">
+        <input type="text" name="q" value="<?php echo htmlspecialchars($q); ?>" placeholder="Apellidos, nombre o NIF" class="form-control" style="width:60%; display:inline-block;">
+        <button type="submit" class="btn btn-secondary" style="margin-left:8px;">Buscar</button>
+        <a href="<?php echo htmlspecialchars($page_from); ?>" class="btn btn-link" style="margin-left:8px;">Mostrar todos</a>
+    </form>
+</div>
+
+<!-- Pulsante per mostrare/nascondere la sezione di selezione -->
+<div style="margin-top:8px; margin-bottom:8px;">
+    <button type="button" id="toggle_selection" class="btn btn-outline-secondary">Mostrar/Ocultar selección</button>
+    <span style="margin-left:8px; color:#666;">Selecciona trabajadores de la misma empresa y añádelos al grupo</span>
+</div>
+
+<!-- Form per aggiungere più lavoratori con checkbox (collassabile) -->
+<div id="selection_section" class="mb-3" style="display:none;">
+    <form method="post" class="form-inline">
+        <input type="hidden" name="_referer" value="<?php echo htmlspecialchars($page_from . ( $q !== '' ? '&q=' . urlencode($q) : '' )); ?>">
+        <label class="form-label">Añadir trabajadores al grupo:</label>
+        <div style="margin-top:8px;">
+            <label><input type="checkbox" id="select_all"> Seleccionar todos</label>
+        </div>
+        <div style="max-height:300px; overflow:auto; border:1px solid #ddd; padding:8px; margin-top:8px;">
+            <?php if (empty($alumnosDisponibles)): ?>
+                <div class="text-muted">No hay trabajadores disponibles con estos criterios.</div>
+            <?php else: ?>
+                <?php foreach ($alumnosDisponibles as $al): ?>
+                    <div style="padding:4px;">
+                        <label>
+                            <input type="checkbox" name="alumnos[]" class="alumno_checkbox" value="<?php echo intval($al['idAlumno']); ?>">
+                            <?php echo htmlspecialchars($al['apellidos'] . ' ' . $al['nombre'] . ' (' . $al['nif'] . ')'); ?>
+                        </label>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+        </div>
+
+        <div style="margin-top:8px;">
+            <button type="submit" name="agregar_trabajadores" class="btn btn-primary">Añadir seleccionados</button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('select_all')?.addEventListener('change', function(e){
+    var checked = e.target.checked;
+    document.querySelectorAll('.alumno_checkbox').forEach(function(cb){ cb.checked = checked; });
+});
+</script>
+
+<script>
+// Toggle visibilità della sezione di selezione lavoratori
+document.getElementById('toggle_selection')?.addEventListener('click', function(){
+    var el = document.getElementById('selection_section');
+    if (!el) return;
+    if (el.style.display === 'none' || el.style.display === '') el.style.display = 'block'; else el.style.display = 'none';
+});
+</script>
     <div class="page-header">
         <h5>Todos los trabajadores del curso</h5>
         <button class="btn-close-window" onclick="window.close()" title="Cerrar">&times;</button>
