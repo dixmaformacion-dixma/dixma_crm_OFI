@@ -459,7 +459,7 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
               <input class="form-control form-control-sm" type="text"></input>
             </div>
 
-            <label class="col-1 col-form-label">DOC A.F</label>
+            <label class="col-1 col-form-label">Observaciones</label>
             <div class="col-3">
               <input class="form-control form-control-sm" type="text"></input>
             </div>
