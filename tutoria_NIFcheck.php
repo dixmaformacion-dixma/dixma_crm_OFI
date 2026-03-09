@@ -98,6 +98,14 @@
                 </div>
 
                 </form>
+
+                <div class="text-center mt-2 mb-3">
+                    <a href="tutoria_importarAlumnos.php?idEmpresa=<?php echo htmlspecialchars($_GET['idEmpresa'] ?? ''); ?>"
+                       class="btn btn-outline-success">
+                        📥 Importar múltiples alumnos desde Excel
+                    </a>
+                </div>
+
                 <?php
             }
             ?>
