@@ -157,7 +157,12 @@ if (!isset($statusDiplomaColor)) {
                                 <?php echo $empresa['personacontacto']; ?>
                         </label>
                         <div class="text-center mt-2 mb-2">
-                                <a href="buscarVenta.php?valor=<?php echo urlencode($empresa['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-info">Información Empresa</a>
+                                <a href="buscarVenta.php?valor=<?php echo urlencode($empresa['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-info">
+                                        Información Empresa
+                                </a>
+                                <a href="tutoria_buscarCursos.php?filterName[]=idEmpresa&filterOperator[]=LIKE&filterValue[]=<?php echo urlencode($empresa['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-sm" style="background-color:#6f42c1; color:#fff; border-color:#6f42c1;">
+                                Cursos Empresa
+                                </a>
                                 <button type="button" class="btn" 
                                         style="color:white; background-color:#2e7d32; border:none;"
                                         onclick="event.stopPropagation(); loginByCourse('<?php echo addslashes($curso['N_Accion']); ?>', '<?php echo date('Y', strtotime($curso['Fecha_Inicio'])); ?>', 'profesor')" 
@@ -273,6 +278,10 @@ if (!isset($statusDiplomaColor)) {
                         <label class='col-md-4 col-12'>
                                 <b style="color:#2e7d32;">Tutor:</b>
                                 <?php echo $curso['tutor']; ?>
+                        </label>
+                        <label class='col-md-8 col-12'>
+                                <b style="color:#2e7d32;">Observaciones:</b>
+                                <?php echo isset($curso['DOC_AF']) ? $curso['DOC_AF'] : (isset($curso['doc_af']) ? $curso['doc_af'] : ''); ?>
                         </label>
                         <label class='col-md-12 col-12 mt-2'>
                                 <b style="color:#2e7d32;">Empresa (en el momento del formacion):</b>
