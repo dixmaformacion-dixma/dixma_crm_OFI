@@ -43,6 +43,14 @@ if (!isset($statusDiplomaColor)) {
                 padding-left: 2px;
                 background-color: white;
         }
+        .curso-link {
+                text-decoration: none;
+                color: inherit;
+        }
+        .curso-link:hover {
+                color: #2e7d32;
+                text-decoration: none;
+        }
 </style>
 
 <div class="col-md-12 col-12 container border border-2">
@@ -65,7 +73,9 @@ if (!isset($statusDiplomaColor)) {
                         <?php echo $curso['Denominacion']; ?>
                 </div>
                 <div style="width:3%">
-                        <?php echo $curso['N_Accion']; ?><?php echo "/"; ?><?php echo $curso['N_Grupo']; ?>
+                        <a href="tutoria_buscarCursos.php?filterName[]=N_Accion&filterOperator[]=%3D&filterValue[]=<?php echo urlencode($curso['N_Accion']); ?>&filterName[]=N_Grupo&filterOperator[]=%3D&filterValue[]=<?php echo urlencode($curso['N_Grupo']); ?>&filterName[]=Anno&filterOperator[]=%3D&filterValue[]=<?php echo urlencode(date('Y', strtotime($curso['Fecha_Inicio']))); ?>&consultar=Buscar" target="_blank" class="curso-link" style="white-space:nowrap; display:inline-block;">
+                                <?php echo htmlspecialchars($curso['N_Accion']) . '/' . htmlspecialchars($curso['N_Grupo']); ?>
+                        </a>
                 </div>
                 <div style="width:3%">
                         <input type="checkbox" <?php if ($curso['Recibi_Material'] == 1) {
@@ -88,7 +98,9 @@ if (!isset($statusDiplomaColor)) {
                     }
                 ?>
                 <div class='col-md-1 border-right text-uppercase' style="<?php echo $empresaStyle; ?>">
-                        <?php echo $empresa['nombre']; ?>
+                        <a href="tutoria_buscarCursos.php?filterName[]=idEmpresa&filterOperator[]=%3D&filterValue[]=<?php echo urlencode($curso['idEmpresa']); ?>&consultar=Buscar" target="_blank" class="curso-link">
+                                <?php echo htmlspecialchars($empresa['nombre']); ?>
+                        </a>
                 </div>
                 <div class='col-md-1 border-right text-uppercase' style="<?php echo @$statusDiplomaColor[$curso['Diploma_Status']] ?>">
                         <?php echo $curso['Diploma_Status']; ?>
@@ -160,7 +172,7 @@ if (!isset($statusDiplomaColor)) {
                                 <a href="buscarVenta.php?valor=<?php echo urlencode($empresa['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-info">
                                         Información Empresa
                                 </a>
-                                <a href="tutoria_buscarCursos.php?filterName[]=idEmpresa&filterOperator[]=LIKE&filterValue[]=<?php echo urlencode($empresa['nombre']); ?>&consultar=Buscar" target="_blank" class="btn btn-sm" style="background-color:#6f42c1; color:#fff; border-color:#6f42c1;">
+                                <a href="tutoria_buscarCursos.php?filterName[]=idEmpresa&filterOperator[]=%3D&filterValue[]=<?php echo urlencode($curso['idEmpresa']); ?>&consultar=Buscar" target="_blank" class="btn btn-sm" style="background-color:#6f42c1; color:#fff; border-color:#6f42c1;">
                                 Cursos Empresa
                                 </a>
                                 <button type="button" class="btn" 
