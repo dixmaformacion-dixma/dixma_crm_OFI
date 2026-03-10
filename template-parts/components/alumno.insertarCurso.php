@@ -19,16 +19,35 @@ if(!isset($categoriaProffesional)){
 ?>
 
 <div class='container-fluid border rounded mb-3 border-5' id='Alumno<?php echo $alumno["idAlumno"]; ?>'>
-
+    
 <div class='row mx-auto my-2'>
     <label class='col-md-12 col-12'>
             <b>nombre:</b>
             <?php echo $alumno['nombre']." ".$alumno['apellidos']; ?>
+             
     </label>
+    <label class='col-md-12 col-12'>
+            <b>empresa:</b>
+    <?php
+                // show company name next to student on one line, truncated if long
+                if(!empty($alumno['idEmpresa'])){
+                    $empresa = buscarEmpresasPorID($alumno['idEmpresa']);
+                    $empNombre = $empresa ? $empresa['nombre'] : '-';
+                } else {
+                    $empNombre = '-';
+                }
+            ?>
+            <style>
+                .empresa-link { color: #000; transition: color .15s ease; }
+                .empresa-link:hover { color: #1e989e; text-decoration: none; }
+            </style>
+                <a class="empresa-link" title="<?php echo htmlspecialchars($empNombre); ?>" href="buscarVenta.php?valor=<?php echo urlencode($empNombre); ?>&consultar=Buscar" target="_blank" rel="noopener noreferrer" style="display:inline-block; max-width:40%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; vertical-align:middle; margin-left:6px;"><?php echo htmlspecialchars($empNombre); ?></a>
+   </label> 
     <label class='col-md-4 col-12'>
             <b>telefono:</b>
             <?php echo $alumno['telefono']; ?>
     </label>
+   
     <label class='col-md-4 col-12'>
             <b>email:</b>
             <?php echo $alumno['email']; ?>
