@@ -288,7 +288,7 @@ if(!empty($alumno['idEmpresa'])){
 
             <div class="row mt-2">
 
-                <div class="col-6">
+                <div class="col-md-6">
                     <label class="fw-bold">COSTE HORA PARTICIPANTE:</label>
                     <input name="costeHora" type="text" class="form-control" value="<?php echo $alumno['costeHora']; ?>"></input>
                 </div>
@@ -297,20 +297,30 @@ if(!empty($alumno['idEmpresa'])){
                     <label class="fw-bold">HORARIO LABORAL:</label>
                     <input name="horarioLaboral" type="text" class="form-control" value="<?php echo $alumno['horarioLaboral']; ?>"></input>
                 </div>
-                <div class="col-md-3 col-12 mt-2 mt-md-0">
-                    <label class="fw-bold">idEmpresa:</label>
-                    <input id="idEmpresa" name="idEmpresa" class="form-control" value="<?php echo $alumno['idEmpresa'] ?>" type="text"></input>
-                </div>
-                <div class="col-md-5 col-12 mt-2 mt-md-0">
-                    <label class="fw-bold">Cambiar empresa:</label>
-                    <div class="border rounded p-2 bg-white">
-                        <input id="buscarEmpresa" class="form-control mb-2" type="text" placeholder="Escribe al menos 2 letras del nombre"></input>
+                <input name="idAlumno" class="form-control" value="<?php echo $alumno['idAlumno'] ?>" type="text" hidden></input>
+            </div>
 
-                        <input id="empresaSeleccionada" class="form-control form-control-sm mb-2" type="text" readonly value="<?php echo $empresaActual ? htmlspecialchars($empresaActual['nombre']) : ''; ?>" placeholder="Empresa seleccionada"></input>
-                        <div id="empresaResultados" class="border rounded p-2 d-none" style="max-height: 180px; overflow-y: auto;"></div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="border rounded p-3 bg-white">
+                        <label class="fw-bold d-block mb-2">EMPRESA ACTUAL / SELECCIONADA:</label>
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-3 col-12">
+                                <label class="form-label mb-1">ID empresa</label>
+                                <input id="idEmpresa" name="idEmpresa" class="form-control" value="<?php echo $alumno['idEmpresa'] ?>" type="text"></input>
+                            </div>
+                            <div class="col-md-9 col-12">
+                                <label class="form-label mb-1">Nombre empresa</label>
+                                <input id="empresaSeleccionada" class="form-control" type="text" readonly value="<?php echo $empresaActual ? htmlspecialchars($empresaActual['nombre']) : ''; ?>" placeholder="Empresa seleccionada"></input>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <label class="fw-bold">Buscar nueva empresa:</label>
+                                <input id="buscarEmpresa" class="form-control mb-2" type="text" placeholder="Escribe al menos 2 letras del nombre"></input>
+                                <div id="empresaResultados" class="border rounded p-2 d-none" style="max-height: 180px; overflow-y: auto;"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <input name="idAlumno" class="form-control" value="<?php echo $alumno['idAlumno'] ?>" type="text" hidden></input>
             </div>
 
             <div class="row mt-3 mb-3">
