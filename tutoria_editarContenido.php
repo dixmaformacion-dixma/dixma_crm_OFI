@@ -153,7 +153,7 @@
     var editor = CKEDITOR.replace("Contenido", {
         versionCheck: false,
         enterMode: CKEDITOR.ENTER_P,
-        height: 500,
+        height: 800,
         toolbar: [
             ['Bold', '-', 'NumberedList', 'BulletedList', '-', 'FontSize', 'TextColor', 'Styles']
         ],
