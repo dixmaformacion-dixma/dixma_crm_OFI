@@ -220,6 +220,7 @@ if (!isset($statusDiplomaColor)) {
                         echo '<th>Denominación</th>';
                         echo '<th>Fecha Inicio</th>';
                         echo '<th>Fecha Fin</th>';
+                        echo '<th>№ Horas</th>';
                         echo '<th>Tipo Venta</th>';
                         echo '<th>Estado Diploma</th>';
                         echo '</tr>';
@@ -247,6 +248,7 @@ if (!isset($statusDiplomaColor)) {
                             echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Denominacion']) . '</small></td>';
                             echo '<td>' . formattedDate($cp['Fecha_Inicio']) . '</td>';
                             echo '<td>' . formattedDate($cp['Fecha_Fin']) . '</td>';
+                            echo '<td>' . htmlspecialchars(isset($cp['N_Horas']) ? $cp['N_Horas'] : '') . '</td>';
                             echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Tipo_Venta']) . '</small></td>';
                             echo '<td class="text-uppercase" style="' . $diplomaStyle . '"><small>' . htmlspecialchars($diplomaStatus) . '</small></td>';
                             echo '</tr>';
