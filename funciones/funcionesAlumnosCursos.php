@@ -23,18 +23,47 @@ function cargarAlumnoCursos($year, $Tipo_Venta){
     }
 
     $conexionPDO = realizarConexion();
-    // Se mostrar_solo_primero = 1 mostra solo il lavoratore con StudentCursoID minimo del gruppo
+    // mostrar_solo_primero = 0  -> mostrar todos
+    // mostrar_solo_primero = 1  -> comportamiento legacy: mostrar el registro con StudentCursoID mínimo
+    // mostrar_solo_primero < 0  -> mostrar el idAlumno indicado en valor absoluto
     $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno
             WHERE (YEAR(`Fecha_Inicio`) = ?) and (`Tipo_Venta` LIKE ?)
             AND (
                 alumnocursos.mostrar_solo_primero = 0
                 OR
-                alumnocursos.StudentCursoID = (
-                    SELECT MIN(ac2.StudentCursoID)
-                    FROM alumnocursos ac2
-                    WHERE ac2.N_Accion = alumnocursos.N_Accion
-                    AND ac2.N_Grupo = alumnocursos.N_Grupo
-                    AND ac2.idEmpresa = alumnocursos.idEmpresa
+                (
+                    alumnocursos.mostrar_solo_primero = 1
+                    AND alumnocursos.StudentCursoID = (
+                        SELECT MIN(ac2.StudentCursoID)
+                        FROM alumnocursos ac2
+                        WHERE ac2.N_Accion = alumnocursos.N_Accion
+                        AND ac2.N_Grupo = alumnocursos.N_Grupo
+                        AND ac2.idEmpresa = alumnocursos.idEmpresa
+                    )
+                )
+                OR
+                (
+                    alumnocursos.mostrar_solo_primero < 0
+                    AND (
+                        alumnocursos.idAlumno = ABS(alumnocursos.mostrar_solo_primero)
+                        OR (
+                            NOT EXISTS (
+                                SELECT 1
+                                FROM alumnocursos ac3
+                                WHERE ac3.N_Accion = alumnocursos.N_Accion
+                                AND ac3.N_Grupo = alumnocursos.N_Grupo
+                                AND ac3.idEmpresa = alumnocursos.idEmpresa
+                                AND ac3.idAlumno = ABS(alumnocursos.mostrar_solo_primero)
+                            )
+                            AND alumnocursos.StudentCursoID = (
+                                SELECT MIN(ac4.StudentCursoID)
+                                FROM alumnocursos ac4
+                                WHERE ac4.N_Accion = alumnocursos.N_Accion
+                                AND ac4.N_Grupo = alumnocursos.N_Grupo
+                                AND ac4.idEmpresa = alumnocursos.idEmpresa
+                            )
+                        )
+                    )
                 )
             )
             ORDER BY `Fecha_Fin`,`N_Accion`,`N_Grupo`,`apellidos`,`nombre`';
@@ -215,7 +244,8 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
     try {
         $conexionPDO->beginTransaction();
 
-        $mostrar_solo_primero = isset($datosCurso['mostrar_solo_primero']) ? (int)$datosCurso['mostrar_solo_primero'] : 0;
+        $listaAlumnosNormalizada = array_values(array_map('intval', (array)$listaAlumnos));
+        $mostrar_solo_primero = (int)($datosCurso['mostrar_solo_primero'] ?? 0);
 
         $sql = "INSERT INTO `alumnocursos`(
                     `Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, 
@@ -229,7 +259,7 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
             throw new Exception("Error al preparar la consulta.");
         }
 
-        foreach ($listaAlumnos as $idAlumno) {
+        foreach ($listaAlumnosNormalizada as $idAlumno) {
             $stmt->bindValue(1,  $datosCurso['Denominacion'], PDO::PARAM_STR);
             $stmt->bindValue(2,  $datosCurso['N_Accion'],     PDO::PARAM_STR);
             $stmt->bindValue(3,  $datosCurso['N_Grupo'],      PDO::PARAM_STR);

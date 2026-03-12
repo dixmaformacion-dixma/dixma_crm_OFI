@@ -20,11 +20,15 @@ $empresa = null;
 $alumnos = [];
 $idEmpresa = null;
 $alumnos_seleccionados_ids = [];
+$alumnos_seleccionados = [];
+$cursos = listadoCursos() ?: [];
 
 // Lógica para manejar el POST (asignación de cursos)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
     $idEmpresa = $_POST['idEmpresa'];
-    $alumnosSeleccionados = isset($_POST['alumnos']) ? $_POST['alumnos'] : [];
+    $alumnosSeleccionados = $_POST['alumnos'] ?? [];
+    $alumnos_seleccionados_ids = $alumnosSeleccionados;
+    $alumnosSeleccionadosNormalizados = array_values(array_map('intval', $alumnosSeleccionados));
 
     if (empty($alumnosSeleccionados)) {
         $mensaje = "<div class='alert alert-danger'>Error: Debes seleccionar al menos un alumno.</div>";
@@ -32,49 +36,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
         // Gestión del archivo de firma docente
         $firmaDocentePath = null;
         if (!empty($_FILES['Firma_Docente']['name'])) {
-
-            // verifica errori upload
             if ($_FILES['Firma_Docente']['error'] !== UPLOAD_ERR_OK) {
                 $mensaje .= "<div class='alert alert-danger'>ERROR Upload: Código " . htmlspecialchars($_FILES['Firma_Docente']['error']) . "</div>";
             } else {
                 $uploadDir = './firmas/';
-
-                // verifica che la cartella esista e sia scrivibile
                 if (!file_exists($uploadDir)) {
-                    $mensaje .= "<div class='alert alert-danger'>ERROR: La carpeta firmas/ no existe (path esperado: " . htmlspecialchars(realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'firmas') . ")</div>";
-                } else if (!is_writable($uploadDir)) {
-                    $mensaje .= "<div class='alert alert-danger'>ERROR: La carpeta firmas/ no tiene permisos de escritura</div>";
+                    $mensaje .= "<div class='alert alert-danger'>ERROR: La carpeta firmas/ no existe.</div>";
+                } elseif (!is_writable($uploadDir)) {
+                    $mensaje .= "<div class='alert alert-danger'>ERROR: La carpeta firmas/ no tiene permisos de escritura.</div>";
                 } else {
                     $fileName = substr(md5($_FILES['Firma_Docente']['name']), 0, 8) . '_' . basename($_FILES['Firma_Docente']['name']);
-                    $targetFile = $uploadDir . $fileName;
-
-                    // Debug visibile: informazioni sul file (nome originale, tmp, destinazione)
-                    $mensaje .= "<div class='alert alert-info'>" .
-                        "<strong>Intento guardar firma:</strong><br>" .
-                        "- Nombre original: " . htmlspecialchars($_FILES['Firma_Docente']['name']) . "<br>" .
-                        "- Temp file: " . htmlspecialchars($_FILES['Firma_Docente']['tmp_name']) . "<br>" .
-                        "- Target: " . htmlspecialchars($targetFile) .
-                        "</div>";
-
-                    // prima verifica is_uploaded_file per maggiore sicurezza
-                    if (!is_uploaded_file($_FILES['Firma_Docente']['tmp_name'])) {
-                        $mensaje .= "<div class='alert alert-danger'>ERROR: El archivo no parece provenir de una subida HTTP válida (is_uploaded_file false)</div>";
-                    }
-
-                    if (move_uploaded_file($_FILES['Firma_Docente']['tmp_name'], $targetFile)) {
+                    if (move_uploaded_file($_FILES['Firma_Docente']['tmp_name'], $uploadDir . $fileName)) {
                         $firmaDocentePath = $fileName;
-                        // conferma a schermo
-                        if (file_exists($targetFile)) {
-                            $mensaje .= "<div class='alert alert-success'>Firma guardada: " . htmlspecialchars($fileName) . " (" . filesize($targetFile) . " bytes)</div>";
-                        } else {
-                            $mensaje .= "<div class='alert alert-warning'>La firma fue movida pero no se encontró el archivo en el path esperado</div>";
-                        }
                     } else {
-                        $mensaje .= "<div class='alert alert-danger'>ERROR: move_uploaded_file() falló. Tmp: " . htmlspecialchars($_FILES['Firma_Docente']['tmp_name']) . "</div>";
+                        $mensaje .= "<div class='alert alert-danger'>ERROR: No se pudo guardar la firma.</div>";
                     }
                 }
             }
         }
+
+        $mostrarSoloPrimero = !empty($_POST['mostrar_solo_primero']);
+        $indiceAlumnoVisible = (int)($_POST['indice_alumno_visible'] ?? 0);
+        $idAlumnoVisible = $alumnosSeleccionadosNormalizados[$indiceAlumnoVisible] ?? $alumnosSeleccionadosNormalizados[0] ?? 0;
 
         $datosCurso = [
             'Denominacion' => $_POST['Denominacion'] ?? null,
@@ -96,10 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
             'seguimento3' => !empty($_POST['seguimento3']) ? $_POST['seguimento3'] : null,
             'seguimento4' => !empty($_POST['seguimento4']) ? $_POST['seguimento4'] : null,
             'seguimento5' => !empty($_POST['seguimento5']) ? $_POST['seguimento5'] : null,
-            'mostrar_solo_primero' => !empty($_POST['mostrar_solo_primero']) ? 1 : 0,
+            'mostrar_solo_primero' => $mostrarSoloPrimero ? -$idAlumnoVisible : 0,
         ];
 
-        if (alumnoCursoAdjuntarMultiple($alumnosSeleccionados, $datosCurso)) {
+        if (alumnoCursoAdjuntarMultiple($alumnosSeleccionadosNormalizados, $datosCurso)) {
             $mensaje .= "<div class='alert alert-success'>Curso asignado correctamente a " . count($alumnosSeleccionados) . " alumnos.</div>";
         } else {
             $mensaje .= "<div class='alert alert-danger'>Error: No se pudo completar la asignación de cursos. La operación ha sido revertida.</div>";
@@ -135,6 +118,13 @@ if (isset($_GET['idEmpresa'])) {
         } else {
             // Si no es un array o está vacío, inicializar como array vacío
             $alumnos = [];
+        }
+
+        if (!empty($alumnos_seleccionados_ids)) {
+            $idsSeleccionados = array_map('intval', $alumnos_seleccionados_ids);
+            $alumnos_seleccionados = array_values(array_filter($alumnos, function($alumno) use ($idsSeleccionados) {
+                return in_array((int)$alumno['idAlumno'], $idsSeleccionados, true);
+            }));
         }
     }
 }
@@ -297,12 +287,23 @@ if (isset($_GET['idEmpresa'])) {
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <div id="div_mostrar_solo_primero" class="form-check mb-3 p-2 border rounded" style="background-color:#fff3cd; display:none;">
+                                <div id="div_mostrar_solo_primero" class="form-check mb-3 p-2 border rounded" style="background-color:#fff3cd;">
                                     <input class="form-check-input" type="checkbox" name="mostrar_solo_primero" id="mostrar_solo_primero" value="1">
                                     <label class="form-check-label fw-bold" for="mostrar_solo_primero">
-                                        Mostrar solo el primer trabajador en el Listado de Cursos
+                                        Mostrar solo un trabajador en el Listado de Cursos
                                         <small class="text-muted d-block fw-normal">Los demás serán visibles mediante el botón "Ver todos" junto a la fila</small>
                                     </label>
+                                    <div id="contenedor_alumno_visible" class="mt-3" style="display:none;">
+                                        <label class="form-label fw-bold" for="indice_alumno_visible">Trabajador visible en el listado:</label>
+                                        <select class="form-select" name="indice_alumno_visible" id="indice_alumno_visible">
+                                            <option value="">Selecciona un trabajador</option>
+                                            <?php foreach ($alumnos_seleccionados as $indice_alumno => $alumno_seleccionado) : ?>
+                                                <option value="<?php echo (int)$indice_alumno; ?>">
+                                                    <?php echo htmlspecialchars(trim(($alumno_seleccionado['nombre'] ?? '') . ' ' . ($alumno_seleccionado['apellidos'] ?? ''))); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="text-center">
                                     <button type="submit" name="asignar_curso" class="btn btn-success btn-lg">
@@ -361,19 +362,16 @@ if (isset($_GET['idEmpresa'])) {
             });
         });
         $(document).ready(function() {
-            // Mostra/nascondi checkbox mostrar_solo_primero in base a Tipo_Venta
-            $('input[name="Tipo_Venta"]').on('change', function() {
-                if ($(this).val() === 'Privado') {
-                    $('#div_mostrar_solo_primero').show();
-                } else {
-                    $('#div_mostrar_solo_primero').hide();
-                    $('#mostrar_solo_primero').prop('checked', false);
+            function actualizarAlumnoVisible() {
+                var mostrarSelector = $('#mostrar_solo_primero').prop('checked');
+                $('#contenedor_alumno_visible').toggle(mostrarSelector);
+                if (mostrarSelector && !$('#indice_alumno_visible').val()) {
+                    $('#indice_alumno_visible').val($('#indice_alumno_visible option[value!=""]').first().val() || '');
                 }
-            });
-            // Controllo stato iniziale (nel caso venga ricaricata la pagina)
-            if ($('input[name="Tipo_Venta"]:checked').val() === 'Privado') {
-                $('#div_mostrar_solo_primero').show();
             }
+
+            $('#mostrar_solo_primero').on('change', actualizarAlumnoVisible);
+            actualizarAlumnoVisible();
 
             // Funcionalidad para el checkbox "Seleccionar Todos"
             $('#seleccionarTodos').on('click', function() {
