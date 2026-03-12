@@ -477,7 +477,7 @@ if(isset($_GET['StudentCursoID'])){
               <input class="form-control form-control-sm" type="text"></input>
             </div>
 
-            <label class="col-1 col-form-label">Observaciones:</label>
+            <label class="col-1 col-form-label">Observaciones/DOC A.F:</label>
             <div class="col-3">
               <input class="form-control form-control-sm" type="text"
               value="<?php if($alumnoCurso) echo $alumnoCurso['DOC_AF'] ?>"></input>

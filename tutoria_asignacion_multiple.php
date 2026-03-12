@@ -236,7 +236,7 @@ if (isset($_GET['idEmpresa'])) {
                                             <div class="col-md-2"><label class="form-label fw-bold">Nº Grupo:</label><input name="N_Grupo" class="form-control form-control-sm" type="number" required></div>
                                             <div class="col-md-2"><label class="form-label fw-bold">Nº Horas:</label><input name="N_Horas" class="form-control form-control-sm" type="text"></div>
                                             <div class="col-md-3"><label class="form-label fw-bold">Tutor:</label><input name="tutor" class="form-control form-control-sm text-uppercase" type="text"></div>
-                                            <div class="col-md-3"><label class="form-label fw-bold">Observaciones:</label><input name="DOC_AF" class="form-control form-control-sm" type="text"></div>
+                                            <div class="col-md-3"><label class="form-label fw-bold">Observaciones/DOC A.F:</label><input name="DOC_AF" class="form-control form-control-sm" type="text"></div>
                                         </div>
 
                                         <div class="row mb-3 g-3">

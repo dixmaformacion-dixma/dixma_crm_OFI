@@ -48,7 +48,7 @@
                 ?>
             </div>
 
-            <div class="col-md-4"><img src="images/iconos/file-earmark-text.svg" class="me-2 text-muted"><b>Observaciones:</b> <?php echo htmlspecialchars($curso['DOC_AF']); ?></div>
+            <div class="col-md-4"><img src="images/iconos/file-earmark-text.svg" class="me-2 text-muted"><b>Observaciones/DOC A.F:</b> <?php echo htmlspecialchars($curso['DOC_AF']); ?></div>
 
             <!-- Empresa -->
             <div class="col-12"><hr class="my-2"></div>
