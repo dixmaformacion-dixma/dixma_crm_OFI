@@ -15,8 +15,17 @@ if (empty($_SESSION) || !isset($_SESSION['rol']) || !in_array($_SESSION['rol'], 
 require_once 'funciones/conexionBD.php';
 $pdo = realizarConexion();
 
+function normalizeCredentialType($rawValue) {
+    return strtolower(trim((string)$rawValue)) === 'privado' ? 'privado' : 'bonificado';
+}
+
+function getCredentialTypeLabel($rawValue) {
+    return normalizeCredentialType($rawValue) === 'privado' ? 'Privado' : 'Bonificado';
+}
+
 // Filtro año
 $filterYear = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
+$filterType = isset($_GET['tipo']) && $_GET['tipo'] === 'privado' ? 'privado' : 'bonificado';
 
 // Cargar lista años disponibles desde la BD (dinámica)
 try {
@@ -38,65 +47,36 @@ if (isset($_POST['crear'])) {
     try {
         $inicioCurso = $_POST['inicio_curso'] ?? null;
         if (!$inicioCurso) throw new Exception("La fecha de inicio del curso es obligatoria");
-        $anioCurso = date('Y', strtotime($inicioCurso));
 
         $default_cif = 'CIF: B92041839';
         $default_razon = 'RAZÓN SOCIAL: INNOVACCIÓN Y CUALIFICACIÓN S.L';
+        $tipoCredencial = isset($_POST['tipo_credencial']) && $_POST['tipo_credencial'] === 'privado' ? 'privado' : 'bonificado';
 
-        $maxAttempts = 5;
-        $attempt = 0;
-        $inserted = false;
+        $stmt = $pdo->prepare("INSERT INTO credenciales_dixma 
+            (tipo_venta, numero_accion, nombre_curso, usuario_supervisor, password_supervisor, 
+             usuario_profesor, password_profesor, inicio_curso, url_campus, cif_campus, razon_social, cv, guia, revision, revision_highlighted, tutor)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        while (!$inserted && $attempt < $maxAttempts) {
-            $attempt++;
+        $stmt->execute([
+            $tipoCredencial,
+            $_POST['numero_accion'] ?: null,
+            $_POST['nombre_curso'],
+            $_POST['usuario_supervisor'] ?: null,
+            $_POST['password_supervisor'] ?: null,
+            $_POST['usuario_profesor'] ?: null,
+            $_POST['password_profesor'] ?: null,
+            $inicioCurso,
+            $_POST['url_campus'] ?: 'https://dixma.virtual-aula.com/',
+            !empty($_POST['cif_campus']) ? $_POST['cif_campus'] : $default_cif,
+            !empty($_POST['razon_social']) ? $_POST['razon_social'] : $default_razon,
+            $_POST['cv'] ?? 0,
+            $_POST['guia'] ?? 0,
+            $_POST['revision'] ?: null,
+            isset($_POST['revision_highlighted']) ? 1 : 0,
+            $_POST['tutor'] ?: null
+        ]);
 
-            // calcola prossimo numero per quell'anno
-            $stmtMaxNum = $pdo->prepare(
-                "SELECT COALESCE(MAX(numero), 0) + 1 AS next_num FROM credenciales_dixma WHERE YEAR(inicio_curso) = ?"
-            );
-            $stmtMaxNum->execute([$anioCurso]);
-            $nextNumero = (int)$stmtMaxNum->fetchColumn();
-
-                try {
-                $stmt = $pdo->prepare("INSERT INTO credenciales_dixma 
-                    (numero, numero_accion, nombre_curso, usuario_supervisor, password_supervisor, 
-                     usuario_profesor, password_profesor, inicio_curso, url_campus, cif_campus, razon_social, cv, guia, revision, revision_highlighted, tutor)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-                $stmt->execute([
-                    $nextNumero,
-                    $_POST['numero_accion'] ?: null,
-                    $_POST['nombre_curso'],
-                    $_POST['usuario_supervisor'] ?: null,
-                    $_POST['password_supervisor'] ?: null,
-                    $_POST['usuario_profesor'] ?: null,
-                    $_POST['password_profesor'] ?: null,
-                    $inicioCurso,
-                    $_POST['url_campus'] ?: 'https://dixma.virtual-aula.com/',
-                    !empty($_POST['cif_campus']) ? $_POST['cif_campus'] : $default_cif,
-                    !empty($_POST['razon_social']) ? $_POST['razon_social'] : $default_razon,
-                    $_POST['cv'] ?? 0,
-                    $_POST['guia'] ?? 0,
-                    $_POST['revision'] ?: null,
-                    isset($_POST['revision_highlighted']) ? 1 : 0,
-                    $_POST['tutor'] ?: null
-                ]);
-
-                $inserted = true;
-                $mensajes[] = "✅ Credencial creada (N° $nextNumero - Año $anioCurso)";
-            } catch (PDOException $e) {
-                // Duplicate key (race condition) -> ritenta
-                if ($e->getCode() === '23000') {
-                    usleep(100000); // 100 ms
-                    continue;
-                }
-                throw $e;
-            }
-        }
-
-        if (!$inserted) {
-            $errores[] = "❌ No se pudo asignar un N° de curso (concurrencia). Intenta de nuevo.";
-        }
+        $mensajes[] = "✅ Credencial creada como " . ucfirst($tipoCredencial);
     } catch (PDOException $e) {
         $errores[] = "❌ Error al crear: " . $e->getMessage();
     } catch (Exception $e) {
@@ -107,32 +87,20 @@ if (isset($_POST['crear'])) {
 // EDITAR credencial
 if (isset($_POST['actualizar'])) {
     try {
-        // Obtener datos actuales para conservar 'numero' y comparar años
-        $stmtCurrent = $pdo->prepare("SELECT numero, inicio_curso FROM credenciales_dixma WHERE id = ?");
+        $stmtCurrent = $pdo->prepare("SELECT inicio_curso FROM credenciales_dixma WHERE id = ?");
         $stmtCurrent->execute([$_POST['id']]);
         $datosActuales = $stmtCurrent->fetch(PDO::FETCH_ASSOC);
         if (!$datosActuales) throw new Exception("Registro no encontrado");
 
-        $numeroActual = $datosActuales['numero'];
         $anioActual = $datosActuales['inicio_curso'] ? date('Y', strtotime($datosActuales['inicio_curso'])) : null;
 
         $nuevoInicioCurso = $_POST['inicio_curso'] ?: null;
         if (!$nuevoInicioCurso) throw new Exception("La fecha de inicio del curso es obligatoria");
         $nuevoAnio = date('Y', strtotime($nuevoInicioCurso));
+        $tipoCredencial = isset($_POST['tipo_credencial']) && $_POST['tipo_credencial'] === 'privado' ? 'privado' : 'bonificado';
 
-        // Si cambia el año, verificar que no exista conflicto con el mismo número
-        if ($anioActual != $nuevoAnio) {
-            $stmtCheck = $pdo->prepare(
-                "SELECT COUNT(*) FROM credenciales_dixma WHERE numero = ? AND YEAR(inicio_curso) = ? AND id != ?"
-            );
-            $stmtCheck->execute([$numeroActual, $nuevoAnio, $_POST['id']]);
-            if ($stmtCheck->fetchColumn() > 0) {
-                throw new Exception("Ya existe el N° Curso $numeroActual en el año $nuevoAnio. No se puede cambiar el año sin conflicto.");
-            }
-        }
-
-        // No actualizamos 'numero' para preservar la numeración asignada
         $stmt = $pdo->prepare("UPDATE credenciales_dixma SET
+            tipo_venta = ?,
                 numero_accion = ?,
                 nombre_curso = ?,
                 usuario_supervisor = ?,
@@ -154,6 +122,7 @@ if (isset($_POST['actualizar'])) {
         $default_razon = 'RAZÓN SOCIAL: INNOVACCIÓN Y CUALIFICACIÓN S.L';
 
         $stmt->execute([
+            $tipoCredencial,
             $_POST['numero_accion'] ?: null,
             $_POST['nombre_curso'],
             $_POST['usuario_supervisor'],
@@ -173,7 +142,7 @@ if (isset($_POST['actualizar'])) {
         ]);
 
         if ($anioActual != $nuevoAnio) {
-            $mensajes[] = "⚠️ Credencial actualizada. Se cambió el año de $anioActual a $nuevoAnio manteniendo N° Curso: $numeroActual";
+            $mensajes[] = "⚠️ Credencial actualizada. Se cambió el año de $anioActual a $nuevoAnio.";
         } else {
             $mensajes[] = "✅ Credencial actualizada correctamente";
         }
@@ -217,19 +186,22 @@ if (isset($_GET['editar'])) {
 $mostrar_eliminadas = isset($_GET['ver_eliminadas']);
 $sql = "SELECT * FROM credenciales_dixma WHERE activo = " . ($mostrar_eliminadas ? '0' : '1');
 
+$sql .= " AND LOWER(TRIM(COALESCE(tipo_venta, 'bonificado'))) = " . $pdo->quote($filterType);
+
 // Aplicar filtro año
 if ($filterYear > 0) {
     $sql .= " AND YEAR(inicio_curso) = " . $filterYear;
 }
 
-$sql .= " ORDER BY numero ASC";
+$sql .= " ORDER BY (numero_accion IS NULL), numero_accion ASC, nombre_curso ASC";
 $stmt = $pdo->query($sql);
 $credenciales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Estadísticas con filtro año
 $whereYear = $filterYear > 0 ? " AND YEAR(inicio_curso) = " . $filterYear : "";
-$total_activos = $pdo->query("SELECT COUNT(*) FROM credenciales_dixma WHERE activo = 1" . $whereYear)->fetchColumn();
-$total_eliminados = $pdo->query("SELECT COUNT(*) FROM credenciales_dixma WHERE activo = 0" . $whereYear)->fetchColumn();
+$whereType = " AND LOWER(TRIM(COALESCE(tipo_venta, 'bonificado'))) = " . $pdo->quote($filterType);
+$total_activos = $pdo->query("SELECT COUNT(*) FROM credenciales_dixma WHERE activo = 1" . $whereType . $whereYear)->fetchColumn();
+$total_eliminados = $pdo->query("SELECT COUNT(*) FROM credenciales_dixma WHERE activo = 0" . $whereType . $whereYear)->fetchColumn();
 $total_general = $total_activos + $total_eliminados;
 
 ?>
@@ -333,13 +305,15 @@ $total_general = $total_activos + $total_eliminados;
                 <?php endif; ?>
 
                 <div class="row">
-                    <?php if ($editando): ?>
                     <div class="col-md-2">
-                        <label class="form-label">N° Curso</label>
-                        <input type="text" class="form-control" value="<?php echo $editando['numero']; ?>" disabled>
-                        <input type="hidden" name="numero" value="<?php echo $editando['numero']; ?>">
-                        <small class="text-muted">Año: <?php echo $editando['inicio_curso'] ? date('Y', strtotime($editando['inicio_curso'])) : '-'; ?></small>
+                        <label class="form-label">Tipo</label>
+                        <select class="form-select" name="tipo_credencial" required>
+                            <?php $tipoActual = $editando ? normalizeCredentialType($editando['tipo_venta'] ?? 'bonificado') : $filterType; ?>
+                            <option value="bonificado" <?php echo $tipoActual === 'bonificado' ? 'selected' : ''; ?>>Bonificado</option>
+                            <option value="privado" <?php echo $tipoActual === 'privado' ? 'selected' : ''; ?>>Privado</option>
+                        </select>
                     </div>
+                    <?php if ($editando): ?>
                     <div class="col-md-2">
                         <label class="form-label">N° Acción</label>
                         <input type="number" class="form-control" name="numero_accion" 
@@ -476,7 +450,7 @@ $total_general = $total_activos + $total_eliminados;
                         <button type="submit" name="actualizar" class="btn btn-warning btn-lg">
                             💾 Actualizar Credencial
                         </button>
-                        <a href="?year=<?php echo $filterYear; ?><?php echo $mostrar_eliminadas ? '&ver_eliminadas=1' : ''; ?>" class="btn btn-secondary btn-lg">❌ Cancelar</a>
+                        <a href="?year=<?php echo $filterYear; ?>&tipo=<?php echo $filterType; ?><?php echo $mostrar_eliminadas ? '&ver_eliminadas=1' : ''; ?>" class="btn btn-secondary btn-lg">❌ Cancelar</a>
                     <?php else: ?>
                         <button type="submit" name="crear" class="btn btn-custom btn-lg">
                             ➕ Crear Credencial
@@ -488,7 +462,7 @@ $total_general = $total_activos + $total_eliminados;
 
         <!-- Navegación -->
         <div class="text-center mb-4">
-            <a href="administracion_credenciales_db.php" class="btn btn-custom btn-lg">
+            <a href="administracion_credenciales_db.php?year=<?php echo $filterYear; ?>&tipo=<?php echo $filterType; ?>" class="btn btn-custom btn-lg">
                 🔐 Ver Credenciales
             </a>
             <a href="administracion.php" class="btn btn-secondary btn-lg">
@@ -515,12 +489,20 @@ $total_general = $total_activos + $total_eliminados;
                             <?php endforeach; ?>
                         </select>
                     </div>
+                    <div class="col-md-3">
+                        <label class="form-label"><strong>📂 Filtrar por Tipo:</strong></label>
+                        <select name="tipo" class="form-select" onchange="document.getElementById('filterForm').submit()">
+                            <option value="bonificado" <?php echo $filterType === 'bonificado' ? 'selected' : ''; ?>>Bonificado</option>
+                            <option value="privado" <?php echo $filterType === 'privado' ? 'selected' : ''; ?>>Privado</option>
+                        </select>
+                    </div>
                 </div>
             </form>
         </div>
 
         <!-- Estadísticas Generales -->
         <div class="text-center mb-4">
+            <span class="badge badge-stat" style="background-color: #1e989e;">📂 Tipo: <?php echo $filterType === 'privado' ? 'Privado' : 'Bonificado'; ?></span>
             <span class="badge badge-stat" style="background-color: #17a2b8;">📅 Año: <?php echo $filterYear > 0 ? $filterYear : 'Todos'; ?></span>
             <span class="badge badge-stat" style="background-color: #8fd247;">✅ Activos: <?php echo $total_activos; ?></span>
             <span class="badge badge-stat" style="background-color: #dc3545;">🗑️ Eliminados: <?php echo $total_eliminados; ?></span>
@@ -532,13 +514,13 @@ $total_general = $total_activos + $total_eliminados;
             <ul class="nav nav-tabs mb-3" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link <?php echo !$mostrar_eliminadas ? 'active' : ''; ?>" 
-                       href="?year=<?php echo $filterYear; ?>">
+                       href="?year=<?php echo $filterYear; ?>&tipo=<?php echo $filterType; ?>">
                         ✅ Activos (<?php echo $total_activos; ?>)
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a class="nav-link <?php echo $mostrar_eliminadas ? 'active' : ''; ?>" 
-                       href="?ver_eliminadas=1&year=<?php echo $filterYear; ?>">
+                       href="?ver_eliminadas=1&year=<?php echo $filterYear; ?>&tipo=<?php echo $filterType; ?>">
                         🗑️ Eliminados (<?php echo $total_eliminados; ?>)
                     </a>
                 </li>
@@ -550,7 +532,7 @@ $total_general = $total_activos + $total_eliminados;
                         <tr>
                             <th>ID</th>
                             <th>Estado</th>
-                            <th>N°</th>
+                            <th>Tipo</th>
                             <th>N° Acción</th>
                             <th>Curso</th>
                             <th>Usuario Sup.</th>
@@ -576,7 +558,11 @@ $total_general = $total_activos + $total_eliminados;
                                         <span class="badge bg-danger status-badge">🗑️ Eliminado</span>
                                     <?php endif; ?>
                                 </td>
-                                <td><?php echo $cred['numero']; ?></td>
+                                <td>
+                                    <span class="badge" style="background-color: <?php echo normalizeCredentialType($cred['tipo_venta'] ?? 'bonificado') === 'privado' ? '#f59f00' : '#1e989e'; ?>; color: white; font-size: 11px;">
+                                        <?php echo getCredentialTypeLabel($cred['tipo_venta'] ?? 'bonificado'); ?>
+                                    </span>
+                                </td>
                                 <td>
                                     <span class="badge" style="background-color: #6c9a4d; color: white; font-size: 11px;">
                                         <?php echo $cred['numero_accion']; ?>
@@ -644,10 +630,8 @@ $total_general = $total_activos + $total_eliminados;
                                 <td><?php echo htmlspecialchars($cred['tutor'] ?? '-'); ?></td>
 
                                 <td class="text-nowrap">
-                                    <?php 
-                                    $urlParams = "year=" . $filterYear;
-                                    if ($mostrar_eliminadas) $urlParams .= "&ver_eliminadas=1";
-                                    ?>
+                                    <?php $urlParams = "year=" . $filterYear . "&tipo=" . $filterType; ?>
+                                    <?php if ($mostrar_eliminadas) $urlParams .= "&ver_eliminadas=1"; ?>
                                     <?php if ($cred['activo']): ?>
                                         <a href="?editar=<?php echo $cred['id']; ?>&<?php echo $urlParams; ?>" 
                                            class="btn btn-sm btn-warning"
