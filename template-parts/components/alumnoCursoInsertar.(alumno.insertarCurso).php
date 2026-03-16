@@ -23,6 +23,73 @@ if(!isset($tipoCursosArray)){
     </div>
     <form method="post" action="tutoria_insertarCurso.php">
         <input type="hidden" name="idAlumno" value="<?php echo $alumno['idAlumno']; ?>">
+        <?php
+        $empresaData = cargarEmpresa($alumno['idEmpresa']);
+        $empresaSeleccion = obtenerSeleccionEmpresa($empresaData);
+        $empresaOpciones = $empresaSeleccion['opciones'];
+        $esGrupo = $empresaSeleccion['esGrupo'];
+        $alumnoId = $alumno['idAlumno'];
+        ?>
+        <div class="row mb-2">
+            <input name="idEmpresa" type="hidden" value="<?php echo $alumno['idEmpresa']; ?>">
+            <?php if ($esGrupo): ?>
+                <?php
+                // Build a JS array to auto-sync CIF when nombre changes
+                $empresaOpcionesJS = json_encode($empresaOpciones);
+                ?>
+                <script>
+                var empresaOpciones_<?php echo $alumnoId; ?> = <?php echo $empresaOpcionesJS; ?>;
+                function syncCif_<?php echo $alumnoId; ?>(sel) {
+                    var idx = sel.selectedIndex - 1; // -1 because index 0 is the disabled placeholder
+                    var opcion = empresaOpciones_<?php echo $alumnoId; ?>[idx] || null;
+                    var cif = opcion ? opcion.cif : '';
+                    document.getElementById('cif_display_<?php echo $alumnoId; ?>').textContent = cif || '—';
+                    document.getElementById('cif_hidden_<?php echo $alumnoId; ?>').value = cif;
+                }
+                </script>
+                                <div class="col-12 mb-1">
+                                        <span class="badge bg-warning text-dark">Grupo (<?php echo count($empresaOpciones); ?>)</span>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                        <div class="d-flex align-items-center gap-2 h-100">
+                                                <b class="mb-0 text-nowrap">Empresa:</b>
+                                                <select name="nombre_empresa_seleccionada"
+                                                                class="form-select form-select-sm"
+                                                                onchange="syncCif_<?php echo $alumnoId; ?>(this)" required>
+                                                        <option disabled selected value="">-- selecciona empresa --</option>
+                                                        <?php foreach ($empresaOpciones as $empresaOpcion): ?>
+                                                                <option value="<?php echo htmlspecialchars($empresaOpcion['nombre']); ?>">
+                                                                        <?php echo htmlspecialchars($empresaOpcion['nombre']); ?>
+                                                                </option>
+                                                        <?php endforeach; ?>
+                                                </select>
+                                        </div>
+                                </div>
+                                <div class="col-md-4 col-12">
+                                        <div class="d-flex align-items-center gap-2 h-100">
+                                                <b class="mb-0 text-nowrap">CIF:</b>
+                                                <span id="cif_display_<?php echo $alumnoId; ?>" class="fw-bold text-secondary">—</span>
+                                        </div>
+                                        <input type="hidden"
+                                                   id="cif_hidden_<?php echo $alumnoId; ?>"
+                                                   name="cif_seleccionado"
+                                                   value="">
+                                </div>
+            <?php else: ?>
+                <label class="col-md-6 col-12">
+                    <b>Empresa:</b>
+                                        <span class="ms-2"><?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?></span>
+                    <input type="hidden" name="nombre_empresa_seleccionada"
+                                                   value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>">
+                </label>
+                <label class="col-md-4 col-12">
+                    <b>CIF:</b>
+                                        <span class="ms-2"><?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?></span>
+                    <input type="hidden" name="cif_seleccionado"
+                                                   value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>">
+                </label>
+            <?php endif; ?>
+        </div>
         <div class="row">
                 <label class="d-flex align-items-center">
                 <input type="checkbox" name="selectFromCourseList" onchange='changeCourseSelectionMode("Alumno<?php echo $alumno['idAlumno']; ?>")'>
@@ -58,7 +125,6 @@ if(!isset($tipoCursosArray)){
                 </label>
         </div>
         <div class="row">
-                <input name="idEmpresa" type="hidden" value="<?php echo $alumno['idEmpresa']; ?>"></input>
             <label class='col-md-8 col-12'>
                     <b>Denominacion:</b>
                     <input name="Denominacion" class="form-control form-control-sm text-uppercase" type="text"></input>

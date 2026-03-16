@@ -202,7 +202,7 @@ function cargarAlumnoCurso($StudentCursoID){
 }
 function alumnoCursoAdjuntar($datos){
     $conexionPDO = realizarConexion();
-    $sql = "INSERT INTO `alumnocursos`(`StudentCursoID`, `Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, `Fecha_Inicio`, `Fecha_Fin`, `tutor`, `idAlumno`, `idCurso`, `seguimento0`, `seguimento1`, `seguimento2`, `seguimento3`, `seguimento4`, `seguimento5`, `idEmpresa`, `Tipo_Venta`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO `alumnocursos`(`StudentCursoID`, `Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, `Fecha_Inicio`, `Fecha_Fin`, `tutor`, `idAlumno`, `idCurso`, `seguimento0`, `seguimento1`, `seguimento2`, `seguimento3`, `seguimento4`, `seguimento5`, `idEmpresa`, `Tipo_Venta`, `nombre_empresa_seleccionada`, `cif_seleccionado`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conexionPDO->prepare($sql);
 
     if($stmt){
@@ -227,6 +227,8 @@ function alumnoCursoAdjuntar($datos){
         $stmt->bindValue(18, $datos['seguimento5'], PDO::PARAM_STR);
         $stmt->bindValue(19, $datos['idEmpresa'], PDO::PARAM_STR);
         $stmt->bindValue(20, $datos['Tipo_Venta'], PDO::PARAM_STR);
+        $stmt->bindValue(21, $datos['nombre_empresa_seleccionada'] ?? NULL, PDO::PARAM_STR);
+        $stmt->bindValue(22, $datos['cif_seleccionado'] ?? NULL, PDO::PARAM_STR);
 
         return $stmt->execute();
     } else {
@@ -251,8 +253,9 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
                     `Denominacion`, `N_Accion`, `N_Grupo`, `N_Horas`, `Modalidad`, `DOC_AF`, 
                     `Fecha_Inicio`, `Fecha_Fin`, `tutor`, `idAlumno`, `idCurso`, `idEmpresa`, 
                     `Tipo_Venta`, `status_curso`, `seguimento0`, `seguimento1`, `seguimento2`, 
-                    `seguimento3`, `seguimento4`, `seguimento5`, `firma_docente`, `mostrar_solo_primero`
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'en curso', ?, ?, ?, ?, ?, ?, ?, ?)";
+                    `seguimento3`, `seguimento4`, `seguimento5`, `firma_docente`, `mostrar_solo_primero`,
+                    `nombre_empresa_seleccionada`, `cif_seleccionado`
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'en curso', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conexionPDO->prepare($sql);
 
         if (!$stmt) {
@@ -281,9 +284,12 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
             $stmt->bindValue(19, $datosCurso['seguimento5'],  PDO::PARAM_STR);
             $stmt->bindValue(20, $datosCurso['Firma_Docente'] ?? null, PDO::PARAM_STR);
             $stmt->bindValue(21, $mostrar_solo_primero,       PDO::PARAM_INT);
+            $stmt->bindValue(22, $datosCurso['nombre_empresa_seleccionada'] ?? null, PDO::PARAM_STR);
+            $stmt->bindValue(23, $datosCurso['cif_seleccionado'] ?? null, PDO::PARAM_STR);
 
             if (!$stmt->execute()) {
-                throw new Exception("Error al insertar el curso para el alumno ID: " . $idAlumno);
+                $errorInfo = $stmt->errorInfo();
+                throw new Exception("Error al insertar el curso para el alumno ID: " . $idAlumno . ". SQLSTATE: " . ($errorInfo[0] ?? '') . " - " . ($errorInfo[2] ?? ''));
             }
         }
 
@@ -291,7 +297,7 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
         return true;
     } catch (Exception $e) {
         $conexionPDO->rollBack();
-        // Opcional: registrar el error $e->getMessage()
+        error_log($e->getMessage());
         return false;
     }
 }

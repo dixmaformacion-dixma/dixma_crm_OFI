@@ -17,6 +17,7 @@ setlocale(LC_ALL, "spanish");
 
 $mensaje = "";
 $empresa = null;
+$empresaSeleccion = null;
 $alumnos = [];
 $idEmpresa = null;
 $alumnos_seleccionados_ids = [];
@@ -72,6 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['asignar_curso'])) {
             'idCurso' => isset($_POST['selectFromCourseList']) ? $_POST['idCurso'] : null,
             'idEmpresa' => $idEmpresa,
             'Tipo_Venta' => $_POST['Tipo_Venta'],
+            'nombre_empresa_seleccionada' => isset($_POST['nombre_empresa_seleccionada']) && $_POST['nombre_empresa_seleccionada'] !== '' ? $_POST['nombre_empresa_seleccionada'] : null,
+            'cif_seleccionado' => isset($_POST['cif_seleccionado']) && $_POST['cif_seleccionado'] !== '' ? $_POST['cif_seleccionado'] : null,
             'Firma_Docente' => $firmaDocentePath,
             'seguimento0' => !empty($_POST['seguimento0']) ? $_POST['seguimento0'] : null,
             'seguimento1' => !empty($_POST['seguimento1']) ? $_POST['seguimento1'] : null,
@@ -100,6 +103,11 @@ if (isset($_GET['idEmpresa'])) {
     $idEmpresa = $_GET['idEmpresa'];
     $empresa = cargarEmpresa($idEmpresa);
     if ($empresa) {
+        $empresaSeleccion = obtenerSeleccionEmpresa(
+            $empresa,
+            isset($_POST['nombre_empresa_seleccionada']) ? $_POST['nombre_empresa_seleccionada'] : null,
+            isset($_POST['cif_seleccionado']) ? $_POST['cif_seleccionado'] : null
+        );
         $alumnos = todoAlumnoPorEmpresa($idEmpresa);
         // Verificar que $alumnos sea un array antes de ordenar
         if (is_array($alumnos) && !empty($alumnos)) {
@@ -224,6 +232,36 @@ if (isset($_GET['idEmpresa'])) {
                                 <div class="row g-3">
                                     <!-- Inicio del nuevo formulario personalizado -->
                                     <div id="form-multiple-container">
+                                        <div class="row mb-3 g-3">
+                                            <?php if ($empresaSeleccion && $empresaSeleccion['esGrupo']) : ?>
+                                                <div class="col-md-8">
+                                                    <label class="form-label fw-bold">Empresa:</label>
+                                                    <select name="nombre_empresa_seleccionada" id="empresa-multiple-select" class="form-select form-select-sm" onchange="syncMultipleCompanyCif(this)" required>
+                                                        <?php foreach ($empresaSeleccion['opciones'] as $opcion) : ?>
+                                                            <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>" <?php echo $opcion['nombre'] === $empresaSeleccion['seleccionada']['nombre'] ? 'selected' : ''; ?>>
+                                                                <?php echo htmlspecialchars($opcion['nombre']); ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-bold">CIF:</label>
+                                                    <input id="cif_multiple_display" class="form-control form-control-sm" type="text" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>" readonly>
+                                                    <input id="cif_multiple_hidden" type="hidden" name="cif_seleccionado" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>">
+                                                </div>
+                                            <?php elseif ($empresaSeleccion) : ?>
+                                                <div class="col-md-8">
+                                                    <label class="form-label fw-bold">Empresa:</label>
+                                                    <input class="form-control form-control-sm" type="text" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>" readonly>
+                                                    <input type="hidden" name="nombre_empresa_seleccionada" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-bold">CIF:</label>
+                                                    <input class="form-control form-control-sm" type="text" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>" readonly>
+                                                    <input type="hidden" name="cif_seleccionado" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>">
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <label class="form-label fw-bold">Denominación:</label>
@@ -337,6 +375,25 @@ if (isset($_GET['idEmpresa'])) {
     <script src="js/alumnocurso.js"></script>
 
     <script>
+        <?php if ($empresaSeleccion && $empresaSeleccion['esGrupo']) : ?>
+        var multipleCompanyOptions = <?php echo json_encode($empresaSeleccion['opciones']); ?>;
+
+        function syncMultipleCompanyCif(select) {
+            var option = multipleCompanyOptions[select.selectedIndex] || null;
+            var cif = option ? option.cif : '';
+            var cifDisplay = document.getElementById('cif_multiple_display');
+            var cifHidden = document.getElementById('cif_multiple_hidden');
+
+            if (cifDisplay) {
+                cifDisplay.value = cif;
+            }
+
+            if (cifHidden) {
+                cifHidden.value = cif;
+            }
+        }
+        <?php endif; ?>
+
         // --- Script para el buscador de empresas ---
         $(document).ready(function() {
             var dataList = document.getElementById('empresas-list');

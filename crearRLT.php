@@ -20,6 +20,12 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
 
 $venta = cargarVenta($_GET['idEmpresa']);
 
+$empresaSeleccion = obtenerSeleccionEmpresa($empresa);
+
+if($empresaSeleccion['esGrupo']){
+    $empresaOpcionesJson = json_encode($empresaSeleccion['opciones']);
+}
+
 $fecha_informe = new DateTime();
 $dias_habiles_a_restar = 4;
 $dias_restados = 0;
@@ -145,14 +151,22 @@ $mes_actual = $meses_es[(int)$fecha_informe->format('n')];
         </div>
 
         <div class="row mt-2 fst-italic align-items-baseline">
-            <div class="col-9 d-flex align-items-baseline">
-                <span class="me-2 text-nowrap">Razón Social:</span>
-                <input type="text" class="form-control text-center flex-grow-1 border-0 border-bottom border-dark rounded-0 px-2" value="<?php echo htmlspecialchars($empresa['nombre']); ?>">
-            </div>
-            <div class="col-3 d-flex align-items-baseline">
-                <span class="ms-1 me-2">CIF:</span>
-                <input type="text" class="form-control text-center flex-grow-1 border-0 border-bottom border-dark rounded-0 px-2" value="<?php echo htmlspecialchars($empresa['cif']); ?>">
-            </div>
+                <div class="col-9 d-flex align-items-baseline">
+                    <span class="me-2 text-nowrap">Razón Social:</span>
+                    <?php if(isset($empresaSeleccion) && $empresaSeleccion['esGrupo']){ ?>
+                        <select id="empresaRLT" class="form-select form-select-sm" onchange="actualizarEmpresaRLT(this)">
+                            <?php foreach($empresaSeleccion['opciones'] as $opcion){ ?>
+                                <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>" <?php if($opcion['nombre'] === $empresaSeleccion['seleccionada']['nombre']) echo 'selected'; ?>><?php echo htmlspecialchars($opcion['nombre']); ?></option>
+                            <?php } ?>
+                        </select>
+                    <?php } else { ?>
+                        <input type="text" class="form-control text-center flex-grow-1 border-0 border-bottom border-dark rounded-0 px-2" value="<?php echo htmlspecialchars($empresa['nombre']); ?>">
+                    <?php } ?>
+                </div>
+                <div class="col-3 d-flex align-items-baseline">
+                    <span class="ms-1 me-2">CIF:</span>
+                    <input id="cifRLT" type="text" class="form-control text-center flex-grow-1 border-0 border-bottom border-dark rounded-0 px-2" value="<?php echo htmlspecialchars(isset($empresaSeleccion) ? $empresaSeleccion['seleccionada']['cif'] : $empresa['cif']); ?>">
+                </div>
         </div>
 
         <div class="row mt-3">
@@ -242,6 +256,15 @@ $mes_actual = $meses_es[(int)$fecha_informe->format('n')];
             Asimismo, solicitamos su autorización para ofrecerle productos y servicios relacionados con los contratados y fidelizarle como cliente.” SI ❑ NO ❑</p>
     </div>
 
+    <?php if(isset($empresaSeleccion) && $empresaSeleccion['esGrupo']){ ?>
+    <script>
+        var empresaRLT_Opciones = <?php echo $empresaOpcionesJson; ?>;
+        function actualizarEmpresaRLT(select){
+            var opcion = empresaRLT_Opciones[select.selectedIndex] || null;
+            document.getElementById('cifRLT').value = opcion ? opcion.cif : '';
+        }
+    </script>
+    <?php } ?>
 </body>
 
 </html>

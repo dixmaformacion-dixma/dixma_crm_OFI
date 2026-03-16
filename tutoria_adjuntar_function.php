@@ -30,7 +30,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             'seguimento4' => NULL,
             'seguimento5' => NULL,
             'idEmpresa' => $_POST['idEmpresa'],
-            'Tipo_Venta' => $_POST['Tipo_Venta']
+            'Tipo_Venta' => $_POST['Tipo_Venta'],
+            'nombre_empresa_seleccionada' => isset($_POST['nombre_empresa_seleccionada']) && $_POST['nombre_empresa_seleccionada'] !== '' ? $_POST['nombre_empresa_seleccionada'] : NULL,
+            'cif_seleccionado' => isset($_POST['cif_seleccionado']) && $_POST['cif_seleccionado'] !== '' ? $_POST['cif_seleccionado'] : NULL,
         ];
         
         if(isset($_POST['Fecha_Inicio']) and $_POST['Fecha_Inicio'] != ""){

@@ -31,6 +31,12 @@ $alumnoCurso = false;
 if(isset($_GET['StudentCursoID'])){
   $alumnoCurso = cargarAlumnoCurso($_GET['StudentCursoID']);
 }
+
+$empresaSeleccion = obtenerSeleccionEmpresa($empresa);
+
+if($empresaSeleccion['esGrupo']){
+  $empresaOpcionesJson = json_encode($empresaSeleccion['opciones']);
+}
 ?>
 
 <!doctype html>
@@ -341,7 +347,15 @@ if(isset($_GET['StudentCursoID'])){
 
             <label class="col-3 col-form-label">NOMBRE / RAZÓN SOCIAL:</label>
             <div class="col-9">
-              <input class="form-control form-control-sm" value="<?php echo $empresa['nombre'] ?>" type="text"></input>
+              <?php if($empresaSeleccion['esGrupo']){ ?>
+                <select id="empresaFichaAlumno" class="form-select form-select-sm" onchange="actualizarEmpresaFichaAlumno(this)">
+                  <?php foreach($empresaSeleccion['opciones'] as $opcion){ ?>
+                    <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>" <?php if($opcion['nombre'] === $empresaSeleccion['seleccionada']['nombre']){ echo 'selected'; } ?>><?php echo htmlspecialchars($opcion['nombre']); ?></option>
+                  <?php } ?>
+                </select>
+              <?php } else { ?>
+                <input class="form-control form-control-sm" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>" type="text"></input>
+              <?php } ?>
             </div>
 
         </div>
@@ -350,7 +364,7 @@ if(isset($_GET['StudentCursoID'])){
 
             <label class="col-3 col-form-label">CIF:</label>
             <div class="col-3">
-              <input type="text" value="<?php echo $empresa['cif'] ?>" class="form-control form-control-sm"></input>
+              <input id="cifFichaAlumno" type="text" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>" class="form-control form-control-sm"></input>
             </div>
 
             <label class="col-3 col-form-label text-center">SEG. SOCIAL EMPRESA (CCC):</label>
@@ -585,6 +599,15 @@ if(isset($_GET['StudentCursoID'])){
 ?>
 <script>
   cargarDatos(<?php echo "'" . $sexoAlumno . "', '" . $categoriaProfesional . "', '" . $colectivo . "', '" . $grupoCotizacion . "', '" . $nivelEstudios . "', '" . $discapacidad . "'"; ?>);
+
+  <?php if($empresaSeleccion['esGrupo']){ ?>
+  var empresaFichaAlumnoOpciones = <?php echo $empresaOpcionesJson; ?>;
+
+  function actualizarEmpresaFichaAlumno(select) {
+    var opcion = empresaFichaAlumnoOpciones[select.selectedIndex] || null;
+    document.getElementById('cifFichaAlumno').value = opcion ? opcion.cif : '';
+  }
+  <?php } ?>
 
 </script>
 

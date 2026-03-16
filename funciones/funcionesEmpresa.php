@@ -344,6 +344,80 @@
         return $empresas;
     }
 
+    function obtenerOpcionesEmpresa($empresa){
+        if(!$empresa){
+            return [];
+        }
+
+        $nombreRaw = isset($empresa['nombre']) ? $empresa['nombre'] : '';
+        $cifRaw = isset($empresa['cif']) ? $empresa['cif'] : '';
+
+        $nombres = preg_split('/\s*\/+\s*/', trim($nombreRaw, " \t\n\r\0\x0B/"));
+        $cifs = preg_split('/\s*\/+\s*/', trim($cifRaw, " \t\n\r\0\x0B/"));
+
+        $nombres = array_values(array_filter($nombres, function ($value) {
+            return $value !== '';
+        }));
+        $cifs = array_values(array_filter($cifs, function ($value) {
+            return $value !== '';
+        }));
+
+        $opciones = [];
+
+        foreach($nombres as $index => $nombreEmpresa){
+            $opciones[] = [
+                'nombre' => $nombreEmpresa,
+                'cif' => isset($cifs[$index]) ? $cifs[$index] : ''
+            ];
+        }
+
+        if(empty($opciones) && ($nombreRaw !== '' || $cifRaw !== '')){
+            $opciones[] = [
+                'nombre' => $nombreRaw,
+                'cif' => $cifRaw
+            ];
+        }
+
+        return $opciones;
+    }
+
+    function obtenerSeleccionEmpresa($empresa, $nombreSeleccionado = null, $cifSeleccionado = null){
+        $opciones = obtenerOpcionesEmpresa($empresa);
+
+        if(empty($opciones)){
+            return [
+                'opciones' => [],
+                'seleccionada' => [
+                    'nombre' => '',
+                    'cif' => ''
+                ],
+                'esGrupo' => false
+            ];
+        }
+
+        $seleccionada = $opciones[0];
+
+        foreach($opciones as $opcion){
+            if($nombreSeleccionado !== null && $nombreSeleccionado !== '' && $opcion['nombre'] === $nombreSeleccionado){
+                $seleccionada = $opcion;
+                if(($cifSeleccionado === null || $cifSeleccionado === '') && $opcion['cif'] !== ''){
+                    $cifSeleccionado = $opcion['cif'];
+                }
+                break;
+            }
+        }
+
+        if($cifSeleccionado !== null && $cifSeleccionado !== ''){
+            $seleccionada['cif'] = $cifSeleccionado;
+        }
+
+        return [
+            'opciones' => $opciones,
+            'seleccionada' => $seleccionada,
+            'esGrupo' => count($opciones) > 1
+        ];
+    }
+
     
 
 ?>
