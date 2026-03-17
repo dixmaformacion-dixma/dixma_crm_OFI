@@ -1,6 +1,7 @@
 <div>
     <?php 
-    if($commentarios = cargarCursoCommentario($curso['StudentCursoID'])){
+    $cursoComentarios = isset($cursoComentarioTarget) ? $cursoComentarioTarget : $curso;
+    if($commentarios = cargarCursoCommentario($cursoComentarios['StudentCursoID'])){
             ?>
                 <div class="row p-1 mt-2">
                                 <b>comentarios:</b>

@@ -59,7 +59,15 @@ if (!isset($statusDiplomaColor)) {
                         <input type="checkbox" class="selectable" value="<?php echo $curso['StudentCursoID'] ?>">
                         <?php echo $numr; ?>
                 </div>
-                <?php $empresa = cargarEmpresa($curso['idEmpresa']); ?>
+                <?php
+                        $empresa = cargarEmpresa($curso['idEmpresa']);
+                        $nombreEmpresaCurso = isset($curso['nombre_empresa_seleccionada']) && trim($curso['nombre_empresa_seleccionada']) !== ''
+                                ? $curso['nombre_empresa_seleccionada']
+                                : $empresa['nombre'];
+                        $cifEmpresaCurso = isset($curso['cif_seleccionado']) && trim($curso['cif_seleccionado']) !== ''
+                                ? $curso['cif_seleccionado']
+                                : $empresa['cif'];
+                ?>
                 <div class='col-md-2 border-right text-uppercase'>
                         <?php echo $curso['nombre'] . " " . $curso['apellidos']; ?>
                 </div>
@@ -99,7 +107,7 @@ if (!isset($statusDiplomaColor)) {
                 ?>
                 <div class='col-md-1 border-right text-uppercase' style="<?php echo $empresaStyle; ?>">
                         <a href="tutoria_buscarCursos.php?filterName[]=idEmpresa&filterOperator[]=%3D&filterValue[]=<?php echo urlencode($curso['idEmpresa']); ?>&consultar=Buscar" target="_blank" class="curso-link">
-                                <?php echo htmlspecialchars($empresa['nombre']); ?>
+                                <?php echo htmlspecialchars($nombreEmpresaCurso); ?>
                         </a>
                 </div>
                 <div class='col-md-1 border-right text-uppercase' style="<?php echo @$statusDiplomaColor[$curso['Diploma_Status']] ?>">
@@ -150,7 +158,7 @@ if (!isset($statusDiplomaColor)) {
                 <div class='row mx-auto my-2 container border border-5 m-2' style="background-color:#e8f5e9; border-color:#88c743 !important;">
                         <label class='col-md-6 col-12'>
                                 <b style="color:#2e7d32;" class="text-uppercase">Empresa:</b>
-                                <?php echo $empresa['nombre']; ?>
+                                <?php echo htmlspecialchars($nombreEmpresaCurso); ?>
                         </label>
                         <label class='col-md-6 col-12'>
                                 <b style="color:#2e7d32;" class="text-uppercase">Email Empresa:</b>
@@ -158,7 +166,7 @@ if (!isset($statusDiplomaColor)) {
                         </label>
                         <label class='col-md-6 col-12'>
                                 <b style="color:#2e7d32;">CIF:</b>
-                                <span><?php echo $empresa['cif']; ?></span>
+                                <span><?php echo htmlspecialchars($cifEmpresaCurso); ?></span>
                         </label>
                         <label class='col-md-6 col-12'>
                                 <b style="color:#2e7d32;" class="text-uppercase">telefono Empresa:</b>
@@ -223,9 +231,11 @@ if (!isset($statusDiplomaColor)) {
                         echo '<th>№ Horas</th>';
                         echo '<th>Tipo Venta</th>';
                         echo '<th>Estado Diploma</th>';
+                        echo '<th>Comentarios</th>';
                         echo '</tr>';
                         echo '</thead>';
                         echo '<tbody>';
+                        $previousCoursesCommentModals = '';
                         
                         foreach ($cursosPrevios as $cp) {
                             $yearCurso = date('Y', strtotime($cp['Fecha_Inicio']));
@@ -243,20 +253,56 @@ if (!isset($statusDiplomaColor)) {
                                 $diplomaStyle = 'background-color: #28D700; color: white;';
                             }
                             
-                            echo '<tr style="' . $statusStyle . '">';
-                            echo '<td>' . htmlspecialchars($yearCurso) . '</td>';
-                            echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Denominacion']) . '</small></td>';
-                            echo '<td>' . formattedDate($cp['Fecha_Inicio']) . '</td>';
-                            echo '<td>' . formattedDate($cp['Fecha_Fin']) . '</td>';
-                            echo '<td>' . htmlspecialchars(isset($cp['N_Horas']) ? $cp['N_Horas'] : '') . '</td>';
-                            echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Tipo_Venta']) . '</small></td>';
-                            echo '<td class="text-uppercase" style="' . $diplomaStyle . '"><small>' . htmlspecialchars($diplomaStatus) . '</small></td>';
-                            echo '</tr>';
+                                                        $previousCourseModalId = 'previousCourseCommentsModal' . $cp['StudentCursoID'];
+
+                                                        echo '<tr style="' . $statusStyle . '">';
+                                                        echo '<td>' . htmlspecialchars($yearCurso) . '</td>';
+                                                        echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Denominacion']) . '</small></td>';
+                                                        echo '<td>' . formattedDate($cp['Fecha_Inicio']) . '</td>';
+                                                        echo '<td>' . formattedDate($cp['Fecha_Fin']) . '</td>';
+                                                        echo '<td>' . htmlspecialchars(isset($cp['N_Horas']) ? $cp['N_Horas'] : '') . '</td>';
+                                                        echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Tipo_Venta']) . '</small></td>';
+                                                        echo '<td class="text-uppercase" style="' . $diplomaStyle . '"><small>' . htmlspecialchars($diplomaStatus) . '</small></td>';
+                                                        echo '<td class="text-center">';
+                                                            echo '<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#' . htmlspecialchars($previousCourseModalId) . '">';
+                                                            echo '📝 Mostrar Comentarios';
+                                                        echo '</button>';
+                                                        echo '</td>';
+                                                        echo '</tr>';
+
+                                                        ob_start();
+                                                        ?>
+                                                        <div class="modal fade" id="<?php echo htmlspecialchars($previousCourseModalId); ?>" tabindex="-1" aria-labelledby="<?php echo htmlspecialchars($previousCourseModalId); ?>Label" aria-hidden="true">
+                                                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                                                        <div class="modal-content">
+                                                                                <div class="modal-header" style="background-color: #b0d588;">
+                                                                                        <h5 class="modal-title" id="<?php echo htmlspecialchars($previousCourseModalId); ?>Label">
+                                                                                                <b>COMENTARIOS - <?php echo htmlspecialchars($curso['nombre'] . ' ' . $curso['apellidos']); ?></b><br>
+                                                                                                <small class="text-muted"><?php echo htmlspecialchars($cp['Denominacion']); ?></small>
+                                                                                        </h5>
+                                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                        <?php
+                                                                                        $cursoComentarioTarget = $cp;
+                                                                                        include("template-parts/components/commentSection.(seguimentosAndComments.(curso.listadoCursos)).php");
+                                                                                        unset($cursoComentarioTarget);
+                                                                                        ?>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                        </div>
+                                                        <?php
+                                                        $previousCoursesCommentModals .= ob_get_clean();
                         }
                         
                         echo '</tbody>';
                         echo '</table>';
                         echo '</div>';
+                                                echo $previousCoursesCommentModals;
                         echo '</div>';
                         echo '</div>';
                     }
@@ -300,7 +346,7 @@ if (!isset($statusDiplomaColor)) {
                         <label class='col-md-12 col-12 mt-2'>
                                 <b style="color:#2e7d32;">Empresa (en el momento del formacion):</b>
                                 <?php $empresa = cargarEmpresa($curso['idEmpresa']);
-                                echo $empresa['nombre']; ?>
+                                echo htmlspecialchars(isset($curso['nombre_empresa_seleccionada']) && trim($curso['nombre_empresa_seleccionada']) !== '' ? $curso['nombre_empresa_seleccionada'] : $empresa['nombre']); ?>
                                 [Tel: <b><?php echo $empresa['telef1']; ?></b>]
                         </label>
                         <div class="row">
