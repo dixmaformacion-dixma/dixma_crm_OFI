@@ -11,6 +11,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' and $_POST['function'] == "editar_Alumn
         isset($_POST['Fecha_Fin']) and
         isset($_POST['tutor']) and
         isset($_POST['idEmpresa']) and
+        isset($_POST['nombre_empresa_seleccionada']) and
+        isset($_POST['cif_seleccionado']) and
         isset($_POST['Tipo_Venta']) and
         isset($_POST['Diploma_Status']) and
         isset($_POST['Diploma_Status_Before']) and
@@ -35,6 +37,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' and $_POST['function'] == "editar_Alumn
             'tutor' => $_POST['tutor'],
             'idCurso' => NULL,
             'idEmpresa' => $_POST['idEmpresa'],
+            'nombre_empresa_seleccionada' => $_POST['nombre_empresa_seleccionada'],
+            'cif_seleccionado' => $_POST['cif_seleccionado'],
             'Tipo_Venta' => $_POST['Tipo_Venta'],
             'AP' => $_POST['AP'],
             'Diploma_Status' => $_POST['Diploma_Status'],

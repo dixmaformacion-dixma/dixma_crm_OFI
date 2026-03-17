@@ -86,13 +86,23 @@ if(!isset($tipoCursosArray)){
                         ?>
                 </div>
         </div>
-        <div class="row">
-                <input name="idEmpresa" type="hidden" value="<?php echo $curso['idEmpresa']; ?>"></input>
-            <label class='col-md-8 col-12'>
-                    <b>Denominacion:</b>
-                    <input name="Denominacion" <?php if($curso['idCurso'] != null){echo " readonly ";} ?> class="form-control form-control-sm" type="text" value="<?php echo $curso['Denominacion']; ?>"></input>
-            </label>
-        </div>
+                <div class="row">
+                                <input name="idEmpresa" type="hidden" value="<?php echo $curso['idEmpresa']; ?>"></input>
+                        <label class='col-md-8 col-12'>
+                                        <b>Denominacion:</b>
+                                        <input name="Denominacion" <?php if($curso['idCurso'] != null){echo " readonly ";} ?> class="form-control form-control-sm" type="text" value="<?php echo $curso['Denominacion']; ?>"></input>
+                        </label>
+                </div>
+                <div class="row">
+                        <label class='col-md-6 col-12'>
+                                <b>Nombre Empresa Seleccionada:</b>
+                                <input name="nombre_empresa_seleccionada" class="form-control form-control-sm" type="text" value="<?php echo isset($curso['nombre_empresa_seleccionada'])?htmlspecialchars($curso['nombre_empresa_seleccionada']):''; ?>"></input>
+                        </label>
+                        <label class='col-md-6 col-12'>
+                                <b>CIF Seleccionado:</b>
+                                <input name="cif_seleccionado" class="form-control form-control-sm" type="text" value="<?php echo isset($curso['cif_seleccionado'])?htmlspecialchars($curso['cif_seleccionado']):''; ?>"></input>
+                        </label>
+                </div>
         <div class="row">
             <label class='col-md-4 col-12'>
                     <b>N Accion:</b>

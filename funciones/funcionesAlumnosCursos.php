@@ -305,7 +305,7 @@ function alumnoCursoAdjuntarMultiple($listaAlumnos, $datosCurso)
 function alumnoCursoEditar($datos){
     $conexionPDO = realizarConexion();
     $sql = "UPDATE `alumnocursos` SET `Denominacion` = ?, `N_Accion` = ?, `N_Grupo` = ?, `N_Horas` = ?, `Modalidad` = ?, `DOC_AF` = ?, `Fecha_Inicio` = ?, `Fecha_Fin` = ?, `tutor` = ?, `idCurso` = ?, `idEmpresa` = ?, `Tipo_Venta` = ?, `Diploma_Status` = ?, `Diploma_Status_Ultimo_Cambio` = ?,
-    `Fecha_De_Envio_De_la_Factura` = NULLIF(?,''), `Fecha_De_Recibido_De_La_Factura` = NULLIF(?,''), `Factura` = ?, `AP` = ?, `Recibi_Material` = ?, `CC` = ?, `RLT` = ?, `status_curso` = ?, `contenido_id` = ?, `diploma_sin_firma` = ?,`firma_docente`=? WHERE `StudentCursoID` = ?";
+    `Fecha_De_Envio_De_la_Factura` = NULLIF(?,''), `Fecha_De_Recibido_De_La_Factura` = NULLIF(?,''), `Factura` = ?, `AP` = ?, `Recibi_Material` = ?, `CC` = ?, `RLT` = ?, `status_curso` = ?, `contenido_id` = ?, `diploma_sin_firma` = ?, `firma_docente` = ?, `nombre_empresa_seleccionada` = ?, `cif_seleccionado` = ? WHERE `StudentCursoID` = ?";
     $stmt = $conexionPDO->prepare($sql);
 
     if($stmt){
@@ -334,7 +334,9 @@ function alumnoCursoEditar($datos){
         $stmt->bindValue(23, $datos['contenido_id'], PDO::PARAM_STR);
         $stmt->bindValue(24, $datos['diploma_sin_firma'], PDO::PARAM_STR);
         $stmt->bindValue(25, $datos['firma_docente'], PDO::PARAM_STR);
-        $stmt->bindValue(26, $datos['StudentCursoID'], PDO::PARAM_INT);
+        $stmt->bindValue(26, $datos['nombre_empresa_seleccionada'] ?? null, PDO::PARAM_STR);
+        $stmt->bindValue(27, $datos['cif_seleccionado'] ?? null, PDO::PARAM_STR);
+        $stmt->bindValue(28, $datos['StudentCursoID'], PDO::PARAM_INT);
 
         $executeStatus = $stmt->execute();
         if(!$executeStatus){
