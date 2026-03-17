@@ -21,6 +21,29 @@ $course_data = null;
 $students_list = [];
 $sesiones = [];
 
+function extraerHorarioDesdeDocAf($docAf)
+{
+    if (!is_string($docAf) || trim($docAf) === '') {
+        return null;
+    }
+
+    if (preg_match('/(\d{1,2})[:.](\d{2})\s*(?:-|a|hasta)\s*(\d{1,2})[:.](\d{2})/iu', $docAf, $matches)) {
+        return [
+            'desde' => sprintf('%02d:%02d', (int) $matches[1], (int) $matches[2]),
+            'hasta' => sprintf('%02d:%02d', (int) $matches[3], (int) $matches[4]),
+        ];
+    }
+
+    if (preg_match_all('/(\d{1,2})[:.](\d{2})/', $docAf, $matches, PREG_SET_ORDER) >= 2) {
+        return [
+            'desde' => sprintf('%02d:%02d', (int) $matches[0][1], (int) $matches[0][2]),
+            'hasta' => sprintf('%02d:%02d', (int) $matches[1][1], (int) $matches[1][2]),
+        ];
+    }
+
+    return null;
+}
+
 if ($n_accion && $n_grupo && !empty($student_ids_str)) {
     // Obtener la información del primer curso/alumno para los detalles generales
     $first_id = explode(',', $student_ids_str)[0];
@@ -30,6 +53,8 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
             'Denominacion' => $first_course_info['Denominacion'],
             'N_Accion' => $first_course_info['N_Accion'],
             'N_Grupo' => $first_course_info['N_Grupo'],
+            'DOC_AF' => $first_course_info['DOC_AF'] ?? '',
+            'Tipo_Venta' => $first_course_info['Tipo_Venta'] ?? '',
             'Fecha_Inicio' => $first_course_info['Fecha_Inicio'],
             'Fecha_Fin' => $first_course_info['Fecha_Fin'],
             'tutor' => $first_course_info['tutor']
@@ -170,12 +195,16 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
         <?php else : ?>
             <?php 
             $num_sesiones = count($sesiones);
+            $esCursoPrivado = mb_strtolower(trim((string) ($course_data['Tipo_Venta'] ?? ''))) === 'privado';
+            $horarioDocAf = $esCursoPrivado ? extraerHorarioDesdeDocAf($course_data['DOC_AF'] ?? '') : null;
             foreach ($sesiones as $index => $fecha_sesion) : 
                 $num_sesion = $index + 1;
                 // Parsear fecha y hora del formato "YYYY-MM-DD HH:MM:SS"
                 $datetime = new DateTime($fecha_sesion);
                 $fecha = $datetime->format('d/m/Y');
                 $hora = $datetime->format('H:i');
+                $horaDesde = $horarioDocAf['desde'] ?? $hora;
+                $horaHasta = $horarioDocAf['hasta'] ?? '';
             ?>
                 <div class="printable-area p-4 border rounded bg-white sesion-container">
                     <div class="content-body">
@@ -199,7 +228,7 @@ if ($n_accion && $n_grupo && !empty($student_ids_str)) {
                                 <strong>SESIÓN Nº:</strong> <input type="text" class="editable-input" style="width: 45px;" value="<?= $num_sesion ?>" >
                                 <strong class="ms-2">FECHA:</strong> <input type="text" class="editable-input" style="width: 100px;" value="<?= $fecha ?>" >
                                 <strong class="ms-2">MAÑANA/TARDE:</strong> <input type="text" class="editable-input" style="width: 70px;">
-                                <strong class="ms-2">HORARIO:</strong> DE <input type="text" class="editable-input" style="width: 45px;" value="<?= $hora ?>"> A <input type="text" class="editable-input" style="width: 45px;">
+                                <strong class="ms-2">HORARIO:</strong> DE <input type="text" class="editable-input" style="width: 45px;" value="<?= htmlspecialchars($horaDesde) ?>"> A <input type="text" class="editable-input" style="width: 45px;" value="<?= htmlspecialchars($horaHasta) ?>">
                             </div>
                             <div class="mt-5">
                                 <strong>Firmado:</strong>
