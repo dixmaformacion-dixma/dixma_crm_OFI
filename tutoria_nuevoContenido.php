@@ -44,6 +44,21 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/nulosOtros.js"></script>
     <link rel="icon" href="images/favicon.ico">
+    <style>
+        .contenido-editor-help {
+            margin-top: 0.5rem;
+            color: #5c636a;
+            font-size: 0.95rem;
+        }
+
+        .contenido-editor-help strong {
+            color: #a61e2d;
+        }
+
+        .cke_contents {
+            background-color: #eef3ee;
+        }
+    </style>
 
 </head>
 <body style="background-color:#f3f6f4;">
@@ -104,6 +119,9 @@
                             <label><b>Contenido:</b></label>
                         </div>
                         <div class="col-12">
+                            <div class="contenido-editor-help">
+                                <strong>Guia de impresion:</strong> la linea roja discontinua marca el limite aproximado del texto en el dorso del diploma.
+                            </div>
                             <textarea id="Contenido" name="Contenido"></textarea>
                         </div>
 
@@ -133,9 +151,46 @@
 <script src="https:////cdn.ckeditor.com/4.8.0/full-all/ckeditor.js"></script>
 <script>
 
-    CKEDITOR.replace("Contenido", {
+    var editorGuide = {
+        printableWidthMm: 262,
+        guideLineMm: 88,
+        minHeightMm: 142,
+        sidePaddingMm: 6
+    };
+
+    var editorGuideCss = [
+        'html, body { min-height: ' + editorGuide.minHeightMm + 'mm; }',
+        'body {',
+            'position: relative;',
+            'box-sizing: border-box;',
+            'max-width: ' + editorGuide.printableWidthMm + 'mm;',
+            'margin: 0 auto;',
+            'padding: 0 ' + editorGuide.sidePaddingMm + 'mm 12mm ' + editorGuide.sidePaddingMm + 'mm;',
+            'background-color: #ffffff;',
+            'border: 2px solid #083670;',
+            'color: #083670;',
+            'font-weight: bold;',
+            'line-height: 0.8;',
+            'box-shadow: 0 0 0 12px #eef3ee;',
+        '}',
+        'body::after {',
+            'content: "";',
+            'position: absolute;',
+            'left: 0;',
+            'right: 0;',
+            'top: ' + editorGuide.guideLineMm + 'mm;',
+            'border-top: 2px dashed rgba(166, 30, 45, 0.9);',
+            'pointer-events: none;',
+        '}',
+        'p { margin: 0; line-height: 0.8; }',
+        'ol, ul { margin-top: 0; margin-bottom: 0; }',
+        'li { line-height: 0.8; }'
+    ].join('');
+
+    var editor = CKEDITOR.replace("Contenido", {
         versionCheck: false,
         enterMode: CKEDITOR.ENTER_P,
+        height: 800,
         toolbar: [
             ['Bold', '-', 'NumberedList', 'BulletedList', '-', 'FontSize', 'TextColor', 'Styles']
         ],
@@ -148,16 +203,38 @@
             { name: 'Interlineado 2.5', element: 'p', attributes: { style: 'line-height: 2.5;' } }
             
         ],
-        contentsCss: 'body { line-height: 0.8; }'
+        bodyClass: 'contenido-diploma-editor',
+        contentsCss: []
+    });
+
+    editor.on('instanceReady', function() {
+        editor.document.appendStyleText(editorGuideCss);
+
+        function syncListFontSizes() {
+            var iframeDoc = editor.document.$;
+            var listItems = iframeDoc.querySelectorAll('li');
+            listItems.forEach(function(li) {
+                var spans = li.querySelectorAll('span');
+                var fontSize = null;
+                spans.forEach(function(s) {
+                    if (!fontSize && s.style.fontSize) {
+                        fontSize = s.style.fontSize;
+                    }
+                });
+                if (fontSize) {
+                    li.style.fontSize = fontSize;
+                } else {
+                    li.style.fontSize = '';
+                }
+            });
+        }
+
+        editor.on('change', function() {
+            setTimeout(syncListFontSizes, 0);
+        });
     });
     
     
 </script>
-
-<style>
-    #Contenido p {
-        margin: 0;
-    }
-</style>
 </body>
 </html>
