@@ -105,7 +105,8 @@ $completed = (
                 <?php
                 // Cursos anteriores del alumno
                 if (isset($llamada['idAlumno'])) {
-                    $cursosPrevios = obtenerCursosPreviosAlumno($llamada['idAlumno'], null, $llamada['StudentCursoID']);
+                                        $yearFilter = isset($year) ? $year : null;
+                                        $cursosPrevios = obtenerCursosPreviosAlumno($llamada['idAlumno'], $yearFilter, $llamada['StudentCursoID']);
                     if (!empty($cursosPrevios)) {
                         echo '<div class="col-md-12 col-12 container mt-3 mb-2 border border-2 rounded" style="background-color:#fff3cd;">';
                         echo '<div class="p-2">';
@@ -118,11 +119,14 @@ $completed = (
                         echo '<th>Denominación</th>';
                         echo '<th>Fecha Inicio</th>';
                         echo '<th>Fecha Fin</th>';
+                                                echo '<th>№ Horas</th>';
                         echo '<th>Tipo Venta</th>';
                         echo '<th>Estado Diploma</th>';
+                                                echo '<th>Comentarios</th>';
                         echo '</tr>';
                         echo '</thead>';
                         echo '<tbody>';
+                                                $previousCoursesCommentModals = '';
                         foreach ($cursosPrevios as $cp) {
                             $yearCurso = date('Y', strtotime($cp['Fecha_Inicio']));
                             $statusStyle = '';
@@ -136,18 +140,54 @@ $completed = (
                             if ($diplomaStatus == 'Copia recibida' || $diplomaStatus == 'Entregado') {
                                 $diplomaStyle = 'background-color: #28D700; color: white;';
                             }
+                            $previousCourseModalId = 'previousCourseCommentsModal' . $cp['StudentCursoID'];
                             echo '<tr style="' . $statusStyle . '">';
                             echo '<td>' . htmlspecialchars($yearCurso) . '</td>';
                             echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Denominacion']) . '</small></td>';
                             echo '<td>' . formattedDate($cp['Fecha_Inicio']) . '</td>';
                             echo '<td>' . formattedDate($cp['Fecha_Fin']) . '</td>';
+                            echo '<td>' . htmlspecialchars(isset($cp['N_Horas']) ? $cp['N_Horas'] : '') . '</td>';
                             echo '<td class="text-uppercase"><small>' . htmlspecialchars($cp['Tipo_Venta']) . '</small></td>';
                             echo '<td class="text-uppercase" style="' . $diplomaStyle . '"><small>' . htmlspecialchars($diplomaStatus) . '</small></td>';
+                            echo '<td class="text-center">';
+                            echo '<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#' . htmlspecialchars($previousCourseModalId) . '">';
+                            echo '📝 Mostrar Comentarios';
+                            echo '</button>';
+                            echo '</td>';
                             echo '</tr>';
+
+                            ob_start();
+                            ?>
+                            <div class="modal fade" id="<?php echo htmlspecialchars($previousCourseModalId); ?>" tabindex="-1" aria-labelledby="<?php echo htmlspecialchars($previousCourseModalId); ?>Label" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                            <div class="modal-content">
+                                                    <div class="modal-header" style="background-color: #b0d588;">
+                                                            <h5 class="modal-title" id="<?php echo htmlspecialchars($previousCourseModalId); ?>Label">
+                                                                    <b>COMENTARIOS - <?php echo htmlspecialchars($llamada['nombre'] . ' ' . $llamada['apellidos']); ?></b><br>
+                                                                    <small class="text-muted"><?php echo htmlspecialchars($cp['Denominacion']); ?></small>
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                            <?php
+                                                            $cursoComentarioTarget = $cp;
+                                                            include("template-parts/components/commentSection.(seguimentosAndComments.(curso.listadoCursos)).php");
+                                                            unset($cursoComentarioTarget);
+                                                            ?>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                    </div>
+                                            </div>
+                                    </div>
+                            </div>
+                            <?php
+                            $previousCoursesCommentModals .= ob_get_clean();
                         }
                         echo '</tbody>';
                         echo '</table>';
                         echo '</div>';
+                        echo $previousCoursesCommentModals;
                         echo '</div>';
                         echo '</div>';
                     }
