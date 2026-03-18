@@ -24,6 +24,9 @@ if (!isset($statusDiplomaColor)) {
                 "Entregado" => "background-color: #28D700;",
         ];
 }
+
+$alumnoSearchValue = !empty($curso['nif']) ? $curso['nif'] : $curso['apellidos'];
+$alumnoSearchUrl = 'administracion_buscarAlumno.php?valor=' . urlencode($alumnoSearchValue) . '&consultar=Buscar';
 ?>
 <style>
         .actions {
@@ -69,7 +72,9 @@ if (!isset($statusDiplomaColor)) {
                                 : $empresa['cif'];
                 ?>
                 <div class='col-md-2 border-right text-uppercase'>
-                        <?php echo $curso['nombre'] . " " . $curso['apellidos']; ?>
+                        <a href="<?php echo htmlspecialchars($alumnoSearchUrl); ?>" class="curso-link">
+                                <?php echo htmlspecialchars($curso['nombre'] . " " . $curso['apellidos']); ?>
+                        </a>
                 </div>
                 <div style="width:9%">
                         <?php echo formattedDate($curso['Fecha_Inicio']); ?>

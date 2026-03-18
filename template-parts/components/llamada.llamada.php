@@ -7,12 +7,16 @@ $completed = (
         (strtotime($llamada['seguimento4']) <= strtotime($date) && $llamada['seguimento4check'] == "0") ||
         (strtotime($llamada['seguimento5']) <= strtotime($date) && $llamada['seguimento5check'] == "0")
 );
+$alumnoSearchValue = !empty($llamada['nif']) ? $llamada['nif'] : $llamada['apellidos'];
+$alumnoSearchUrl = 'administracion_buscarAlumno.php?valor=' . urlencode($alumnoSearchValue) . '&consultar=Buscar';
 ?>
 <div class="col-md-12 col-12 container mt-3 border border-4 rounded">
         <div class='row mx-auto my-2 align-items-center'>
                 <div class='col'>
                         <b>Nombre:</b>
-                        <span class="text-uppercase"><?php echo $llamada['nombre']." ".$llamada['apellidos']; ?></span>
+                        <a href="<?php echo htmlspecialchars($alumnoSearchUrl); ?>" class="text-uppercase text-decoration-none text-reset">
+                                <?php echo htmlspecialchars($llamada['nombre'] . " " . $llamada['apellidos']); ?>
+                        </a>
                 </div>
                 <?php if(!$completed){?>
                         <b class='col-auto'>Todas las llamadas ya fueron hechas</b>
@@ -85,7 +89,7 @@ $completed = (
                         <label class='col-md-12 col-12 mt-2'>
                                 <b>Empresa:</b>
                                 <?php $empresa = cargarEmpresa($llamada['idEmpresa']);
-                                echo $empresa['nombre']; ?>
+                                echo !empty($llamada['nombre_empresa_seleccionada']) ? htmlspecialchars($llamada['nombre_empresa_seleccionada']) : htmlspecialchars($empresa['nombre']); ?>
                                 [Tel: <b><?php echo $empresa['telef1']; ?></b>]
                                 [Persona de contacto:: <b><?php echo $empresa['personacontacto']; ?></b>]
                         </label>
