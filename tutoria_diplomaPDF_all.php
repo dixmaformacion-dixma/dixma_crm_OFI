@@ -366,11 +366,11 @@ $fecha_expedicion_display = formattedDate($fecha_expedicion);
         <div class="inputrow">
           <div class="single-input">
             <div class="label" class="width:6cm">que presta sus servicios en la Empresa</div>
-            <input class="form-control" style="width:12.7cm" value="<?php echo $alumnocurso['nombreEmpresa'] ?>" type="text"></input>
+            <input class="form-control" style="width:12.7cm" value="<?php echo !empty($alumnocurso['nombre_empresa_seleccionada']) ? htmlspecialchars($alumnocurso['nombre_empresa_seleccionada']) : htmlspecialchars($alumnocurso['nombreEmpresa']); ?>" type="text"></input>
           </div>
           <div class="single-input">
             <div class="label" style="margin-left:0.3cm">con CIF</div>
-            <input class="form-control" style="width:2.6cm" value="<?php echo $alumnocurso['cif'] ?>" type="text"></input>
+            <input class="form-control" style="width:2.6cm" value="<?php echo !empty($alumnocurso['cif_seleccionado']) ? htmlspecialchars($alumnocurso['cif_seleccionado']) : htmlspecialchars($alumnocurso['cif']); ?>" type="text"></input>
           </div>
         </div>
 

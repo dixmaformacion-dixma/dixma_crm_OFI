@@ -31,7 +31,7 @@ $conexionPDO = realizarConexion();
 
 /* -- 1) Datos del curso de referencia -- */
 $stmt = $conexionPDO->prepare(
-    "SELECT N_Accion, N_Grupo, idEmpresa, Denominacion, Fecha_Inicio, Fecha_Fin, N_Horas, Modalidad
+  "SELECT N_Accion, N_Grupo, idEmpresa, Denominacion, Fecha_Inicio, Fecha_Fin, N_Horas, Modalidad, nombre_empresa_seleccionada, cif_seleccionado
      FROM alumnocursos WHERE StudentCursoID = ?"
 );
 $stmt->bindValue(1, $StudentCursoID, PDO::PARAM_INT);
@@ -100,13 +100,20 @@ $partes = array_filter([
     trim($empresa['provincia']),
 ]);
 $direccionEmpresa = implode(', ', $partes);
+
+$nombreEmpresaDisplay = isset($cursoRef['nombre_empresa_seleccionada']) && trim($cursoRef['nombre_empresa_seleccionada']) !== ''
+    ? $cursoRef['nombre_empresa_seleccionada']
+    : $empresa['nombre'];
+$cifEmpresaDisplay = isset($cursoRef['cif_seleccionado']) && trim($cursoRef['cif_seleccionado']) !== ''
+  ? $cursoRef['cif_seleccionado']
+  : $empresa['cif'];
 ?>
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?php echo htmlspecialchars('Certificado_'.$cursoRef['N_Accion'].'_'.$cursoRef['N_Grupo'].'_'.preg_replace('/[^A-Za-z0-9_]/','_', $empresa['nombre'])); ?></title>
+  <title><?php echo htmlspecialchars('Certificado_'.$cursoRef['N_Accion'].'_'.$cursoRef['N_Grupo'].'_'.preg_replace('/[^A-Za-z0-9_]/','_', $nombreEmpresaDisplay)); ?></title>
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <script src="js/jquery.min.js"></script>
   <link rel="icon" href="images/favicon.ico">
@@ -286,7 +293,7 @@ $direccionEmpresa = implode(', ', $partes);
 
   <!-- Párrafo empresa / curso -->
   <div class="parrafo-empresa">
-    Trabajadores de la empresa&nbsp;<strong contenteditable="true"><?php echo htmlspecialchars($empresa['nombre']); ?></strong>&nbsp;con CIF:&nbsp;<strong contenteditable="true"><?php echo htmlspecialchars($empresa['cif']); ?></strong>&nbsp;y domicilio social en&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($direccionEmpresa); ?></span>,&nbsp;han realizado la formación de&nbsp;<strong contenteditable="true"><?php echo htmlspecialchars($cursoRef['Denominacion']); ?></strong>&nbsp;<?php if ($same_date): ?>el&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($fecha_inicio_display); ?></span><?php else: ?>entre el&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($fecha_inicio_display); ?></span>&nbsp;y el&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($fecha_fin_display); ?></span><?php endif; ?>&nbsp;con una duración de&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($cursoRef['N_Horas']); ?></span>&nbsp;hora<?php echo ($cursoRef['N_Horas'] != 1 ? 's' : ''); ?> en modalidad&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($cursoRef['Modalidad'] ?? 'presencial'); ?></span>.
+    Trabajadores de la empresa&nbsp;<strong contenteditable="true"><?php echo htmlspecialchars($nombreEmpresaDisplay); ?></strong>&nbsp;con CIF:&nbsp;<strong contenteditable="true"><?php echo htmlspecialchars($cifEmpresaDisplay); ?></strong>&nbsp;y domicilio social en&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($direccionEmpresa); ?></span>,&nbsp;han realizado la formación de&nbsp;<strong contenteditable="true"><?php echo htmlspecialchars($cursoRef['Denominacion']); ?></strong>&nbsp;<?php if ($same_date): ?>el&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($fecha_inicio_display); ?></span><?php else: ?>entre el&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($fecha_inicio_display); ?></span>&nbsp;y el&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($fecha_fin_display); ?></span><?php endif; ?>&nbsp;con una duración de&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($cursoRef['N_Horas']); ?></span>&nbsp;hora<?php echo ($cursoRef['N_Horas'] != 1 ? 's' : ''); ?> en modalidad&nbsp;<span contenteditable="true"><?php echo htmlspecialchars($cursoRef['Modalidad'] ?? 'presencial'); ?></span>.
   </div>
 
   <!-- Contenidos -->
