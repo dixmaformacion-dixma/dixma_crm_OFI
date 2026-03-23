@@ -58,5 +58,10 @@ $file = basename($_SERVER['PHP_SELF']);
             <img class="ms-3" src="images/iconos/shield-lock.svg">
             <b> Credenciales Dixma </b>
         </a>
+        <a class="nav-link <?php if($file == 'control_llamadas.php'){echo 'active text-bg-secondary';}; ?>"
+        href="control_llamadas.php">
+            <img class="ms-3" src="images/iconos/telephone.svg">
+            <b> Control de llamadas </b>
+        </a>
     </nav> 
 </div>

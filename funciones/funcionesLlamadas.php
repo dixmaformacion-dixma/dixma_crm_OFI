@@ -1,5 +1,8 @@
 <?php
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
     function insertarNuevaLlamada($datosLlamada, $id){
             $conexionPDO = realizarConexion();
             $sql = "INSERT INTO llamadas (idempresa,
@@ -81,6 +84,8 @@
         $datosLlamadas = [
             'numeroEmpresa' => "",
             'numeroLlamadas' => "",
+            'primeraLlamada' => "",
+            'ultimaLlamada' => "",
             'pendientes' => "",
             'citas' => "",
             'credito' => "",
@@ -99,6 +104,8 @@
 
         $sqlEmpresas = "SELECT COUNT(DISTINCT idempresa) FROM llamadas WHERE fecha = '$fecha' AND recibidopor = '$operador'";
         $sqlLlamadas = "SELECT COUNT(idllamada) FROM llamadas WHERE fecha = '$fecha' AND recibidopor = '$operador'";
+    $sqlPrimeraLlamada = "SELECT COALESCE(MIN(hora), '-') AS primeraLlamada FROM llamadas WHERE fecha = '$fecha' AND recibidopor = '$operador'";
+    $sqlUltimaLlamada = "SELECT COALESCE(MAX(hora), '-') AS ultimaLlamada FROM llamadas WHERE fecha = '$fecha' AND recibidopor = '$operador'";
         $sqlPendientes = "SELECT DISTINCT COUNT(estadollamada) FROM llamadas WHERE fecha = '$fecha' AND recibidopor = '$operador' AND estadollamada = 'pendiente'";
         $sqlCitas = "SELECT DISTINCT COUNT(estadollamada) FROM llamadas WHERE fecha = '$fecha' AND recibidopor = '$operador' AND estadollamada = 'cita'";
 
@@ -124,6 +131,22 @@
         if($cuenta = $stmt->fetch()){
 
             $datosLlamadas['numeroLlamadas'] = $cuenta;
+
+        }
+
+        $stmt = $conexionPDO->query($sqlPrimeraLlamada);
+
+        if($cuenta = $stmt->fetch()){
+
+            $datosLlamadas['primeraLlamada'] = $cuenta;
+
+        }
+
+        $stmt = $conexionPDO->query($sqlUltimaLlamada);
+
+        if($cuenta = $stmt->fetch()){
+
+            $datosLlamadas['ultimaLlamada'] = $cuenta;
 
         }
 

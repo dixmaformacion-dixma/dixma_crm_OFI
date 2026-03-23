@@ -9,12 +9,19 @@
     if(empty($_SESSION)){
 
         header("Location: index.php");
+        exit();
+
+    } else if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 'admin') {
+
+        header("Location: inicio.php");
+        exit();
 
     }
 
     date_default_timezone_set("Europe/Madrid");
     setlocale(LC_ALL, "spanish");
     $fechaHoy = date('Y-m-d');
+    $datosLlamadas = [];
 
     if(isset($_GET['consultar']) && $_SERVER['REQUEST_METHOD'] == 'GET'){
 
@@ -63,7 +70,7 @@
     <!-- Menu cabecera -->
 
     <?php 
-        $menuaction = 'callcenter';
+        $menuaction = 'administracion';
         require_once './template-parts/header/menu_top.php' 
     ?>
 
@@ -73,7 +80,7 @@
 
         <div class="row">
 
-            <?php require_once './template-parts/leftmenu/callcenter.template.php'; ?>
+            <?php require_once './template-parts/leftmenu/administracion.template.php'; ?>
 
             <div class="col-md-10 col-12" id="formLlamadas">
 
@@ -156,6 +163,8 @@
                         echo "<div class='border rounded border-5 mt-3 col-12' id='datosLlamada'>";
                         echo "<label class='border rounded text-center d-inline-flex flex-column col-10 col-md-2 ms-4 mt-2 ms-md-5 mt-md-2 ' > <b>Total de empresas:</b> " . $datosLlamadas['numeroEmpresas'][0] . "</label>";
                         echo "<label class='border rounded text-center d-inline-flex flex-column col-10 col-md-2 ms-4 mt-2 ms-md-5 mt-md-2 ' > <b>Total de llamadas:</b> " . $datosLlamadas['numeroLlamadas'][0] . "</label>";
+                        echo "<label class='border rounded text-center d-inline-flex flex-column col-10 col-md-2 ms-4 mt-2 ms-md-5 mt-md-2 ' > <b>Primera llamada:</b> " . $datosLlamadas['primeraLlamada'][0] . "</label>";
+                        echo "<label class='border rounded text-center d-inline-flex flex-column col-10 col-md-2 ms-4 mt-2 ms-md-5 mt-md-2 ' > <b>Ultima llamada:</b> " . $datosLlamadas['ultimaLlamada'][0] . "</label>";
                         echo "<label class='border rounded text-center d-inline-flex flex-column col-10 col-md-2 ms-4 mt-2 ms-md-5 mt-md-2  text-danger' > <b>Pendientes:</b> " . $datosLlamadas['pendientes'][0] . "</label>";
                         echo "<label class='border rounded text-center d-inline-flex flex-column col-10 col-md-2 ms-4 mt-2 ms-md-5 mt-md-2  text-success' > <b>Citas:</b> " . $datosLlamadas['citas'][0] . "</label>";
                         echo "<label class='border rounded text-center d-inline-flex flex-column col-10 col-md-2 ms-4 mt-2 ms-md-5 mt-md-2 ' > <b>Han gastado credito:</b> " . $datosLlamadas['credito'][0] . "</label>";
