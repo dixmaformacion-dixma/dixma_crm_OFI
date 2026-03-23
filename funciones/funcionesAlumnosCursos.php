@@ -154,6 +154,9 @@ function buscarAlumnoCursos($filterName, $filterOperator, $filterValue){
         if($name === 'Anno'){
             $sql .= ' AND (YEAR(`Fecha_Inicio`) = ?)';
             $params[] = $value;
+        } elseif($name === 'apellidos' && in_array($op, $allowed_operators)){
+            $sql .= ' AND alumnos.apellidos '.$op.' ?';
+            $params[] = in_array($op, ['LIKE', 'NOT LIKE']) ? '%' . $value . '%' : $value;
         } elseif($name === 'idEmpresa'){
             // Se il valore è numerico filtra per ID, altrimenti cerca per nome azienda
             if(is_numeric($value)){
@@ -398,7 +401,7 @@ function cargarCursoCommentario($StudentCursoID){
 }
 function insertarCursoCommentario($datosCommentario){
     $conexionPDO = realizarConexion();
-    $sql = "INSERT INTO `commentarios`(`idCommentario`, `commentario`, `StudentCursoID`, `date`, `author`) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO `commentarios`(`idCommentario`, `commentario`, `StudentCursoID`, `date`, `created_at`, `author`) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conexionPDO->prepare($sql);
 
     if($stmt){
@@ -407,7 +410,25 @@ function insertarCursoCommentario($datosCommentario){
         $stmt->bindValue(2, $datosCommentario['commentario'], PDO::PARAM_STR);
         $stmt->bindValue(3, $datosCommentario['StudentCursoID'], PDO::PARAM_STR);
         $stmt->bindValue(4, $datosCommentario['date'], PDO::PARAM_STR);
-        $stmt->bindValue(5, $datosCommentario['author'], PDO::PARAM_STR);
+        $stmt->bindValue(5, $datosCommentario['created_at'], PDO::PARAM_STR);
+        $stmt->bindValue(6, $datosCommentario['author'], PDO::PARAM_STR);
+
+        return $stmt->execute();
+    } else {
+        return false;
+    }
+
+    unset($conexionPDO);
+}
+function actualizarCursoCommentario($datosCommentario){
+    $conexionPDO = realizarConexion();
+    $sql = "UPDATE `commentarios` SET `commentario` = ? WHERE `idCommentario` = ? AND `StudentCursoID` = ?";
+    $stmt = $conexionPDO->prepare($sql);
+
+    if($stmt){
+        $stmt->bindValue(1, $datosCommentario['commentario'], PDO::PARAM_STR);
+        $stmt->bindValue(2, $datosCommentario['idCommentario'], PDO::PARAM_INT);
+        $stmt->bindValue(3, $datosCommentario['StudentCursoID'], PDO::PARAM_INT);
 
         return $stmt->execute();
     } else {

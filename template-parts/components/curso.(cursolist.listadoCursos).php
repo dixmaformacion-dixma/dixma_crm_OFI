@@ -25,8 +25,8 @@ if (!isset($statusDiplomaColor)) {
         ];
 }
 
-$alumnoSearchValue = !empty($curso['nif']) ? $curso['nif'] : $curso['apellidos'];
-$alumnoSearchUrl = 'administracion_buscarAlumno.php?valor=' . urlencode($alumnoSearchValue) . '&consultar=Buscar';
+$alumnoSearchValue = trim((string)($curso['apellidos'] ?? ''));
+$alumnoSearchUrl = 'tutoria_buscarCursos.php?filterName[]=apellidos&filterOperator[]=LIKE&filterValue[]=' . urlencode($alumnoSearchValue) . '&consultar=Buscar';
 ?>
 <style>
         .actions {
@@ -290,7 +290,9 @@ $alumnoSearchUrl = 'administracion_buscarAlumno.php?valor=' . urlencode($alumnoS
                                                                                 <div class="modal-body">
                                                                                         <?php
                                                                                         $cursoComentarioTarget = $cp;
+                                                                                        $cursoComentarioModalTarget = $previousCourseModalId;
                                                                                         include("template-parts/components/commentSection.(seguimentosAndComments.(curso.listadoCursos)).php");
+                                                                                        unset($cursoComentarioModalTarget);
                                                                                         unset($cursoComentarioTarget);
                                                                                         ?>
                                                                                 </div>

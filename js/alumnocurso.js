@@ -134,6 +134,7 @@ function addFilter(){
         <div id="filter${filterID}" class="filters mx-auto col-md-8 p-3 col-12 border border-2">
             <select class="form-control" name="filterName[]" onchange="changeFieldType('filter${filterID}')">
                 <option value="Denominacion">Denominacion</option>
+                <option value="apellidos">Apellido alumno</option>
                 <option value="Anno">Año</option>
                 <option value="N_Accion">N_Accion</option>
                 <option value="N_Grupo">N_Grupo</option>
@@ -169,6 +170,7 @@ function RemoveFilter(filterID){
 async function changeFieldType(filterID){
     let criteriaType = {
         Denominacion: ['text'],
+        apellidos: ['text'],
         Anno: ['number'],
         N_Accion: ['number'],
         N_Grupo: ['number'],

@@ -120,6 +120,7 @@ CREATE TABLE `commentarios` (
   `commentario` varchar(300) NOT NULL,
   `StudentCursoID` int(11) NOT NULL,
   `date` date NOT NULL,
+  `created_at` datetime DEFAULT NULL,
   `author` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
