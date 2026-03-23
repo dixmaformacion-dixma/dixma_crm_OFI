@@ -16,12 +16,20 @@
             $commentarioDataLabel = !empty($commentario['created_at'])
                     ? date("d/m/Y H:i", strtotime($commentario['created_at']))
                     : date("d/m/Y", strtotime($commentario['date']));
+                $commentarioAuthor = isset($commentario['author']) ? trim((string)$commentario['author']) : '';
+                $commentarioAuthorKey = strtolower($commentarioAuthor);
+                $commentarioAuthorStyle = '';
+                if ($commentarioAuthorKey === 'mariacao') {
+                    $commentarioAuthorStyle = 'color:#e75480;';
+                } elseif ($commentarioAuthorKey === 'laurabarros') {
+                    $commentarioAuthorStyle = 'color:#4da6ff;';
+                }
                     ?>
             <div class="row py-1 px-2 mx-0 my-1 align-items-center" style="background-color:#fcfdfb; border-bottom:1px solid #dde6d8;" id="<?php echo htmlspecialchars($commentarioContainerId); ?>">
                 <div class="col d-flex align-items-center gap-2" style="min-width:0; padding-left:0;">
                     <span style="white-space:nowrap; color:#6f7c73; font-size:0.85rem;">
-                        (<?php echo htmlspecialchars($commentarioDataLabel); ?>)
-                        <?php echo htmlspecialchars($commentario['author']); ?>:
+                    (<?php echo htmlspecialchars($commentarioDataLabel); ?>)
+                    <span style="<?php echo htmlspecialchars($commentarioAuthorStyle); ?>"><?php echo htmlspecialchars($commentarioAuthor); ?></span>:
                     </span>
                     <span style="white-space:pre-wrap; word-break:break-word; flex:1; color:#2f3a33; font-size:0.93rem;"><?php echo htmlspecialchars($commentario['commentario']); ?></span>
                 </div>

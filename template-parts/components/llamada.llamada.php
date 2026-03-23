@@ -101,10 +101,12 @@ $alumnoSearchUrl = 'administracion_buscarAlumno.php?valor=' . urlencode($alumnoS
                                 <b>Fecha_Fin:</b>
                                 <?php echo date("d/m/Y",strtotime($llamada['Fecha_Fin'])); ?>
                         </label>
-                        <?php 
-                                $curso = $llamada;
-                                require("template-parts/components/seguimentosAndComments.(curso.listadoCursos).php");
-                        ?>
+                        <div style="background-color: #e8f5e9; padding: 10px; border-radius: 5px; border: 2px solid #88c743;">
+                                <?php 
+                                        $curso = $llamada;
+                                        require("template-parts/components/seguimentosAndComments.(curso.listadoCursos).php");
+                                ?>
+                        </div>
                 </div>
                 <?php
                 // Cursos anteriores del alumno
