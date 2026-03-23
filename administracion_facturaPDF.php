@@ -51,6 +51,13 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
   }
 ##end of procedure
 
+$nombreEmpresaFactura = isset($alumnocurso[0]['nombre_empresa_seleccionada']) && trim($alumnocurso[0]['nombre_empresa_seleccionada']) !== ''
+  ? $alumnocurso[0]['nombre_empresa_seleccionada']
+  : $empresa['nombre'];
+$cifEmpresaFactura = isset($alumnocurso[0]['cif_seleccionado']) && trim($alumnocurso[0]['cif_seleccionado']) !== ''
+  ? $alumnocurso[0]['cif_seleccionado']
+  : $empresa['cif'];
+
 ##procedure to get the sale information
   // Use the helper function which returns the latest sale for the company
   $venta = cargarVenta($_GET['idEmpresa']);
@@ -186,13 +193,13 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
       <div class="row d-flex align-items-center">
         <label class="col-auto col-form-label p-0">Razón Social:</label>
         <div class="col px-0">
-          <input class="form-control form-control-sm border-0" style="padding: 0px; padding-left:5px;" value="<?php echo $empresa['nombre'] ?>" type="text"></input>
+          <input class="form-control form-control-sm border-0" style="padding: 0px; padding-left:5px;" value="<?php echo htmlspecialchars($nombreEmpresaFactura); ?>" type="text"></input>
         </div>
       </div>
       <div class="row d-flex align-items-center">
         <label class="col-auto col-form-label p-0">CIF:</label>
         <div class="col px-0">
-          <input class="form-control form-control-sm border-0" style="padding: 0px; padding-left:5px;" value="<?php echo $empresa['cif'] ?>" type="text"></input>
+          <input class="form-control form-control-sm border-0" style="padding: 0px; padding-left:5px;" value="<?php echo htmlspecialchars($cifEmpresaFactura); ?>" type="text"></input>
         </div>
       </div>
       <div class="row d-flex align-items-top">
