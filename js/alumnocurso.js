@@ -135,6 +135,7 @@ function addFilter(){
             <select class="form-control" name="filterName[]" onchange="changeFieldType('filter${filterID}')">
                 <option value="Denominacion">Denominacion</option>
                 <option value="apellidos">Apellido alumno</option>
+                <option value="idAlumno">ID alumno</option>
                 <option value="Anno">Año</option>
                 <option value="N_Accion">N_Accion</option>
                 <option value="N_Grupo">N_Grupo</option>
@@ -171,6 +172,7 @@ async function changeFieldType(filterID){
     let criteriaType = {
         Denominacion: ['text'],
         apellidos: ['text'],
+        idAlumno: ['number'],
         Anno: ['number'],
         N_Accion: ['number'],
         N_Grupo: ['number'],
