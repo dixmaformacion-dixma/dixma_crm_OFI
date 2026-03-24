@@ -1,0 +1,32 @@
+Buenos días:
+
+
+Desde diXma te queremos dar la bienvenida al curso de “{{CURSO}}” ({{HORAS}} horas) que estás haciendo con nosotros.
+Mi nombre es {{TUTOR}} y voy a ser tu tutora desde hoy, día {{FECHA_INICIO_DIA}} de {{FECHA_INICIO_MES}} hasta el día {{FECHA_FIN_DIA}} de {{FECHA_FIN_MES}} de {{FECHA_FIN_ANIO}}, plazo en el que finaliza el curso.
+Ante cualquier duda, comentario o problema que tengas relacionado con el curso podrás ponerte en contacto conmigo a través de la mensajería interna del curso, en el email tutoria@dixmaformacion.com o en el teléfono 604 067 035, te responderé a la mayor brevedad posible.
+El horario de tutoría que seguiré será de lunes a viernes de 09:00 a 15:00 y de 16:30 a 18:30 horas.
+Me gustaría recordarte que también existen otras vías de comunicación como son los foros, donde podrás plantear dudas e inquietudes y hacer comentarios a propósito de los contenidos del curso conmigo y con tus compañeros.
+
+
+Como estamos hablando de un curso de teleformación, recordarte también que es necesario tener un tiempo de conexión mínimo a la plataforma y es necesario realizar todos los apartados del mismo.
+
+
+Te envío en adjunto el cuestionario de evaluación de la calidad, para que una vez finalizado el curso puedas cubrirlo y entregármelo. Es un documento obligatorio que necesitamos tener aquí para cerrar tu expediente correctamente y que nos ayuda a crecer como empresa :)
+
+
+Y ya por último, agradecerte de antemano la confianza depositada en diXma, así como el interés que has demostrado por este curso, que espero sea de tu agrado y te ayude en tu desarrollo profesional y personal.
+
+
+¡Suerte y ánimo con el curso!
+
+
+Sin otro particular, te saluda atentamente,
+
+
+{{TUTOR}}
+
+Tutora
+
+
+
+Un saludo,

@@ -6,7 +6,12 @@
         </div>
         <div>
                 <div class="row">
-                        <label class='col-auto'>
+                        <label class='col-auto d-flex align-items-center gap-2 flex-wrap'>
+                                <a class="btn btn-sm btn-outline-secondary"
+                                        href="tutoria_primeraTutoriaDOCX.php?StudentCursoID=<?php echo $curso['StudentCursoID']; ?>"
+                                        target="_blank">
+                                        Generar DOCX
+                                </a>
                                 <b>1º TUTORÍA:</b>
                                 <?php echo checkAndHighlightDate($curso['seguimento0'], $curso['seguimento0check']); ?>
                                 <input type="checkbox" class="form-check-input" disabled <?php if ($curso['seguimento0check'] == 1) {
