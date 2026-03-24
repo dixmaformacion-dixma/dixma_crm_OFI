@@ -194,6 +194,11 @@ function buscarAlumnoCursos($filterName, $filterOperator, $filterValue){
         if($name === 'Anno'){
             $sql .= ' AND (YEAR(`Fecha_Inicio`) = ?)';
             $params[] = $value;
+        } elseif($name === 'idAlumno'){
+            if(is_numeric($value)){
+                $sql .= ' AND alumnos.idAlumno = ?';
+                $params[] = (int)$value;
+            }
         } elseif($name === 'apellidos' && in_array($op, $allowed_operators)){
             $sql .= ' AND alumnos.apellidos '.$op.' ?';
             $params[] = in_array($op, ['LIKE', 'NOT LIKE']) ? '%' . $value . '%' : $value;

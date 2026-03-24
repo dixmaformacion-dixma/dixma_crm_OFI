@@ -7,8 +7,8 @@ $completed = (
         (strtotime($llamada['seguimento4']) <= strtotime($date) && $llamada['seguimento4check'] == "0") ||
         (strtotime($llamada['seguimento5']) <= strtotime($date) && $llamada['seguimento5check'] == "0")
 );
-$alumnoSearchValue = !empty($llamada['nif']) ? $llamada['nif'] : $llamada['apellidos'];
-$alumnoSearchUrl = 'administracion_buscarAlumno.php?valor=' . urlencode($alumnoSearchValue) . '&consultar=Buscar';
+$alumnoSearchValue = isset($llamada['idAlumno']) ? (int)$llamada['idAlumno'] : 0;
+$alumnoSearchUrl = 'tutoria_buscarCursos.php?filterName[]=idAlumno&filterOperator[]=%3D&filterValue[]=' . urlencode((string)$alumnoSearchValue) . '&consultar=Buscar';
 ?>
 <div class="col-md-12 col-12 container mt-3 border border-4 rounded">
         <div class='row mx-auto my-2 align-items-center'>

@@ -25,8 +25,8 @@ if (!isset($statusDiplomaColor)) {
         ];
 }
 
-$alumnoSearchValue = trim((string)($curso['apellidos'] ?? ''));
-$alumnoSearchUrl = 'tutoria_buscarCursos.php?filterName[]=apellidos&filterOperator[]=LIKE&filterValue[]=' . urlencode($alumnoSearchValue) . '&consultar=Buscar';
+$alumnoSearchValue = isset($curso['idAlumno']) ? (int)$curso['idAlumno'] : 0;
+$alumnoSearchUrl = 'tutoria_buscarCursos.php?filterName[]=idAlumno&filterOperator[]=%3D&filterValue[]=' . urlencode((string)$alumnoSearchValue) . '&consultar=Buscar';
 ?>
 <style>
         .actions {
