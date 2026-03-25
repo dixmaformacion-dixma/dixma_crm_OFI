@@ -147,7 +147,14 @@ $alumnoSearchUrl = 'tutoria_buscarCursos.php?filterName[]=idAlumno&filterOperato
                                 </ul>
                         </div>
                         <?php if (!empty($curso['mostrar_solo_primero'])): ?>
+                        <?php
+                                $verTodosUrl = 'tutoria_ver_todos_trabajadores.php?id=' . urlencode((string)$curso['StudentCursoID'])
+                                        . '&year=' . urlencode((string)date('Y', strtotime($curso['Fecha_Inicio'])))
+                                        . '&Tipo_Venta_Display=' . urlencode((string)($curso['Tipo_Venta'] ?? 'Bonificado'));
+                        ?>
                         <a class="ver-todos-grupo"
+                                href="<?php echo htmlspecialchars($verTodosUrl); ?>"
+                                target="_blank"
                                 role="button"
                                 data-id="<?php echo $curso['StudentCursoID']; ?>"
                                 title="Ver todos los trabajadores de este curso"

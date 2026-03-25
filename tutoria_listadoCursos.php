@@ -77,8 +77,6 @@
 
             <div class="col-md-10 col-12" id="formBusqueda">
 
-                <form method="GET">
-
                     <h2 class="text-center mt-2 pt-2 pb-3 mb-md-5 mb-3 border border-5 rounded" style="background-color: #b0d588; letter-spacing: 7px;">LISTADO CURSOS</h2>
 
                     <div class="container-fluid">
@@ -133,8 +131,6 @@
                             </div>
                     </div>
 
-                </form>
-
             </div>
 
         </div>
@@ -182,19 +178,6 @@
                     }catch(e){}
                 }
             });
-    </script>
-
-    <script>
-        var _year             = '<?= htmlspecialchars($year) ?>';
-        var _tipoVentaDisplay = '<?= htmlspecialchars($Tipo_Venta_Display) ?>';
-
-        $(document).on('click', '.ver-todos-grupo', function(){
-            var id = $(this).data('id');
-            var fetchUrl = 'tutoria_ver_todos_trabajadores.php?id=' + id
-                         + '&year=' + encodeURIComponent(_year)
-                         + '&Tipo_Venta_Display=' + encodeURIComponent(_tipoVentaDisplay);
-            window.open(fetchUrl, '_blank');
-        });
     </script>
 
 </body>

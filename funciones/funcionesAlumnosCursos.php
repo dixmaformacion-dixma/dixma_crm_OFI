@@ -218,6 +218,45 @@ function buscarAlumnoCursos($filterName, $filterOperator, $filterValue){
         // Se colonna o operatore non valido, il filtro viene ignorato
     }
 
+    $sql .= ' AND (
+                alumnocursos.mostrar_solo_primero = 0
+                OR
+                (
+                    alumnocursos.mostrar_solo_primero = 1
+                    AND alumnocursos.StudentCursoID = (
+                        SELECT MIN(ac2.StudentCursoID)
+                        FROM alumnocursos ac2
+                        WHERE ac2.N_Accion = alumnocursos.N_Accion
+                        AND ac2.N_Grupo = alumnocursos.N_Grupo
+                        AND ac2.idEmpresa = alumnocursos.idEmpresa
+                    )
+                )
+                OR
+                (
+                    alumnocursos.mostrar_solo_primero < 0
+                    AND (
+                        alumnocursos.idAlumno = ABS(alumnocursos.mostrar_solo_primero)
+                        OR (
+                            NOT EXISTS (
+                                SELECT 1
+                                FROM alumnocursos ac3
+                                WHERE ac3.N_Accion = alumnocursos.N_Accion
+                                AND ac3.N_Grupo = alumnocursos.N_Grupo
+                                AND ac3.idEmpresa = alumnocursos.idEmpresa
+                                AND ac3.idAlumno = ABS(alumnocursos.mostrar_solo_primero)
+                            )
+                            AND alumnocursos.StudentCursoID = (
+                                SELECT MIN(ac4.StudentCursoID)
+                                FROM alumnocursos ac4
+                                WHERE ac4.N_Accion = alumnocursos.N_Accion
+                                AND ac4.N_Grupo = alumnocursos.N_Grupo
+                                AND ac4.idEmpresa = alumnocursos.idEmpresa
+                            )
+                        )
+                    )
+                )
+            )';
+
     $sql .= ' ORDER BY `Fecha_Fin`,`N_Accion`,`N_Grupo`,`apellidos`,`nombre` ASC';
 
     $stmt = $conexionPDO->prepare($sql);
