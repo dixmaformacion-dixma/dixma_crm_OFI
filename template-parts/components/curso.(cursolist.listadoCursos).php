@@ -56,7 +56,7 @@ $alumnoSearchUrl = 'tutoria_buscarCursos.php?filterName[]=idAlumno&filterOperato
         }
 </style>
 
-<div class="col-md-12 col-12 container border border-2">
+<div class="col-md-12 col-12 container border border-2" id="cursoLinea<?php echo $curso['StudentCursoID']; ?>">
         <div class='row p-0 text-uppercase' style="<?php echo $statusColor[$curso['status_curso']]; ?>">
                 <div style="width:5%">
                         <input type="checkbox" class="selectable" value="<?php echo $curso['StudentCursoID'] ?>">

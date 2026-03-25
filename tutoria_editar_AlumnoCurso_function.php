@@ -80,7 +80,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' and $_POST['function'] == "editar_Alumn
         if(alumnoCursoEditar($datosAlumnoCurso)){
             if(isset($_POST['page_from'])){
                 $redirect = $_POST['page_from'];
-                $anchor = '#infoEdit' . $datosAlumnoCurso['StudentCursoID'];
+                $anchor = '#cursoLinea' . $datosAlumnoCurso['StudentCursoID'];
                 // Se page_from ha già una query string (es. buscarCursos) non aggiungere altri params
                 if(strpos($redirect, '?') === false){
                     $params = [];
