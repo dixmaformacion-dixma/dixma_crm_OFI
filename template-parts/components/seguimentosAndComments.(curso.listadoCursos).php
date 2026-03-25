@@ -50,7 +50,7 @@ if (!function_exists('primeraTutoriaFechaPartes')) {
 }
 
 if (!function_exists('renderPrimeraTutoriaText')) {
-        function renderPrimeraTutoriaText($curso)
+        function renderPrimeraTutoriaText($curso): string
         {
                 static $template = null;
 
@@ -90,7 +90,7 @@ if (!function_exists('renderPrimeraTutoriaText')) {
 }
 
 if (!function_exists('renderFinalTutoriaText')) {
-        function renderFinalTutoriaText($curso)
+        function renderFinalTutoriaText($curso): string
         {
                 static $template = null;
 
@@ -112,7 +112,7 @@ if (!function_exists('renderFinalTutoriaText')) {
 }
 
 if (!function_exists('renderSeguimiento1Text')) {
-        function renderSeguimiento1Text($curso)
+        function renderSeguimiento1Text($curso): string
         {
                 static $template = null;
 
@@ -134,7 +134,7 @@ if (!function_exists('renderSeguimiento1Text')) {
 }
 
 if (!function_exists('renderSeguimiento3Text')) {
-        function renderSeguimiento3Text($curso)
+        function renderSeguimiento3Text($curso): string
         {
                 static $template = null;
 
@@ -156,7 +156,7 @@ if (!function_exists('renderSeguimiento3Text')) {
 }
 
 if (!function_exists('renderSeguimiento4Text')) {
-        function renderSeguimiento4Text($curso)
+        function renderSeguimiento4Text($curso): string
         {
                 static $template = null;
 
@@ -194,34 +194,40 @@ $finalTutoriaTextareaId = 'finalTutoriaTextArea' . $curso['StudentCursoID'];
 $finalTutoriaTexto = renderFinalTutoriaText($curso);
 ?>
 <style>
-        .seguimiento-with-action {
-                width: 100%;
+         .seguimiento-row {
+                margin-top: 6px;
+                margin-bottom: 6px;
         }
-        .seguimiento-line {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                flex-wrap: nowrap;
-                width: 100%;
-        }
-        .seguimiento-content {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                flex: 0 0 360px;
-                min-width: 0;
-        }
-        .seguimiento-action-btn {
-                flex: 0 0 auto;
-        }
-        @media (max-width: 768px) {
-                .seguimiento-line {
-                        flex-wrap: wrap;
-                }
 
-                .seguimiento-content {
-                        flex-basis: auto;
-                }
+        .seguimiento-main {
+                display: inline-block;
+        }
+
+        .seguimiento-main b {
+                margin-right: 8px;
+        }
+
+        .seguimiento-main .form-check-input {
+                margin-left: 8px;
+                vertical-align: middle;
+        }
+
+        .seguimiento-action {
+                width: 26px;
+                height: 26px;
+                padding: 0;
+                background-color: #1e989e;
+                border: none;
+                color: #fff;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+        }
+
+        .seguimiento-action img {
+                width: 10px;
+                height: 10px;
+                filter: brightness(0) invert(1);
         }
 </style>
 <div class="container col-10 mt-3">
@@ -231,24 +237,24 @@ $finalTutoriaTexto = renderFinalTutoriaText($curso);
                 </div>
         </div>
         <div>
-                <div class="row">
-                        <label class='col-auto seguimiento-line'>
-                                <span class="seguimiento-content">
+                <div class="row align-items-center seguimiento-row">
+                        <div class="col-auto">
+                                <span class="seguimiento-main">
                                         <b>1º TUTORÍA:</b>
                                         <?php echo checkAndHighlightDate($curso['seguimento0'], $curso['seguimento0check']); ?>
                                         <input type="checkbox" class="form-check-input" disabled <?php if ($curso['seguimento0check'] == 1) {
                                                                                                                 echo "checked";
                                                                                                         } ?>>
                                 </span>
+                        </div>
+                        <div class="col-auto ps-1">
                                 <button type="button"
-                                        class="btn btn-sm d-inline-flex align-items-center justify-content-center seguimiento-action-btn"
-                                        style="background-color:#1e989e; border:none; color:#fff; width:34px; height:34px; padding:0;"
+                                        class="btn btn-sm seguimiento-action"
                                         data-bs-toggle="modal"
                                         data-bs-target="#<?php echo $primeraTutoriaModalId; ?>">
-                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo" title="Ver texto del correo" aria-label="Correo" style="width:18px; height:18px; filter: brightness(0) invert(1);">
+                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo" title="Ver texto del correo" aria-label="Correo">
                                 </button>
-                        </label>
-
+                        </div>
                 </div>
                 <div class="modal fade" id="<?php echo $primeraTutoriaModalId; ?>" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -272,23 +278,24 @@ $finalTutoriaTexto = renderFinalTutoriaText($curso);
                                 </div>
                         </div>
                 </div>
-                <div class="row">
-                        <label class='col-auto seguimiento-line'>
-                                <span class="seguimiento-content">
+                <div class="row align-items-center seguimiento-row">
+                        <div class="col-auto">
+                                <span class="seguimiento-main">
                                         <b>SEGUIMIENTO 1:</b>
                                         <?php echo checkAndHighlightDate($curso['seguimento1'], $curso['seguimento1check']); ?>
                                         <input type="checkbox" class="form-check-input" disabled <?php if ($curso['seguimento1check'] == 1) {
                                                                                                                 echo "checked";
                                                                                                         } ?>>
                                 </span>
+                        </div>
+                        <div class="col-auto ps-1">
                                 <button type="button"
-                                        class="btn btn-sm d-inline-flex align-items-center justify-content-center seguimiento-action-btn"
-                                        style="background-color:#1e989e; border:none; color:#fff; width:34px; height:34px; padding:0;"
+                                        class="btn btn-sm seguimiento-action"
                                         data-bs-toggle="modal"
                                         data-bs-target="#<?php echo $seguimiento1ModalId; ?>">
-                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo seguimiento 1" title="Ver texto del seguimiento 1" aria-label="Correo seguimiento 1" style="width:18px; height:18px; filter: brightness(0) invert(1);">
+                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo seguimiento 1" title="Ver texto del seguimiento 1" aria-label="Correo seguimiento 1">
                                 </button>
-                        </label>
+                        </div>
                 </div>
                 <div class="modal fade" id="<?php echo $seguimiento1ModalId; ?>" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -312,34 +319,35 @@ $finalTutoriaTexto = renderFinalTutoriaText($curso);
                                 </div>
                         </div>
                 </div>
-                <div class="row">
-                        <label class='col-auto'>
-                                <b>SEGUIMIENTO 2:</b>
-                                <?php echo checkAndHighlightDate($curso['seguimento2'], $curso['seguimento2check']); ?>
-                                <input type="checkbox" class="form-check-input" disabled <?php if ($curso['seguimento2check'] == 1) {
-                                                                                                        echo "checked";
-                                                                                                } ?>>
-                        </label>
-
+                <div class="row align-items-center seguimiento-row">
+                        <div class="col-auto">
+                                <span class="seguimiento-main">
+                                        <b>SEGUIMIENTO 2:</b>
+                                        <?php echo checkAndHighlightDate($curso['seguimento2'], $curso['seguimento2check']); ?>
+                                        <input type="checkbox" class="form-check-input" disabled <?php if ($curso['seguimento2check'] == 1) {
+                                                                                                                echo "checked";
+                                                                                                        } ?>>
+                                </span>
+                        </div>
                 </div>
-                <div class="row">
-                        <label class='col-auto seguimiento-line'>
-                                <span class="seguimiento-content">
+                <div class="row align-items-center seguimiento-row">
+                        <div class="col-auto">
+                                <span class="seguimiento-main">
                                         <b>SEGUIMIENTO 3:</b>
                                         <?php echo checkAndHighlightDate($curso['seguimento3'], $curso['seguimento3check']); ?>
                                         <input type="checkbox" class="form-check-input" disabled <?php if ($curso['seguimento3check'] == 1) {
                                                                                                                 echo "checked";
                                                                                                         } ?>>
                                 </span>
+                        </div>
+                        <div class="col-auto ps-1">
                                 <button type="button"
-                                        class="btn btn-sm d-inline-flex align-items-center justify-content-center seguimiento-action-btn"
-                                        style="background-color:#1e989e; border:none; color:#fff; width:34px; height:34px; padding:0;"
+                                        class="btn btn-sm seguimiento-action"
                                         data-bs-toggle="modal"
                                         data-bs-target="#<?php echo $seguimiento3ModalId; ?>">
-                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo seguimiento 3" title="Ver texto del seguimiento 3" aria-label="Correo seguimiento 3" style="width:18px; height:18px; filter: brightness(0) invert(1);">
+                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo seguimiento 3" title="Ver texto del seguimiento 3" aria-label="Correo seguimiento 3">
                                 </button>
-                        </label>
-
+                        </div>
                 </div>
                 <div class="modal fade" id="<?php echo $seguimiento3ModalId; ?>" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -363,23 +371,24 @@ $finalTutoriaTexto = renderFinalTutoriaText($curso);
                                 </div>
                         </div>
                 </div>
-                <div class="row">
-                        <label class='col-auto seguimiento-line'>
-                                <span class="seguimiento-content">
+                <div class="row align-items-center seguimiento-row">
+                        <div class="col-auto">
+                                <span class="seguimiento-main">
                                         <b>SEGUIMIENTO 4:</b>
                                         <?php echo checkAndHighlightDate($curso['seguimento4'], $curso['seguimento4check']); ?>
                                         <input type="checkbox" class="form-check-input" disabled <?php if ($curso['seguimento4check'] == 1) {
                                                                                                                 echo "checked";
                                                                                                         } ?>>
                                 </span>
+                        </div>
+                        <div class="col-auto ps-1">
                                 <button type="button"
-                                        class="btn btn-sm d-inline-flex align-items-center justify-content-center seguimiento-action-btn"
-                                        style="background-color:#1e989e; border:none; color:#fff; width:34px; height:34px; padding:0;"
+                                        class="btn btn-sm seguimiento-action"
                                         data-bs-toggle="modal"
                                         data-bs-target="#<?php echo $seguimiento4ModalId; ?>">
-                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo seguimiento 4" title="Ver texto del seguimiento 4" aria-label="Correo seguimiento 4" style="width:18px; height:18px; filter: brightness(0) invert(1);">
+                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo seguimiento 4" title="Ver texto del seguimiento 4" aria-label="Correo seguimiento 4">
                                 </button>
-                        </label>
+                        </div>
                 </div>
                 <div class="modal fade" id="<?php echo $seguimiento4ModalId; ?>" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -403,23 +412,24 @@ $finalTutoriaTexto = renderFinalTutoriaText($curso);
                                 </div>
                         </div>
                 </div>
-                <div class="row">
-                        <label class='col-auto seguimiento-line'>
-                                <span class="seguimiento-content">
+                <div class="row align-items-center seguimiento-row">
+                        <div class="col-auto">
+                                <span class="seguimiento-main">
                                         <b>SEGUIMIENTO 5:</b>
                                         <?php echo checkAndHighlightDate($curso['seguimento5'], $curso['seguimento5check']); ?>
                                         <input type="checkbox" class="form-check-input" disabled <?php if ($curso['seguimento5check'] == 1) {
                                                                                                                 echo "checked";
                                                                                                         } ?>>
                                 </span>
+                        </div>
+                        <div class="col-auto ps-1">
                                 <button type="button"
-                                        class="btn btn-sm d-inline-flex align-items-center justify-content-center seguimiento-action-btn"
-                                        style="background-color:#1e989e; border:none; color:#fff; width:34px; height:34px; padding:0;"
+                                        class="btn btn-sm seguimiento-action"
                                         data-bs-toggle="modal"
                                         data-bs-target="#<?php echo $finalTutoriaModalId; ?>">
-                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo final" title="Ver texto del mensaje final" aria-label="Correo final" style="width:18px; height:18px; filter: brightness(0) invert(1);">
+                                        <img src="images/iconos/envelope-open-fill.svg" alt="Correo final" title="Ver texto del mensaje final" aria-label="Correo final">
                                 </button>
-                        </label>
+                        </div>
                 </div>
                 <div class="modal fade" id="<?php echo $finalTutoriaModalId; ?>" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-scrollable">
