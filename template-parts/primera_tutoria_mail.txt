@@ -1,4 +1,4 @@
-Buenos días:
+Buenos días {{ALUMNO}}:
 
 
 Desde diXma te queremos dar la bienvenida al curso de “{{CURSO}}” ({{HORAS}} horas) que estás haciendo con nosotros.

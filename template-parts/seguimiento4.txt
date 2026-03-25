@@ -1,0 +1,9 @@
+Buenos días {{ALUMNO}},
+
+He estado revisando tu progreso y vas estupendamente. Ya solo te quedan los últimos temas para completar el curso.
+
+¡Enhorabuena! 😊 Estás llevando un ritmo muy bueno y constante. Espero que los contenidos y las actividades te estén resultando interesantes y útiles.
+
+Si te surge cualquier duda en esta recta final, no dudes en ponerte en contacto conmigo, estaré encantada de ayudarte.
+
+Un saludo! 😊

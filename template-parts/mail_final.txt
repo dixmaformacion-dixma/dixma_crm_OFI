@@ -1,0 +1,19 @@
+Buenos días {{ALUMNO}},
+
+Tal y como te comentaba por teléfono, tienes ya completados todos los recursos de los que se compone el curso, por lo que ya has finalizado.
+
+ENHORABUENA! 😊
+
+¡Se nota que has trabajado bien todos los contenidos! 😊
+
+Espero que el curso y la metodología de trabajo hayan resultado de tu agrado y que puedas poner en práctica lo aprendido en tu puesto de trabajo.
+
+Expirada la fecha fin de curso empezaremos a tramitar tu diploma y nos pondremos en contacto contigo para entregártelo.
+
+¡Buen trabajo!
+
+Un saludo! 😊
+
+
+
+Un saludo,

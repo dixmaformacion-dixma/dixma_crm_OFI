@@ -1,0 +1,13 @@
+Buenos días {{ALUMNO}},
+
+
+Como sabes estamos ya en la mitad de curso y veo que vas estupendamente, actualmente estás en la Unidad X: XXXXXXXXXXX, excelente progreso! 😊
+
+
+Espero que estés comprendiendo los contenidos a la perfección y la metodología del curso esté resultando de tu agrado.
+
+
+No dudes ante cualquier consulta ponerte en contacto conmigo para resolverla y seguir avanzando con éxito 😊
+
+
+Un saludo!
