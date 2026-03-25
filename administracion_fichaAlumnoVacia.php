@@ -21,6 +21,10 @@ date_default_timezone_set("Europe/Madrid");
 setlocale(LC_ALL, "spanish");
 
 $empresa = cargarEmpresa($_GET['idEmpresa']);
+$empresaSeleccion = obtenerSeleccionEmpresa($empresa);
+if($empresaSeleccion['esGrupo']){
+  $empresaOpcionesJson = json_encode($empresaSeleccion['opciones']);
+}
  
 ?>
 
@@ -331,7 +335,14 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
 
             <label class="col-3 col-form-label">NOMBRE / RAZÓN SOCIAL:</label>
             <div class="col-9">
-              <input class="form-control form-control-sm" value="<?php echo $empresa['nombre'] ?>" type="text"></input>
+              <input id="nombreEmpresaFichaAlumnoVacia" name="nombre_empresa_seleccionada" class="form-control form-control-sm" value="<?php echo htmlspecialchars(isset($empresaSeleccion['seleccionada']['nombre']) ? $empresaSeleccion['seleccionada']['nombre'] : $empresa['nombre']); ?>" type="text" <?php if($empresaSeleccion['esGrupo']){ echo 'list="empresaFichaAlumnoVaciaOptions" oninput="actualizarEmpresaFichaAlumnoVacia(this)"'; } ?>>
+              <?php if($empresaSeleccion['esGrupo']){ ?>
+                <datalist id="empresaFichaAlumnoVaciaOptions">
+                  <?php foreach($empresaSeleccion['opciones'] as $opcion){ ?>
+                    <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>"></option>
+                  <?php } ?>
+                </datalist>
+              <?php } ?>
             </div>
 
         </div>
@@ -340,7 +351,7 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
 
             <label class="col-3 col-form-label">CIF:</label>
             <div class="col-3">
-              <input type="text" value="<?php echo $empresa['cif'] ?>" class="form-control form-control-sm"></input>
+              <input id="cifFichaAlumnoVacia" name="cif_seleccionado" type="text" value="<?php echo htmlspecialchars(isset($empresaSeleccion['seleccionada']['cif']) ? $empresaSeleccion['seleccionada']['cif'] : $empresa['cif']); ?>" class="form-control form-control-sm"></input>
             </div>
 
             <label class="col-3 col-form-label text-center">SEG. SOCIAL EMPRESA (CCC):</label>
@@ -554,6 +565,20 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
       </div>
 
 </div>
+
+<script>
+<?php if($empresaSeleccion['esGrupo']){ ?>
+var empresaFichaAlumnoVaciaOpciones = <?php echo $empresaOpcionesJson; ?>;
+function actualizarEmpresaFichaAlumnoVacia(input) {
+  var opcion = empresaFichaAlumnoVaciaOpciones.find(function(item) {
+    return item.nombre === input.value;
+  }) || null;
+  if (opcion) {
+    document.getElementById('cifFichaAlumnoVacia').value = opcion.cif;
+  }
+}
+<?php } ?>
+</script>
 
 </body>
 </html>

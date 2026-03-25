@@ -25,6 +25,7 @@ if(!isset($_GET['idEmpresa']) or !isset($_GET['N_Accion']) or !isset($_GET['Ano'
 
 ##get the details of the company
 $empresa = cargarEmpresa($_GET['idEmpresa']);
+$empresaSeleccion = obtenerSeleccionEmpresa($empresa);
 
 ##procedure to get the courses which belong to this company
   $startDate = (new \DateTime($_GET['Ano'].'-01-01'))->format('Y-m-d');
@@ -53,10 +54,10 @@ $empresa = cargarEmpresa($_GET['idEmpresa']);
 
 $nombreEmpresaFactura = isset($alumnocurso[0]['nombre_empresa_seleccionada']) && trim($alumnocurso[0]['nombre_empresa_seleccionada']) !== ''
   ? $alumnocurso[0]['nombre_empresa_seleccionada']
-  : $empresa['nombre'];
+  : ($empresaSeleccion['seleccionada']['nombre'] ?? $empresa['nombre']);
 $cifEmpresaFactura = isset($alumnocurso[0]['cif_seleccionado']) && trim($alumnocurso[0]['cif_seleccionado']) !== ''
   ? $alumnocurso[0]['cif_seleccionado']
-  : $empresa['cif'];
+  : ($empresaSeleccion['seleccionada']['cif'] ?? $empresa['cif']);
 
 ##procedure to get the sale information
   // Use the helper function which returns the latest sale for the company
@@ -193,13 +194,20 @@ $cifEmpresaFactura = isset($alumnocurso[0]['cif_seleccionado']) && trim($alumnoc
       <div class="row d-flex align-items-center">
         <label class="col-auto col-form-label p-0">Razón Social:</label>
         <div class="col px-0">
-          <input class="form-control form-control-sm border-0" style="padding: 0px; padding-left:5px;" value="<?php echo htmlspecialchars($nombreEmpresaFactura); ?>" type="text"></input>
+          <input id="nombreEmpresaFactura" name="nombre_empresa_seleccionada" class="form-control form-control-sm border-0" style="padding: 0px; padding-left:5px;" value="<?php echo htmlspecialchars($nombreEmpresaFactura); ?>" type="text" list="empresaFacturaOptions" oninput="actualizarEmpresaFactura(this)"></input>
+          <?php if(!empty($empresaSeleccion) && $empresaSeleccion['esGrupo']){ ?>
+            <datalist id="empresaFacturaOptions">
+              <?php foreach($empresaSeleccion['opciones'] as $opcion){ ?>
+                <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>"></option>
+              <?php } ?>
+            </datalist>
+          <?php } ?>
         </div>
       </div>
       <div class="row d-flex align-items-center">
         <label class="col-auto col-form-label p-0">CIF:</label>
         <div class="col px-0">
-          <input class="form-control form-control-sm border-0" style="padding: 0px; padding-left:5px;" value="<?php echo htmlspecialchars($cifEmpresaFactura); ?>" type="text"></input>
+          <input id="cifEmpresaFactura" name="cif_seleccionado" class="form-control form-control-sm border-0" style="padding: 0px; padding-left:5px;" value="<?php echo htmlspecialchars($cifEmpresaFactura); ?>" type="text"></input>
         </div>
       </div>
       <div class="row d-flex align-items-top">
@@ -371,6 +379,13 @@ $cifEmpresaFactura = isset($alumnocurso[0]['cif_seleccionado']) && trim($alumnoc
 </div>
 
 <script>
+<?php if(!empty($empresaSeleccion) && $empresaSeleccion['esGrupo']){ ?>
+var empresaFacturaOpciones = <?php echo json_encode($empresaSeleccion['opciones']); ?>;
+function actualizarEmpresaFactura(input){
+  var opcion = empresaFacturaOpciones.find(function(item){ return item.nombre === input.value; }) || null;
+  $('#cifEmpresaFactura').val(opcion ? opcion.cif : $('#cifEmpresaFactura').val());
+}
+<?php } ?>
 function changeFormaDePago(){
   if($('#formaDePago').get(0).value == "Transferencia"){
     $('#bankDetails').get(0).style.display = "flex";

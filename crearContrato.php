@@ -137,19 +137,20 @@
           <label class="col-2 col-form-label" style="">RAZÓN SOCIAL:</label>
             <div class="col-6">
               <?php if($empresaSeleccion['esGrupo']){ ?>
-                <select id="empresaContrato" class="form-select form-select-sm" onchange="actualizarEmpresaContrato(this)">
+                <input id="nombreEmpresaContrato" name="nombre_empresa_seleccionada" class="form-control form-control-sm" type="text" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>" list="empresaContratoOptions" oninput="actualizarEmpresaContrato(this)">
+                <datalist id="empresaContratoOptions">
                   <?php foreach($empresaSeleccion['opciones'] as $opcion){ ?>
-                    <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>" <?php if($opcion['nombre'] === $empresaSeleccion['seleccionada']['nombre']){ echo 'selected'; } ?>><?php echo htmlspecialchars($opcion['nombre']); ?></option>
+                    <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>"></option>
                   <?php } ?>
-                </select>
+                </datalist>
               <?php } else { ?>
-                <input class="form-control form-control-sm" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>" type="text"></input>
+                <input id="nombreEmpresaContrato" name="nombre_empresa_seleccionada" class="form-control form-control-sm" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>" type="text"></input>
               <?php } ?>
             </div>        
         
           <label class="col-1 col-form-label ">CIF:</label>
             <div class="col-3">
-              <input id="cifContrato" class="form-control form-control-sm" type="text" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>"></input>
+              <input id="cifContrato" name="cif_seleccionado" class="form-control form-control-sm" type="text" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>"></input>
             </div>    
 
         </div>
@@ -497,9 +498,13 @@
   <script>
     var empresaContratoOpciones = <?php echo $empresaOpcionesJson; ?>;
 
-    function actualizarEmpresaContrato(select) {
-      var opcion = empresaContratoOpciones[select.selectedIndex] || null;
-      document.getElementById('cifContrato').value = opcion ? opcion.cif : '';
+    function actualizarEmpresaContrato(input) {
+      var opcion = empresaContratoOpciones.find(function(item) {
+        return item.nombre === input.value;
+      }) || null;
+      if (opcion) {
+        document.getElementById('cifContrato').value = opcion.cif;
+      }
     }
   </script>
   <?php } ?>

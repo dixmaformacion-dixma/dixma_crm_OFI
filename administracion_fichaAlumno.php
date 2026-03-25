@@ -347,14 +347,13 @@ if($empresaSeleccion['esGrupo']){
 
             <label class="col-3 col-form-label">NOMBRE / RAZÓN SOCIAL:</label>
             <div class="col-9">
+              <input id="nombreEmpresaFichaAlumno" name="nombre_empresa_seleccionada" class="form-control form-control-sm" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>" type="text" <?php if($empresaSeleccion['esGrupo']){ echo 'list="empresaFichaAlumnoOptions" oninput="actualizarEmpresaFichaAlumno(this)"'; } ?>>
               <?php if($empresaSeleccion['esGrupo']){ ?>
-                <select id="empresaFichaAlumno" class="form-select form-select-sm" onchange="actualizarEmpresaFichaAlumno(this)">
+                <datalist id="empresaFichaAlumnoOptions">
                   <?php foreach($empresaSeleccion['opciones'] as $opcion){ ?>
-                    <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>" <?php if($opcion['nombre'] === $empresaSeleccion['seleccionada']['nombre']){ echo 'selected'; } ?>><?php echo htmlspecialchars($opcion['nombre']); ?></option>
+                    <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>"></option>
                   <?php } ?>
-                </select>
-              <?php } else { ?>
-                <input class="form-control form-control-sm" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>" type="text"></input>
+                </datalist>
               <?php } ?>
             </div>
 
@@ -364,7 +363,7 @@ if($empresaSeleccion['esGrupo']){
 
             <label class="col-3 col-form-label">CIF:</label>
             <div class="col-3">
-              <input id="cifFichaAlumno" type="text" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>" class="form-control form-control-sm"></input>
+              <input id="cifFichaAlumno" name="cif_seleccionado" type="text" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['cif']); ?>" class="form-control form-control-sm"></input>
             </div>
 
             <label class="col-3 col-form-label text-center">SEG. SOCIAL EMPRESA (CCC):</label>
@@ -603,9 +602,13 @@ if($empresaSeleccion['esGrupo']){
   <?php if($empresaSeleccion['esGrupo']){ ?>
   var empresaFichaAlumnoOpciones = <?php echo $empresaOpcionesJson; ?>;
 
-  function actualizarEmpresaFichaAlumno(select) {
-    var opcion = empresaFichaAlumnoOpciones[select.selectedIndex] || null;
-    document.getElementById('cifFichaAlumno').value = opcion ? opcion.cif : '';
+  function actualizarEmpresaFichaAlumno(input) {
+    var opcion = empresaFichaAlumnoOpciones.find(function(item) {
+      return item.nombre === input.value;
+    }) || null;
+    if (opcion) {
+      document.getElementById('cifFichaAlumno').value = opcion.cif;
+    }
   }
   <?php } ?>
 

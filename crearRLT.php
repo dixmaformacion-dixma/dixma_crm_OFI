@@ -154,18 +154,19 @@ $mes_actual = $meses_es[(int)$fecha_informe->format('n')];
                 <div class="col-9 d-flex align-items-baseline">
                     <span class="me-2 text-nowrap">Razón Social:</span>
                     <?php if(isset($empresaSeleccion) && $empresaSeleccion['esGrupo']){ ?>
-                        <select id="empresaRLT" class="form-select form-select-sm" onchange="actualizarEmpresaRLT(this)">
+                        <input id="nombreEmpresaRLT" name="nombre_empresa_seleccionada" type="text" class="form-control form-control-sm" value="<?php echo htmlspecialchars($empresaSeleccion['seleccionada']['nombre']); ?>" list="empresaRLTOptions" oninput="actualizarEmpresaRLT(this)">
+                        <datalist id="empresaRLTOptions">
                             <?php foreach($empresaSeleccion['opciones'] as $opcion){ ?>
-                                <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>" <?php if($opcion['nombre'] === $empresaSeleccion['seleccionada']['nombre']) echo 'selected'; ?>><?php echo htmlspecialchars($opcion['nombre']); ?></option>
+                                <option value="<?php echo htmlspecialchars($opcion['nombre']); ?>"></option>
                             <?php } ?>
-                        </select>
+                        </datalist>
                     <?php } else { ?>
-                        <input type="text" class="form-control text-center flex-grow-1 border-0 border-bottom border-dark rounded-0 px-2" value="<?php echo htmlspecialchars($empresa['nombre']); ?>">
+                        <input id="nombreEmpresaRLT" name="nombre_empresa_seleccionada" type="text" class="form-control text-center flex-grow-1 border-0 border-bottom border-dark rounded-0 px-2" value="<?php echo htmlspecialchars($empresa['nombre']); ?>">
                     <?php } ?>
                 </div>
                 <div class="col-3 d-flex align-items-baseline">
                     <span class="ms-1 me-2">CIF:</span>
-                    <input id="cifRLT" type="text" class="form-control text-center flex-grow-1 border-0 border-bottom border-dark rounded-0 px-2" value="<?php echo htmlspecialchars(isset($empresaSeleccion) ? $empresaSeleccion['seleccionada']['cif'] : $empresa['cif']); ?>">
+                    <input id="cifRLT" name="cif_seleccionado" type="text" class="form-control text-center flex-grow-1 border-0 border-bottom border-dark rounded-0 px-2" value="<?php echo htmlspecialchars(isset($empresaSeleccion) ? $empresaSeleccion['seleccionada']['cif'] : $empresa['cif']); ?>">
                 </div>
         </div>
 
@@ -259,9 +260,13 @@ $mes_actual = $meses_es[(int)$fecha_informe->format('n')];
     <?php if(isset($empresaSeleccion) && $empresaSeleccion['esGrupo']){ ?>
     <script>
         var empresaRLT_Opciones = <?php echo $empresaOpcionesJson; ?>;
-        function actualizarEmpresaRLT(select){
-            var opcion = empresaRLT_Opciones[select.selectedIndex] || null;
-            document.getElementById('cifRLT').value = opcion ? opcion.cif : '';
+        function actualizarEmpresaRLT(input){
+            var opcion = empresaRLT_Opciones.find(function(item){
+                return item.nombre === input.value;
+            }) || null;
+            if (opcion) {
+                document.getElementById('cifRLT').value = opcion.cif;
+            }
         }
     </script>
     <?php } ?>
