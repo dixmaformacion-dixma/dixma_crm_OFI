@@ -308,6 +308,12 @@ document.getElementById('toggle_selection')?.addEventListener('click', function(
                 / Grupo: <?php echo htmlspecialchars($corsoRef['N_Grupo']); ?>
                 &nbsp;&mdash;&nbsp; <?php echo count($cursos); ?> trabajadores
             </span>
+            <a href="tutoria_controlAsistencia.php?N_Accion=<?php echo urlencode($corsoRef['N_Accion']); ?>&N_Grupo=<?php echo urlencode($corsoRef['N_Grupo']); ?>" id="controlAsistenciaBtn" class="btn btn-sm btn-success fw-bold">
+                Control de Asistencia
+            </a>
+            <a href="tutoria_diplomaPDF_all.php" id="printAll" target="_blank" class="btn btn-sm btn-danger fw-bold">
+                Imprimir Diplomas Seleccionados
+            </a>
             <button type="button" class="btn btn-sm btn-warning fw-bold" id="btn-certificado">
                🖨️ Imprimir certificado
             </button>
@@ -346,7 +352,32 @@ document.getElementById('toggle_selection')?.addEventListener('click', function(
         if ($(this).val() == 'all') {
             $('.selectable').prop('checked', $(this).prop('checked'));
         }
+
+        let href = $('#printAll').attr('href').split('?')[0];
+        let selectables = $('.selectable:checked').toArray()
+            .map(function (item) { return $(item).val(); })
+            .filter(function (value) { return !isNaN(parseInt(value)); });
+
+        href += '?ids=' + selectables.join(',');
+        $('#printAll').attr('href', href);
     });
+
+    $('#controlAsistenciaBtn').on('click', function (e) {
+        e.preventDefault();
+
+        let selectedIds = $('.selectable:checked').toArray()
+            .map(function (item) { return $(item).val(); })
+            .filter(function (value) { return value !== 'all' && !isNaN(parseInt(value)); });
+
+        if (selectedIds.length === 0) {
+            alert('Por favor, selecciona al menos un alumno para generar el control de asistencia.');
+            return;
+        }
+
+        let baseUrl = $(this).attr('href');
+        window.location.href = baseUrl + '&ids=' + selectedIds.join(',');
+    });
+
     document.getElementById('btn-certificado').addEventListener('click', function () {
         var checked = document.querySelectorAll('.selectable:checked');
         var baseUrl = 'tutoria_certificadoPDF.php?id=<?php echo $StudentCursoID; ?>';
