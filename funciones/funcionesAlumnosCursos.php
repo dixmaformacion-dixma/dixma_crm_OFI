@@ -526,36 +526,78 @@ function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on"){
     if($Tipo_Venta != "Todos"){
         $temp = $Tipo_Venta;
     }
+
+    $mostrarSoloPrimeroFiltro = '(
+        alumnocursos.mostrar_solo_primero = 0
+        OR
+        (
+            alumnocursos.mostrar_solo_primero = 1
+            AND alumnocursos.StudentCursoID = (
+                SELECT MIN(ac2.StudentCursoID)
+                FROM alumnocursos ac2
+                WHERE ac2.N_Accion = alumnocursos.N_Accion
+                AND ac2.N_Grupo = alumnocursos.N_Grupo
+                AND ac2.idEmpresa = alumnocursos.idEmpresa
+            )
+        )
+        OR
+        (
+            alumnocursos.mostrar_solo_primero < 0
+            AND (
+                alumnocursos.idAlumno = ABS(alumnocursos.mostrar_solo_primero)
+                OR (
+                    NOT EXISTS (
+                        SELECT 1
+                        FROM alumnocursos ac3
+                        WHERE ac3.N_Accion = alumnocursos.N_Accion
+                        AND ac3.N_Grupo = alumnocursos.N_Grupo
+                        AND ac3.idEmpresa = alumnocursos.idEmpresa
+                        AND ac3.idAlumno = ABS(alumnocursos.mostrar_solo_primero)
+                    )
+                    AND alumnocursos.StudentCursoID = (
+                        SELECT MIN(ac4.StudentCursoID)
+                        FROM alumnocursos ac4
+                        WHERE ac4.N_Accion = alumnocursos.N_Accion
+                        AND ac4.N_Grupo = alumnocursos.N_Grupo
+                        AND ac4.idEmpresa = alumnocursos.idEmpresa
+                    )
+                )
+            )
+        )
+    )';
     
     $conexionPDO = realizarConexion();
 
     if($missedCalls == "on"){
         $sql = 'SELECT * FROM `alumnocursos` inner join alumnos on alumnocursos.`idAlumno` = alumnos.idAlumno WHERE
         (
-            (`Tipo_Venta` LIKE ?) 
-            AND 
             (
-                `seguimento0` = ? OR 
-                `seguimento1` = ? OR 
-                `seguimento2` = ? OR 
-                `seguimento3` = ? OR 
-                `seguimento4` = ? OR 
-                `seguimento5` = ?
-            )
-        ) 
-        OR 
-        (
-            (`Tipo_Venta` LIKE ?) 
-            AND 
+                (`Tipo_Venta` LIKE ?) 
+                AND 
+                (
+                    `seguimento0` = ? OR 
+                    `seguimento1` = ? OR 
+                    `seguimento2` = ? OR 
+                    `seguimento3` = ? OR 
+                    `seguimento4` = ? OR 
+                    `seguimento5` = ?
+                )
+            ) 
+            OR 
             (
-                (`seguimento0` < ? AND seguimento0check = 0) OR 
-                (`seguimento1` < ? AND seguimento1check = 0) OR 
-                (`seguimento2` < ? AND seguimento2check = 0) OR 
-                (`seguimento3` < ? AND seguimento3check = 0) OR 
-                (`seguimento4` < ? AND seguimento4check = 0) OR 
-                (`seguimento5` < ? AND seguimento5check = 0)
+                (`Tipo_Venta` LIKE ?) 
+                AND 
+                (
+                    (`seguimento0` < ? AND seguimento0check = 0) OR 
+                    (`seguimento1` < ? AND seguimento1check = 0) OR 
+                    (`seguimento2` < ? AND seguimento2check = 0) OR 
+                    (`seguimento3` < ? AND seguimento3check = 0) OR 
+                    (`seguimento4` < ? AND seguimento4check = 0) OR 
+                    (`seguimento5` < ? AND seguimento5check = 0)
+                )
             )
-        )';
+        )
+        AND ' . $mostrarSoloPrimeroFiltro;
         $stmt = $conexionPDO->prepare($sql);
     
         $stmt->bindValue(1, $temp, PDO::PARAM_STR);
@@ -581,7 +623,8 @@ function cargarCursoLlamadas($date, $Tipo_Venta = "Todos", $missedCalls = "on"){
         `seguimento3` = ? OR 
         `seguimento4` = ? OR 
         `seguimento5` = ?
-        )';
+        )
+        AND ' . $mostrarSoloPrimeroFiltro;
 
         $stmt = $conexionPDO->prepare($sql);
             
