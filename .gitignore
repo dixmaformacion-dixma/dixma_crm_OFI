@@ -1,4 +1,8 @@
 .vscode
 funciones/conexionBD.php
+funciones/conexionBD-sample.php
+ajax/generate_login_token.php
+autologin_dixma.php
+administracion_credenciales_db.php
 FOTOS/*.mp4
 *.zip
