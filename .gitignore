@@ -2,6 +2,7 @@
 funciones/conexionBD.php
 funciones/conexionBD-sample.php
 ajax/generate_login_token.php
+ajax/generate_login_token_by_course.php
 autologin_dixma.php
 administracion_credenciales_db.php
 FOTOS/*.mp4
