@@ -32,6 +32,8 @@
         $Tipo_Venta_Display = $_REQUEST['Tipo_Venta_Display'];
     }
 
+	$page_from = "tutoria_listadoCursosActivos.php?year=" . urlencode($year) . "&Tipo_Venta_Display=" . urlencode($Tipo_Venta_Display);
+
 
 ?>
 
@@ -47,6 +49,7 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/tutoria.js"></script>
     <script src="js/alumnocurso.js"></script>
+    <script src="js/cursoScrollRestore.js"></script>
     <link rel="icon" href="images/favicon.ico">
 </head>
 <body style="background-color:#f3f6f4;">
@@ -107,7 +110,6 @@
                             </div>
                         </form>
                         <?php 
-                        $page_from = "tutoria_listadoCursosActivos.php";
                         if($cursos = cargarAlumnoCursosActivos($year, $Tipo_Venta_Display)){
                             require("template-parts/components/cursolist.listadoCursos.php");
                         }

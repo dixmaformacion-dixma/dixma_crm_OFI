@@ -178,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_trabajadores'
     <script src="js/jquery.min.js"></script>
     <script src="js/tutoria.js"></script>
     <script src="js/alumnocurso.js"></script>
+    <script src="js/cursoScrollRestore.js"></script>
     <link rel="icon" href="images/favicon.ico">
     <style>
         body { background-color:#f3f6f4; margin:0; padding:0; }
@@ -201,6 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_trabajadores'
 <?php
 // Prepara lista di lavoratori disponibili (stessa azienda, non già nel gruppo)
 $q = isset($_GET['q']) ? trim($_GET['q']) : '';
+$openAddWorkersModal = !empty($_GET['open_add_workers']);
 $conexionDisponibles = realizarConexion();
 if ($q !== '') {
     $sqlDispon = "SELECT idAlumno, nombre, apellidos, nif FROM alumnos WHERE idEmpresa = ? AND idAlumno NOT IN (SELECT idAlumno FROM alumnocursos WHERE N_Accion = ? AND N_Grupo = ? AND idEmpresa = ?) AND (apellidos LIKE ? OR nombre LIKE ? OR nif LIKE ?) ORDER BY apellidos ASC";
@@ -234,50 +236,54 @@ unset($conexionDisponibles);
     <div class="alert alert-danger">Error al añadir los trabajadores. Comprueba la selección y vuelve a intentarlo.</div>
 <?php endif; ?>
 
-<!-- Ricerca per nome / nif -->
-<div class="mb-2">
-    <form method="get" class="form-inline">
-        <input type="hidden" name="id" value="<?php echo intval($StudentCursoID); ?>">
-        <input type="text" name="q" value="<?php echo htmlspecialchars($q); ?>" placeholder="Apellidos, nombre o NIF" class="form-control" style="width:60%; display:inline-block;">
-        <button type="submit" class="btn btn-secondary" style="margin-left:8px;">Buscar</button>
-        <a href="<?php echo htmlspecialchars($page_from); ?>" class="btn btn-link" style="margin-left:8px;">Mostrar todos</a>
-    </form>
-</div>
-
-<!-- Pulsante per mostrare/nascondere la sezione di selezione -->
-<div style="margin-top:8px; margin-bottom:8px;">
-    <button type="button" id="toggle_selection" class="btn btn-outline-secondary">Mostrar/Ocultar selección</button>
-    <span style="margin-left:8px; color:#666;">Selecciona trabajadores de la misma empresa y añádelos al grupo</span>
-</div>
-
-<!-- Form per aggiungere più lavoratori con checkbox (collassabile) -->
-<div id="selection_section" class="mb-3" style="display:none;">
-    <form method="post" class="form-inline">
-        <input type="hidden" name="_referer" value="<?php echo htmlspecialchars($page_from . ( $q !== '' ? '&q=' . urlencode($q) : '' )); ?>">
-        <label class="form-label">Añadir trabajadores al grupo:</label>
-        <div style="margin-top:8px;">
-            <label><input type="checkbox" id="select_all"> Seleccionar todos</label>
-        </div>
-        <div style="max-height:300px; overflow:auto; border:1px solid #ddd; padding:8px; margin-top:8px;">
-            <?php if (empty($alumnosDisponibles)): ?>
-                <div class="text-muted">No hay trabajadores disponibles con estos criterios.</div>
-            <?php else: ?>
-                <?php foreach ($alumnosDisponibles as $al): ?>
-                    <div style="padding:4px;">
-                        <label>
-                            <input type="checkbox" name="alumnos[]" class="alumno_checkbox" value="<?php echo intval($al['idAlumno']); ?>">
-                            <?php echo htmlspecialchars($al['apellidos'] . ' ' . $al['nombre'] . ' (' . $al['nif'] . ')'); ?>
-                        </label>
+<div class="modal fade" id="addWorkersModal" tabindex="-1" aria-labelledby="addWorkersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addWorkersModalLabel">Añadir trabajadores al grupo</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form method="get" class="row g-2 align-items-center mb-3">
+                    <input type="hidden" name="id" value="<?php echo intval($StudentCursoID); ?>">
+                    <div class="col-12 col-md-8">
+                        <input type="text" name="q" value="<?php echo htmlspecialchars($q); ?>" placeholder="Apellidos, nombre o NIF" class="form-control">
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-        </div>
+                    <div class="col-12 col-md-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-secondary flex-fill">Buscar</button>
+                        <a href="<?php echo htmlspecialchars($page_from . '&open_add_workers=1'); ?>" class="btn btn-outline-secondary flex-fill">Mostrar todos</a>
+                    </div>
+                </form>
 
-        <div style="margin-top:8px;">
-            <button type="submit" name="agregar_trabajadores" class="btn btn-primary">Añadir seleccionados</button>
+                <form method="post">
+                    <input type="hidden" name="_referer" value="<?php echo htmlspecialchars($page_from . ( $q !== '' ? '&q=' . urlencode($q) : '' )); ?>">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <label class="form-label mb-0 fw-bold">Selecciona trabajadores de la misma empresa</label>
+                        <label class="mb-0"><input type="checkbox" id="select_all"> Seleccionar todos</label>
+                    </div>
+                    <div style="max-height:320px; overflow:auto; border:1px solid #ddd; padding:8px; border-radius:6px; background:#fff;">
+                        <?php if (empty($alumnosDisponibles)): ?>
+                            <div class="text-muted">No hay trabajadores disponibles con estos criterios.</div>
+                        <?php else: ?>
+                            <?php foreach ($alumnosDisponibles as $al): ?>
+                                <div style="padding:4px 0; border-bottom:1px solid #f0f0f0;">
+                                    <label class="w-100">
+                                        <input type="checkbox" name="alumnos[]" class="alumno_checkbox" value="<?php echo intval($al['idAlumno']); ?>">
+                                        <?php echo htmlspecialchars($al['apellidos'] . ' ' . $al['nombre'] . ' (' . $al['nif'] . ')'); ?>
+                                    </label>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-3">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" name="agregar_trabajadores" class="btn btn-primary">Añadir seleccionados</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
 
 <script>
@@ -288,12 +294,16 @@ document.getElementById('select_all')?.addEventListener('change', function(e){
 </script>
 
 <script>
-// Toggle visibilità della sezione di selezione lavoratori
-document.getElementById('toggle_selection')?.addEventListener('click', function(){
-    var el = document.getElementById('selection_section');
-    if (!el) return;
-    if (el.style.display === 'none' || el.style.display === '') el.style.display = 'block'; else el.style.display = 'none';
+// Mantiene aperta la finestra quando la pagina ricarica dopo una búsqueda, un error o "Mostrar todos"
+<?php if (!empty($q) || !empty($errorAgregar) || $openAddWorkersModal): ?>
+document.addEventListener('DOMContentLoaded', function () {
+    var modalEl = document.getElementById('addWorkersModal');
+    if (modalEl && window.bootstrap) {
+        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
 });
+<?php endif; ?>
 </script>
     <div class="page-header">
         <h5>Todos los trabajadores del curso</h5>
@@ -316,6 +326,9 @@ document.getElementById('toggle_selection')?.addEventListener('click', function(
             </a>
             <button type="button" class="btn btn-sm btn-warning fw-bold" id="btn-certificado">
                🖨️ Imprimir certificado
+            </button>
+            <button type="button" class="btn btn-sm btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addWorkersModal">
+                Añadir nuevos trabajadores
             </button>
         </div>
 

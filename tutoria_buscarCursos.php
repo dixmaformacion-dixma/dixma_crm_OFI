@@ -40,6 +40,7 @@
     <script src="js/tutoria.js"></script>
     <script src="js/alumnocurso.js"></script>
     <script src="js/accionesMasivas.js"></script>
+    <script src="js/cursoScrollRestore.js"></script>
     <link rel="icon" href="images/favicon.ico">
 </head>
 <body style="background-color:#f3f6f4;">

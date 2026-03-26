@@ -9,7 +9,7 @@
 </div>
         
 <div id="EditarFetcha<?php echo $curso['StudentCursoID']; ?>" class="collapse">
-        <form method="POST">
+        <form method="POST" class="js-preserve-scroll-form">
                 <input type="hidden" name="function" value="editar_seguimentos_Insertar_commentario">
                 <input type="hidden" name="StudentCursoID" value="<?php echo $curso['StudentCursoID']; ?>">
                 <input type="hidden" name="idAlumno" value="<?php echo $curso['idAlumno']; ?>">

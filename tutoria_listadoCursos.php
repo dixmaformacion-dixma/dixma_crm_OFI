@@ -24,9 +24,14 @@
 
 	if (isset($_GET['eliminarCurso']) && is_numeric($_GET['eliminarCurso'])) {
         $idToDelete = (int) $_GET['eliminarCurso'];
+        $returnUrl = isset($_GET['returnUrl']) ? trim((string) $_GET['returnUrl']) : '';
         if (eliminarAlumnoCurso($idToDelete)) {
-            $deleteMessage = "Inscripción de curso eliminada correctamente.";
-            $deleteMessageClass = 'alert-success';
+            if ($returnUrl !== '' && !preg_match('/^(?:https?:)?\/\//i', $returnUrl)) {
+                header('Location: ' . $returnUrl);
+            } else {
+                header('Location: tutoria_listadoCursos.php');
+            }
+            exit;
         } else {
             $deleteMessage = "Error al eliminar la inscripción del curso.";
             $deleteMessageClass = 'alert-danger';
@@ -43,6 +48,8 @@
         $Tipo_Venta_Display = $_REQUEST['Tipo_Venta_Display'];
     }
 
+	$page_from = "tutoria_listadoCursos.php?year=" . urlencode($year) . "&Tipo_Venta_Display=" . urlencode($Tipo_Venta_Display);
+
 
 ?>
 
@@ -58,6 +65,7 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/tutoria.js"></script>
     <script src="js/alumnocurso.js"></script>
+    <script src="js/cursoScrollRestore.js"></script>
     <link rel="icon" href="images/favicon.ico">
 </head>
 <body style="background-color:#f3f6f4;">
@@ -119,7 +127,6 @@
                             </div>
                         </form>
                         <?php 
-                        $page_from = "tutoria_listadoCursos.php";
                         if($cursos = cargarAlumnoCursos($year, $Tipo_Venta_Display)){
                             require("template-parts/components/cursolist.listadoCursos.php");
                         }

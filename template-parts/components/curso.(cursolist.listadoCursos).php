@@ -27,6 +27,7 @@ if (!isset($statusDiplomaColor)) {
 
 $alumnoSearchValue = isset($curso['idAlumno']) ? (int)$curso['idAlumno'] : 0;
 $alumnoSearchUrl = 'tutoria_buscarCursos.php?filterName[]=idAlumno&filterOperator[]=%3D&filterValue[]=' . urlencode((string)$alumnoSearchValue) . '&consultar=Buscar';
+$deleteReturnUrl = isset($page_from) && trim((string)$page_from) !== '' ? $page_from : 'tutoria_listadoCursos.php';
 ?>
 <style>
         .actions {
@@ -131,8 +132,9 @@ $alumnoSearchUrl = 'tutoria_buscarCursos.php?filterName[]=idAlumno&filterOperato
                         </a>
                         <?php if (!empty($_SESSION) && isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
                         <a
-                                onclick="return confirm('¿Estás seguro de que deseas eliminar este curso del alumno? Esta acción es irreversible.');"
-                                href="tutoria_listadoCursos.php?eliminarCurso=<?php echo $curso['StudentCursoID']; ?>">
+                                class="js-delete-curso"
+                                data-confirm-message="¿Estás seguro de que deseas eliminar este curso del alumno? Esta acción es irreversible."
+                                href="tutoria_listadoCursos.php?eliminarCurso=<?php echo $curso['StudentCursoID']; ?>&returnUrl=<?php echo urlencode($deleteReturnUrl); ?>">
                                 <img src="images/iconos/trash.svg" alt="Eliminar">
                         </a>
                         <?php endif; ?>
